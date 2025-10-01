@@ -14,3 +14,6 @@ mcp
 aiohttp
 serpapi
 fastmcp
+fastapi
+uvicorn[standard]
+pydantic

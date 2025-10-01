@@ -1,0 +1,13 @@
+{
+  "title": "卷疯了！DeepSeek V3.2 节前突发，开发者调用 API 成本大幅降低 50%",
+  "content": "双节将至，有的人已经在路上，而有的人还在围观 DeepSeek 模型上新。 \n北京时间 9 月 29 日，Hugging Face 上突然出现了 DeepSeek V3.2 的踪迹，诸多开发者纷纷猜测，DeepSeek 是否要上新模型了？悬念没有等太久，就在刚刚，DeepSeek 官方正式宣告了 DeepSeek V3.2-Exp 的到来，并特别注明“这是一个实验性（Experimental）的版本”，其最大亮点有两个：\n 1）在 DeepSeek V3.1-Terminus 的基础上引入了 DeepSeek Sparse Attention（DSA，一种稀疏注意力机制），针对长文本的训练和推理效率进行了探索性的优化和验证。其首次实现了细粒度稀疏注意力机制，在几乎不影响模型输出效果的前提下，实现了长文本训练和推理效率的大幅提升。  2）对开发者的极大利好：API 大幅降价，DeepSeek 官方表示，开发者调用 DeepSeek API 的成本将降低 50% 以上。   \n目前，官方 App、网页端、小程序均已同步更新为 DeepSeek-V3.2-Exp，开发者朋友们可以试用起来啦。并且，由于是实验版本，DeepSeek 官方强调，仍然需要在用户的真实使用场景中进行范围更广、规模更大的测试，以排除在某些场景下效果欠佳的可能。 \n不过，相比兴奋，倒是能看到一阵的哀嚎和好奇。在 DeepSeek V3.1-Terminus 的 Community 中，就有用户留言：“国庆是休息日，请给我们关注的同学一点休息时间”，在 DeepSeek-V3.2-Exp 正式发布后，Community 里首先就是“这个模型是非得国庆前更新吗？”\n双节将至，新模型还将接踵而至，你怎么看待这波模型更新？\n最后，和大家推荐一下即将举行的全球机器学习技术大会：领衔嘉宾Lukasz Kaiser是著名的“Transformer 八子”中唯一一位加入OpenAI、并且操刀GPT-5、GPT-4、o1、o3、ChatGPT 等一系列前沿模型的核心。还有前OpenAI、前DeepMind、Google、阿里、腾讯、百度、小红书……50+专家， 近1000位听众，10月16-17日，北京威斯汀酒店。欢迎报名：https://ml-summit.org 。",
+  "author": "CSDN资讯",
+  "publish_time": "最新推荐文章于 2025-09-30 19:00:19 发布",
+  "tags": [
+    "人工智能",
+    "deepseek"
+  ],
+  "url": "https://blog.csdn.net/csdnnews/article/details/152307110?spm=1000.2115.3001.5926",
+  "word_count": 975,
+  "parsed_at": "2025-10-01T19:12:32.081090"
+}
