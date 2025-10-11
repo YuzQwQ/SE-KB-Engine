@@ -1,0 +1,545 @@
+import json
+import re
+import os
+import logging
+from pathlib import Path
+from typing import Dict, List, Any, Optional, Union
+from datetime import datetime
+import uuid
+
+# 配置日志
+logger = logging.getLogger(__name__)
+
+class UniversalKnowledgeProcessor:
+    """通用知识库处理器，支持需求转换的生成和验证"""
+    
+    def __init__(self, config_file: str = None):
+        if config_file is None:
+            config_dir = os.path.join(os.path.dirname(__file__), "..", "config")
+            config_file = os.path.join(config_dir, "universal_knowledge_template.json")
+        
+        self.config_file = Path(config_file)
+        self.template = self._load_template()
+        self.extraction_config = self.template.get('universal_knowledge_base', {}).get('extraction_config', {})
+    
+    def _load_template(self) -> Dict:
+        """加载通用知识库模板配置"""
+        try:
+            with open(self.config_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            logger.error(f"配置文件未找到: {self.config_file}")
+            raise
+        except json.JSONDecodeError as e:
+            logger.error(f"配置文件格式错误: {e}")
+            raise
+    
+    def extract_knowledge(self, content: str, url: str = "", title: str = "", 
+                         requirement_type: str = "", target_conversion_type: str = "") -> Dict:
+        """从内容中提取通用知识库数据"""
+        
+        # 生成唯一的知识库ID
+        knowledge_id = f"kb_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
+        
+        # 构建基础结构
+        knowledge_base = {
+            "metadata": {
+                "knowledge_id": knowledge_id,
+                "title": title or "未命名知识库",
+                "description": f"从 {url} 提取的{requirement_type}到{target_conversion_type}转换知识",
+                "version": "1.0.0",
+                "created_time": datetime.now().isoformat(),
+                "updated_time": datetime.now().isoformat(),
+                "source_info": {
+                    "source_url": url,
+                    "source_type": "web_crawl",
+                    "crawl_time": datetime.now().isoformat(),
+                    "extraction_method": "自动化内容分析",
+                    "reliability_score": self._calculate_reliability_score(content)
+                }
+            },
+            "requirement_type": requirement_type,
+            "target_conversion_type": target_conversion_type,
+            "generation_knowledge": {
+                "concepts": self._extract_concepts(content),
+                "rules": self._extract_rules(content),
+                "patterns": self._extract_patterns(content),
+                "transformations": self._extract_transformations(content)
+            },
+            "validation_knowledge": {
+                "criteria": self._extract_criteria(content),
+                "checklist": self._extract_checklist(content),
+                "error_patterns": self._extract_error_patterns(content)
+            },
+            "examples": {
+                "input_examples": self._extract_input_examples(content),
+                "output_examples": self._extract_output_examples(content),
+                "transformation_examples": self._extract_transformation_examples(content)
+            },
+            "relationships": {
+                "related_knowledge_bases": [],
+                "dependency_graph": {},
+                "cross_references": []
+            }
+        }
+        
+        return knowledge_base
+    
+    def _calculate_reliability_score(self, content: str) -> float:
+        """计算内容可靠性评分"""
+        score = 0.5  # 基础分
+        
+        # 根据内容长度调整
+        if len(content) > 1000:
+            score += 0.2
+        elif len(content) > 500:
+            score += 0.1
+        
+        # 根据结构化程度调整
+        if '步骤' in content or '流程' in content:
+            score += 0.1
+        if '示例' in content or '例子' in content:
+            score += 0.1
+        if '规则' in content or '约束' in content:
+            score += 0.1
+        
+        return min(1.0, score)
+    
+    def _extract_concepts(self, content: str) -> List[Dict]:
+        """提取概念定义"""
+        concepts = []
+        patterns = self.extraction_config.get('concepts', {}).get('patterns', {})
+        definition_indicators = patterns.get('definition_indicators', [])
+        
+        # 查找定义模式
+        for indicator in definition_indicators:
+            pattern = rf'([^。！？\n]+){indicator}([^。！？\n]+)'
+            matches = re.findall(pattern, content)
+            
+            for i, (term, definition) in enumerate(matches):
+                concept_id = f"concept_{len(concepts) + 1:03d}"
+                concepts.append({
+                    "concept_id": concept_id,
+                    "name": term.strip(),
+                    "definition": definition.strip(),
+                    "category": "extracted",
+                    "attributes": {},
+                    "relationships": []
+                })
+        
+        return concepts
+    
+    def _extract_rules(self, content: str) -> List[Dict]:
+        """提取生成规则"""
+        rules = []
+        patterns = self.extraction_config.get('rules', {}).get('patterns', {})
+        rule_indicators = patterns.get('rule_indicators', [])
+        
+        # 查找规则模式
+        sentences = re.split(r'[。！？\n]', content)
+        for sentence in sentences:
+            if any(indicator in sentence for indicator in rule_indicators):
+                rule_id = f"rule_{len(rules) + 1:03d}"
+                rules.append({
+                    "rule_id": rule_id,
+                    "type": "constraint",
+                    "condition": "通用条件",
+                    "action": sentence.strip(),
+                    "priority": 1,
+                    "applicable_scenarios": ["general"]
+                })
+        
+        return rules
+    
+    def _extract_patterns(self, content: str) -> List[Dict]:
+        """提取模式模板"""
+        patterns = []
+        config_patterns = self.extraction_config.get('patterns', {})
+        template_indicators = config_patterns.get('template_indicators', [])
+        
+        # 查找模板模式
+        sentences = re.split(r'[。！？\n]', content)
+        for sentence in sentences:
+            if any(indicator in sentence for indicator in template_indicators):
+                pattern_id = f"pattern_{len(patterns) + 1:03d}"
+                patterns.append({
+                    "pattern_id": pattern_id,
+                    "name": f"模式{len(patterns) + 1}",
+                    "template": sentence.strip(),
+                    "variables": {},
+                    "usage_context": "通用场景",
+                    "complexity_level": "medium"
+                })
+        
+        return patterns
+    
+    def _extract_transformations(self, content: str) -> List[Dict]:
+        """提取转换方法"""
+        transformations = []
+        patterns = self.extraction_config.get('transformations', {})
+        step_indicators = patterns.get('step_indicators', [])
+        
+        # 查找步骤模式
+        sentences = re.split(r'[。！？\n]', content)
+        current_steps = []
+        
+        for sentence in sentences:
+            if any(indicator in sentence for indicator in step_indicators):
+                if current_steps:
+                    transformation_id = f"transform_{len(transformations) + 1:03d}"
+                    transformations.append({
+                        "transformation_id": transformation_id,
+                        "from_format": "source",
+                        "to_format": "target",
+                        "steps": current_steps.copy(),
+                        "tools_required": [],
+                        "preconditions": []
+                    })
+                    current_steps = []
+                current_steps.append(sentence.strip())
+            elif current_steps and sentence.strip():
+                current_steps.append(sentence.strip())
+        
+        # 处理最后一组步骤
+        if current_steps:
+            transformation_id = f"transform_{len(transformations) + 1:03d}"
+            transformations.append({
+                "transformation_id": transformation_id,
+                "from_format": "source",
+                "to_format": "target",
+                "steps": current_steps,
+                "tools_required": [],
+                "preconditions": []
+            })
+        
+        return transformations
+    
+    def _extract_criteria(self, content: str) -> List[Dict]:
+        """提取验证标准"""
+        criteria = []
+        patterns = self.extraction_config.get('validation', {})
+        criteria_indicators = patterns.get('criteria_indicators', [])
+        
+        sentences = re.split(r'[。！？\n]', content)
+        for sentence in sentences:
+            if any(indicator in sentence for indicator in criteria_indicators):
+                criteria_id = f"criteria_{len(criteria) + 1:03d}"
+                criteria.append({
+                    "criteria_id": criteria_id,
+                    "name": f"标准{len(criteria) + 1}",
+                    "description": sentence.strip(),
+                    "measurement_method": "manual_review",
+                    "threshold_values": {},
+                    "weight": 1.0
+                })
+        
+        return criteria
+    
+    def _extract_checklist(self, content: str) -> List[Dict]:
+        """提取检查清单"""
+        checklist = []
+        
+        # 查找列表项模式
+        list_patterns = [r'\d+[.、]\s*([^\n]+)', r'[•·-]\s*([^\n]+)']
+        
+        for pattern in list_patterns:
+            matches = re.findall(pattern, content)
+            for match in matches:
+                check_id = f"check_{len(checklist) + 1:03d}"
+                checklist.append({
+                    "check_id": check_id,
+                    "category": "general",
+                    "description": match.strip(),
+                    "validation_method": "manual",
+                    "expected_result": "符合要求",
+                    "severity_level": "medium"
+                })
+        
+        return checklist
+    
+    def _extract_error_patterns(self, content: str) -> List[Dict]:
+        """提取错误模式"""
+        error_patterns = []
+        patterns = self.extraction_config.get('validation', {})
+        error_indicators = patterns.get('error_indicators', [])
+        
+        sentences = re.split(r'[。！？\n]', content)
+        for sentence in sentences:
+            if any(indicator in sentence for indicator in error_indicators):
+                error_id = f"error_{len(error_patterns) + 1:03d}"
+                error_patterns.append({
+                    "error_id": error_id,
+                    "pattern_description": sentence.strip(),
+                    "symptoms": [sentence.strip()],
+                    "root_causes": [],
+                    "solutions": [],
+                    "prevention_measures": []
+                })
+        
+        return error_patterns
+    
+    def _extract_input_examples(self, content: str) -> List[Dict]:
+        """提取输入示例"""
+        examples = []
+        
+        # 查找示例模式
+        example_patterns = [r'示例[：:]([^。！？\n]+)', r'例如[：:]([^。！？\n]+)']
+        
+        for pattern in example_patterns:
+            matches = re.findall(pattern, content)
+            for match in matches:
+                example_id = f"input_{len(examples) + 1:03d}"
+                examples.append({
+                    "example_id": example_id,
+                    "title": f"输入示例{len(examples) + 1}",
+                    "content": match.strip(),
+                    "format": "text",
+                    "complexity_level": "medium",
+                    "tags": []
+                })
+        
+        return examples
+    
+    def _extract_output_examples(self, content: str) -> List[Dict]:
+        """提取输出示例"""
+        examples = []
+        
+        # 查找结果模式
+        result_patterns = [r'结果[：:]([^。！？\n]+)', r'输出[：:]([^。！？\n]+)']
+        
+        for pattern in result_patterns:
+            matches = re.findall(pattern, content)
+            for match in matches:
+                example_id = f"output_{len(examples) + 1:03d}"
+                examples.append({
+                    "example_id": example_id,
+                    "input_reference": "",
+                    "content": match.strip(),
+                    "format": "text",
+                    "quality_score": 0.8,
+                    "annotations": {}
+                })
+        
+        return examples
+    
+    def _extract_transformation_examples(self, content: str) -> List[Dict]:
+        """提取转换示例"""
+        examples = []
+        
+        # 查找转换过程描述
+        transform_patterns = [r'转换[：:]([^。！？\n]+)', r'变换[：:]([^。！？\n]+)']
+        
+        for pattern in transform_patterns:
+            matches = re.findall(pattern, content)
+            for match in matches:
+                example_id = f"transform_{len(examples) + 1:03d}"
+                examples.append({
+                    "example_id": example_id,
+                    "input_example_id": "",
+                    "output_example_id": "",
+                    "transformation_steps": [match.strip()],
+                    "intermediate_results": [],
+                    "notes": ""
+                })
+        
+        return examples
+    
+    def save_knowledge_base(self, knowledge_base: Dict, output_dir: str = "shared_data/knowledge_base") -> str:
+        """保存知识库到文件"""
+        os.makedirs(output_dir, exist_ok=True)
+        
+        knowledge_id = knowledge_base.get('metadata', {}).get('knowledge_id', 'unknown')
+        filename = f"universal_kb_{knowledge_id}.json"
+        filepath = os.path.join(output_dir, filename)
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(knowledge_base, f, ensure_ascii=False, indent=2)
+        
+        logger.info(f"知识库已保存到: {filepath}")
+        return filepath
+    
+    def convert_from_old_format(self, old_data: Dict, requirement_type: str = "", 
+                               target_conversion_type: str = "") -> Dict:
+        """从旧格式转换为新的通用知识库格式"""
+        
+        # 提取旧格式中的元数据
+        old_metadata = old_data.get('metadata', {})
+        
+        # 生成新的知识库ID
+        knowledge_id = f"converted_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
+        
+        # 构建新格式
+        new_knowledge_base = {
+            "metadata": {
+                "knowledge_id": knowledge_id,
+                "title": old_metadata.get('title', '转换的知识库'),
+                "description": f"从旧格式转换的{requirement_type}到{target_conversion_type}知识库",
+                "version": "1.0.0",
+                "created_time": datetime.now().isoformat(),
+                "updated_time": datetime.now().isoformat(),
+                "source_info": {
+                    "source_url": old_metadata.get('source_url', ''),
+                    "source_type": "format_conversion",
+                    "crawl_time": old_metadata.get('crawl_time', ''),
+                    "extraction_method": "格式转换",
+                    "reliability_score": 0.8
+                }
+            },
+            "requirement_type": requirement_type,
+            "target_conversion_type": target_conversion_type,
+            "generation_knowledge": {
+                "concepts": self._convert_concepts(old_data),
+                "rules": self._convert_rules(old_data),
+                "patterns": self._convert_patterns(old_data),
+                "transformations": self._convert_transformations(old_data)
+            },
+            "validation_knowledge": {
+                "criteria": [],
+                "checklist": [],
+                "error_patterns": self._convert_error_cases(old_data)
+            },
+            "examples": {
+                "input_examples": [],
+                "output_examples": [],
+                "transformation_examples": []
+            },
+            "relationships": {
+                "related_knowledge_bases": [],
+                "dependency_graph": {},
+                "cross_references": []
+            }
+        }
+        
+        return new_knowledge_base
+    
+    def _convert_concepts(self, old_data: Dict) -> List[Dict]:
+        """转换概念数据"""
+        concepts = []
+        old_concepts = old_data.get('dfd_concepts', [])
+        
+        for i, old_concept in enumerate(old_concepts):
+            concept_id = f"concept_{i+1:03d}"
+            concepts.append({
+                "concept_id": concept_id,
+                "name": old_concept.get('type', ''),
+                "definition": old_concept.get('description', ''),
+                "category": "dfd_element",
+                "attributes": {
+                    "symbol": old_concept.get('symbol', ''),
+                    "rules": old_concept.get('rules', [])
+                },
+                "relationships": []
+            })
+        
+        return concepts
+    
+    def _convert_rules(self, old_data: Dict) -> List[Dict]:
+        """转换规则数据"""
+        rules = []
+        old_rules = old_data.get('dfd_rules', [])
+        
+        for i, old_rule in enumerate(old_rules):
+            rule_id = f"rule_{i+1:03d}"
+            rules.append({
+                "rule_id": rule_id,
+                "type": old_rule.get('category', 'general'),
+                "condition": old_rule.get('condition', ''),
+                "action": old_rule.get('description', ''),
+                "priority": 1,
+                "applicable_scenarios": ["dfd_creation"]
+            })
+        
+        return rules
+    
+    def _convert_patterns(self, old_data: Dict) -> List[Dict]:
+        """转换模式数据"""
+        patterns = []
+        old_patterns = old_data.get('dfd_patterns', [])
+        
+        for i, old_pattern in enumerate(old_patterns):
+            pattern_id = f"pattern_{i+1:03d}"
+            patterns.append({
+                "pattern_id": pattern_id,
+                "name": old_pattern.get('system', f'模式{i+1}'),
+                "template": json.dumps(old_pattern, ensure_ascii=False),
+                "variables": {
+                    "level": old_pattern.get('level', 0),
+                    "processes": old_pattern.get('processes', []),
+                    "entities": old_pattern.get('entities', []),
+                    "data_stores": old_pattern.get('data_stores', []),
+                    "flows": old_pattern.get('flows', [])
+                },
+                "usage_context": "DFD系统建模",
+                "complexity_level": "medium"
+            })
+        
+        return patterns
+    
+    def _convert_transformations(self, old_data: Dict) -> List[Dict]:
+        """转换变换数据"""
+        transformations = []
+        old_mappings = old_data.get('dfd_nlp_mappings', [])
+        
+        for i, old_mapping in enumerate(old_mappings):
+            transformation_id = f"transform_{i+1:03d}"
+            transformations.append({
+                "transformation_id": transformation_id,
+                "from_format": "natural_language",
+                "to_format": "dfd_element",
+                "steps": [
+                    f"识别模式: {old_mapping.get('pattern', '')}",
+                    f"映射到元素类型: {old_mapping.get('element_type', '')}",
+                    f"应用命名模板: {old_mapping.get('name_template', '')}"
+                ],
+                "tools_required": ["nlp_parser", "dfd_generator"],
+                "preconditions": ["文本预处理完成"]
+            })
+        
+        return transformations
+    
+    def _convert_error_cases(self, old_data: Dict) -> List[Dict]:
+        """转换错误案例数据"""
+        error_patterns = []
+        old_cases = old_data.get('dfd_cases', [])
+        
+        for i, old_case in enumerate(old_cases):
+            if old_case.get('type') == 'error':
+                error_id = f"error_{i+1:03d}"
+                error_patterns.append({
+                    "error_id": error_id,
+                    "pattern_description": old_case.get('description', ''),
+                    "symptoms": [old_case.get('description', '')],
+                    "root_causes": [],
+                    "solutions": [old_case.get('explanation', '')],
+                    "prevention_measures": []
+                })
+        
+        return error_patterns
+
+if __name__ == "__main__":
+    processor = UniversalKnowledgeProcessor()
+    
+    # 测试内容提取
+    sample_content = """
+    数据流图（DFD）是指描述系统中数据流动的图形化表示方法。
+    规则1：每个处理过程必须有输入和输出。
+    步骤1：识别外部实体
+    步骤2：确定主要处理过程
+    步骤3：绘制数据流
+    示例：学生注册系统包含学生、注册处理、学生信息存储等元素。
+    错误：处理过程没有输入数据流是常见的建模错误。
+    """
+    
+    knowledge_base = processor.extract_knowledge(
+        content=sample_content,
+        url="https://example.com",
+        title="DFD建模指南",
+        requirement_type="自然语言需求",
+        target_conversion_type="数据流图"
+    )
+    
+    print(json.dumps(knowledge_base, ensure_ascii=False, indent=2))
+    
+    # 保存知识库
+    filepath = processor.save_knowledge_base(knowledge_base)
+    print(f"知识库已保存到: {filepath}")

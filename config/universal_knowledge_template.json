@@ -1,0 +1,175 @@
+{
+  "universal_knowledge_base": {
+    "name": "通用知识库格式",
+    "description": "支持需求转换的生成和验证的通用知识库结构",
+    "version": "1.0.0",
+    "json_structure": {
+      "metadata": {
+        "knowledge_id": "string",
+        "title": "string",
+        "description": "string",
+        "version": "string",
+        "created_time": "datetime",
+        "updated_time": "datetime",
+        "source_info": {
+          "source_url": "string",
+          "source_type": "string",
+          "crawl_time": "datetime",
+          "extraction_method": "string",
+          "reliability_score": "float"
+        }
+      },
+      "requirement_type": "string",
+      "target_conversion_type": "string",
+      "generation_knowledge": {
+        "concepts": {
+          "description": "核心概念和定义",
+          "fields": {
+            "concept_id": "string",
+            "name": "string",
+            "definition": "string",
+            "category": "string",
+            "attributes": "object",
+            "relationships": "array"
+          }
+        },
+        "rules": {
+          "description": "生成规则和约束",
+          "fields": {
+            "rule_id": "string",
+            "type": "string",
+            "condition": "string",
+            "action": "string",
+            "priority": "integer",
+            "applicable_scenarios": "array"
+          }
+        },
+        "patterns": {
+          "description": "常用模式和模板",
+          "fields": {
+            "pattern_id": "string",
+            "name": "string",
+            "template": "string",
+            "variables": "object",
+            "usage_context": "string",
+            "complexity_level": "string"
+          }
+        },
+        "transformations": {
+          "description": "转换方法和步骤",
+          "fields": {
+            "transformation_id": "string",
+            "from_format": "string",
+            "to_format": "string",
+            "steps": "array",
+            "tools_required": "array",
+            "preconditions": "array"
+          }
+        }
+      },
+      "validation_knowledge": {
+        "criteria": {
+          "description": "验证标准和指标",
+          "fields": {
+            "criteria_id": "string",
+            "name": "string",
+            "description": "string",
+            "measurement_method": "string",
+            "threshold_values": "object",
+            "weight": "float"
+          }
+        },
+        "checklist": {
+          "description": "检查清单和验证点",
+          "fields": {
+            "check_id": "string",
+            "category": "string",
+            "description": "string",
+            "validation_method": "string",
+            "expected_result": "string",
+            "severity_level": "string"
+          }
+        },
+        "error_patterns": {
+          "description": "常见错误模式和解决方案",
+          "fields": {
+            "error_id": "string",
+            "pattern_description": "string",
+            "symptoms": "array",
+            "root_causes": "array",
+            "solutions": "array",
+            "prevention_measures": "array"
+          }
+        }
+      },
+      "examples": {
+        "input_examples": {
+          "description": "输入示例集合",
+          "fields": {
+            "example_id": "string",
+            "title": "string",
+            "content": "string",
+            "format": "string",
+            "complexity_level": "string",
+            "tags": "array"
+          }
+        },
+        "output_examples": {
+          "description": "输出示例集合",
+          "fields": {
+            "example_id": "string",
+            "input_reference": "string",
+            "content": "string",
+            "format": "string",
+            "quality_score": "float",
+            "annotations": "object"
+          }
+        },
+        "transformation_examples": {
+          "description": "转换过程示例",
+          "fields": {
+            "example_id": "string",
+            "input_example_id": "string",
+            "output_example_id": "string",
+            "transformation_steps": "array",
+            "intermediate_results": "array",
+            "notes": "string"
+          }
+        }
+      },
+      "relationships": {
+        "related_knowledge_bases": "array",
+        "dependency_graph": "object",
+        "cross_references": "array"
+      }
+    },
+    "extraction_config": {
+      "concepts": {
+        "patterns": {
+          "definition_indicators": ["定义", "概念", "是指", "指的是", "表示"],
+          "category_indicators": ["类型", "种类", "分类", "类别"],
+          "attribute_indicators": ["属性", "特征", "特点", "性质"]
+        }
+      },
+      "rules": {
+        "patterns": {
+          "rule_indicators": ["规则", "约束", "限制", "要求", "必须", "应该"],
+          "condition_indicators": ["如果", "当", "在...情况下", "条件"],
+          "action_indicators": ["则", "那么", "执行", "进行", "操作"]
+        }
+      },
+      "patterns": {
+        "template_indicators": ["模板", "模式", "范式", "样式", "格式"],
+        "usage_indicators": ["使用", "应用", "适用于", "场景"]
+      },
+      "transformations": {
+        "step_indicators": ["步骤", "阶段", "过程", "流程"],
+        "method_indicators": ["方法", "技术", "工具", "手段"]
+      },
+      "validation": {
+        "criteria_indicators": ["标准", "指标", "准则", "要求"],
+        "error_indicators": ["错误", "问题", "缺陷", "异常", "故障"]
+      }
+    }
+  }
+}
