@@ -8,3 +8,30 @@ wheels/
 
 # Virtual environments
 .venv
+venv_enhanced/
+
+# Configuration files
+.env
+config/torrc
+config/torrc_proxy
+
+# Crawling results and data
+data/
+shared_data/
+web_cache.db
+
+# Tor data
+tor_data/
+tor_data_debug/
+
+# Logs
+*.log
+mcp_server.log
+
+# IDE files
+.idea/
+.vscode/
+
+# Cache and temporary files
+*.tmp
+*.cache

@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: linear-gradient(135deg, #2980b9 0%, #1abc9c 50%, #27ae60 100%);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
     min-height: 100vh;
@@ -46,7 +46,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+    background: linear-gradient(90deg, #2980b9, #1abc9c, #27ae60, #2980b9);
     background-size: 300% 100%;
     animation: shimmer 3s ease-in-out infinite;
     z-index: 1;
@@ -58,7 +58,7 @@ body {
 }
 
 .header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: linear-gradient(135deg, #2980b9 0%, #1abc9c 50%, #27ae60 100%);
     color: white;
     padding: 30px 24px;
     text-align: center;
@@ -145,7 +145,7 @@ body {
 }
 
 .message.user .message-content {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: linear-gradient(135deg, #2980b9 0%, #1abc9c 50%, #27ae60 100%);
     color: white;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     position: relative;
@@ -170,9 +170,9 @@ body {
 
 .message.assistant .message-content {
     background: linear-gradient(135deg, rgba(248, 249, 250, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    border: 1px solid rgba(41, 128, 185, 0.2);
     color: #2c3e50;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 4px 15px rgba(41, 128, 185, 0.1);
     position: relative;
 }
 
@@ -183,7 +183,7 @@ body {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #2980b9, #1abc9c);
     border-radius: 2px 0 0 2px;
 }
 
@@ -204,7 +204,7 @@ body {
 .chat-input-container {
     padding: 25px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.9) 100%);
-    border-top: 1px solid rgba(102, 126, 234, 0.2);
+    border-top: 1px solid rgba(41, 128, 185, 0.2);
     backdrop-filter: blur(10px);
     position: relative;
 }
@@ -216,7 +216,7 @@ body {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(41, 128, 185, 0.3), transparent);
 }
 
 .input-wrapper {
@@ -226,15 +226,15 @@ body {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.9) 100%);
     border-radius: 28px;
     padding: 18px 24px;
-    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08);
-    border: 2px solid rgba(102, 126, 234, 0.2);
+    box-shadow: 0 4px 20px rgba(41, 128, 185, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(41, 128, 185, 0.2);
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     backdrop-filter: blur(10px);
 }
 
 .input-wrapper:focus-within {
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 8px 25px rgba(102, 126, 234, 0.2);
+    border-color: #2980b9;
+    box-shadow: 0 0 0 4px rgba(41, 128, 185, 0.15), 0 8px 25px rgba(41, 128, 185, 0.2);
     transform: translateY(-2px);
     background: rgba(255, 255, 255, 1);
 }
@@ -261,7 +261,7 @@ body {
 }
 
 .send-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: linear-gradient(135deg, #2980b9 0%, #1abc9c 50%, #27ae60 100%);
     border: none;
     border-radius: 20px;
     width: 56px;
@@ -273,15 +273,15 @@ body {
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     flex-shrink: 0;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px rgba(41, 128, 185, 0.3);
     position: relative;
     overflow: hidden;
 }
 
 .send-button:hover:not(:disabled) {
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 4px 10px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(135deg, #7c8ef0 0%, #8a5cb8 50%, #f5a3fc 100%);
+    box-shadow: 0 8px 25px rgba(41, 128, 185, 0.4), 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #3498db 0%, #16a085 50%, #2ecc71 100%);
 }
 
 .send-button::before {
@@ -327,7 +327,7 @@ body {
     bottom: 120px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+    background: linear-gradient(135deg, rgba(41, 128, 185, 0.95) 0%, rgba(26, 188, 156, 0.95) 100%);
     color: white;
     padding: 16px 24px;
     border-radius: 30px;
@@ -339,7 +339,7 @@ body {
     z-index: 1000;
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 25px rgba(41, 128, 185, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
     animation: loadingPulse 2s ease-in-out infinite;
 }
 
@@ -478,7 +478,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+    background: linear-gradient(90deg, #2980b9, #1abc9c, #27ae60, #2980b9);
     background-size: 300% 100%;
     animation: shimmer 3s ease-in-out infinite reverse;
     z-index: 1;
@@ -495,20 +495,288 @@ body {
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.6), rgba(118, 75, 162, 0.6));
+    background: linear-gradient(135deg, rgba(41, 128, 185, 0.6), rgba(26, 188, 156, 0.6));
     border-radius: 10px;
     border: 2px solid transparent;
     background-clip: content-box;
 }
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+    background: linear-gradient(135deg, rgba(41, 128, 185, 0.8), rgba(26, 188, 156, 0.8));
     background-clip: content-box;
     border-radius: 3px;
 }
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
+}
+
+/* 下载面板样式 */
+.download-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.download-panel.show {
+    display: flex;
+}
+
+.download-content {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80%;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+}
+
+.download-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #2980b9 0%, #1abc9c 100%);
+    color: white;
+}
+
+.download-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.download-actions {
+    padding: 20px 25px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 10px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    color: #374151;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #2980b9 0%, #1abc9c 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.action-btn.primary:hover {
+    background: linear-gradient(135deg, #3498db 0%, #16a085 100%);
+}
+
+.files-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.loading-files {
+    padding: 40px 25px;
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.file-item {
+    padding: 15px 25px;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.file-item:hover {
+    background: #f9fafb;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-info {
+    flex: 1;
+}
+
+.file-name {
+    font-weight: 500;
+    color: #111827;
+    margin-bottom: 4px;
+    word-break: break-all;
+}
+
+.file-meta {
+    font-size: 12px;
+    color: #6b7280;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.file-type {
+    background: #e5e7eb;
+    color: #374151;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.file-type.raw {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.file-type.parsed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.download-btn {
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #2980b9 0%, #1abc9c 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.download-btn:hover {
+    background: linear-gradient(135deg, #3498db 0%, #16a085 100%);
+    transform: translateY(-1px);
+}
+
+.empty-state {
+    padding: 60px 25px;
+    text-align: center;
+    color: #6b7280;
+}
+
+.empty-state svg {
+    margin: 0 auto 15px;
+    opacity: 0.5;
+}
+
+.empty-state h4 {
+    margin-bottom: 8px;
+    color: #374151;
+}
+
+#downloadButton {
+    background: linear-gradient(135deg, #2980b9 0%, #1abc9c 50%, #27ae60 100%);
+    border: none;
+    border-radius: 20px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    margin-left: 12px;
+    box-shadow: 0 4px 15px rgba(41, 128, 185, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+#downloadButton:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(41, 128, 185, 0.4), 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #3498db 0%, #16a085 50%, #2ecc71 100%);
+}
+
+#downloadButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+#downloadButton:hover::before {
+    left: 100%;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* 响应式设计 */
@@ -540,5 +808,14 @@ body {
     
     .chat-input-container {
         padding: 16px;
+    }
+    
+    .download-panel {
+        width: 95%;
+        height: 90%;
+    }
+    
+    .download-content {
+        margin: 10px;
     }
 }

@@ -11,10 +11,12 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from pydantic import BaseModel
 import uvicorn
 from pathlib import Path
+import zipfile
+import tempfile
 
 load_dotenv()
 
@@ -218,6 +220,10 @@ class MCPWebClient:
                 return HTMLResponse(content=html_file.read_text(encoding='utf-8'))
             else:
                 return HTMLResponse(content="<h1>MCP Client Web Interface</h1><p>静态文件未找到</p>")
+                
+        @self.app.get("/debug")
+        async def debug_page():
+            return FileResponse("static/debug.html")
 
         @self.app.post("/api/chat", response_model=ChatResponse)
         async def chat_endpoint(request: ChatRequest):
@@ -241,6 +247,115 @@ class MCPWebClient:
                 "mcp_connected": self.session is not None,
                 "timestamp": datetime.datetime.now().isoformat()
             }
+
+        @self.app.get("/api/files")
+        async def list_crawled_files():
+            """获取所有爬取结果文件列表"""
+            try:
+                data_dir = Path("data")
+                files_info = []
+                
+                if data_dir.exists():
+                    # 获取raw文件
+                    raw_dir = data_dir / "raw"
+                    if raw_dir.exists():
+                        for file_path in raw_dir.glob("*.json"):
+                            files_info.append({
+                                "name": file_path.name,
+                                "type": "raw",
+                                "path": str(file_path),
+                                "size": file_path.stat().st_size,
+                                "modified": datetime.datetime.fromtimestamp(file_path.stat().st_mtime).isoformat()
+                            })
+                    
+                    # 获取parsed文件
+                    parsed_dir = data_dir / "parsed"
+                    if parsed_dir.exists():
+                        for file_path in parsed_dir.glob("*.json"):
+                            files_info.append({
+                                "name": file_path.name,
+                                "type": "parsed",
+                                "path": str(file_path),
+                                "size": file_path.stat().st_size,
+                                "modified": datetime.datetime.fromtimestamp(file_path.stat().st_mtime).isoformat()
+                            })
+                
+                # 按修改时间排序，最新的在前
+                files_info.sort(key=lambda x: x["modified"], reverse=True)
+                
+                return {
+                    "files": files_info,
+                    "total_count": len(files_info),
+                    "timestamp": datetime.datetime.now().isoformat()
+                }
+            except Exception as e:
+                print(f"❌ 获取文件列表时出错: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"获取文件列表失败: {str(e)}")
+
+        @self.app.get("/api/download/{file_type}/{file_name}")
+        async def download_file(file_type: str, file_name: str):
+            """下载单个文件"""
+            try:
+                if file_type not in ["raw", "parsed"]:
+                    raise HTTPException(status_code=400, detail="无效的文件类型")
+                
+                data_dir = Path("data")
+                file_path = data_dir / file_type / file_name
+                
+                if not file_path.exists():
+                    raise HTTPException(status_code=404, detail="文件不存在")
+                
+                return FileResponse(
+                    path=str(file_path),
+                    filename=file_name,
+                    media_type="application/json"
+                )
+            except HTTPException:
+                raise
+            except Exception as e:
+                print(f"❌ 下载文件时出错: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"下载文件失败: {str(e)}")
+
+        @self.app.get("/api/download-all")
+        async def download_all_files():
+            """下载所有爬取结果文件的压缩包"""
+            try:
+                data_dir = Path("data")
+                if not data_dir.exists():
+                    raise HTTPException(status_code=404, detail="没有找到爬取数据")
+                
+                # 创建临时zip文件
+                temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".zip")
+                temp_file.close()
+                
+                with zipfile.ZipFile(temp_file.name, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                    # 添加raw文件
+                    raw_dir = data_dir / "raw"
+                    if raw_dir.exists():
+                        for file_path in raw_dir.glob("*.json"):
+                            zipf.write(file_path, f"raw/{file_path.name}")
+                    
+                    # 添加parsed文件
+                    parsed_dir = data_dir / "parsed"
+                    if parsed_dir.exists():
+                        for file_path in parsed_dir.glob("*.json"):
+                            zipf.write(file_path, f"parsed/{file_path.name}")
+                
+                # 生成文件名
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"crawled_data_{timestamp}.zip"
+                
+                return FileResponse(
+                    path=temp_file.name,
+                    filename=filename,
+                    media_type="application/zip",
+                    background=lambda: Path(temp_file.name).unlink(missing_ok=True)  # 下载后删除临时文件
+                )
+            except HTTPException:
+                raise
+            except Exception as e:
+                print(f"❌ 创建压缩包时出错: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"创建压缩包失败: {str(e)}")
 
     async def cleanup(self):
         await self.exit_stack.aclose()
