@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Union
 from datetime import datetime
 import uuid
+import string
 
 # 配置日志
 logger = logging.getLogger(__name__)
@@ -37,6 +38,12 @@ class UniversalKnowledgeProcessor:
     def extract_knowledge(self, content: str, url: str = "", title: str = "", 
                          requirement_type: str = "", target_conversion_type: str = "") -> Dict:
         """从内容中提取通用知识库数据"""
+        
+        # 验证内容是否为有效文本
+        if not self._is_valid_text_content(content):
+            logger.warning(f"Content validation failed for URL: {url}. Content appears to be binary or corrupted.")
+            # 返回空的知识库结构
+            return self._create_empty_knowledge_base(url, title, requirement_type, target_conversion_type)
         
         # 生成唯一的知识库ID
         knowledge_id = f"kb_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
@@ -85,6 +92,84 @@ class UniversalKnowledgeProcessor:
         
         return knowledge_base
     
+    def _is_valid_text_content(self, content: str) -> bool:
+        """检查内容是否为有效的文本内容"""
+        if not content or not isinstance(content, str):
+            return False
+        
+        # 检查内容长度
+        if len(content) < 5:
+            return False
+        
+        # 检查是否包含常见的二进制数据标识
+        binary_indicators = ['\x00', '\xff', '\xfe']
+        if any(indicator in content for indicator in binary_indicators):
+            return False
+        
+        # 对于包含中文或基本ASCII字符的内容，放宽验证
+        has_chinese = any('\u4e00' <= c <= '\u9fff' for c in content)
+        has_ascii_text = any(c.isalpha() for c in content)
+        
+        if has_chinese or has_ascii_text:
+            return True
+        
+        # 计算可打印字符的比例（放宽标准）
+        printable_chars = sum(1 for c in content if c in string.printable or ord(c) > 127)
+        printable_ratio = printable_chars / len(content)
+        
+        # 降低可打印字符比例要求到50%
+        if printable_ratio < 0.5:
+            return False
+        
+        return True
+    
+    def _create_empty_knowledge_base(self, url: str = "", title: str = "", 
+                                   requirement_type: str = "", target_conversion_type: str = "") -> Dict:
+        """创建空的知识库结构，用于处理无效内容"""
+        knowledge_id = f"kb_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
+        
+        return {
+            "metadata": {
+                "knowledge_id": knowledge_id,
+                "title": title or "无效内容知识库",
+                "description": f"从 {url} 提取失败 - 内容为二进制或损坏数据",
+                "version": "1.0.0",
+                "created_time": datetime.now().isoformat(),
+                "updated_time": datetime.now().isoformat(),
+                "source_info": {
+                    "source_url": url,
+                    "source_type": "web_crawl",
+                    "crawl_time": datetime.now().isoformat(),
+                    "extraction_method": "内容验证失败",
+                    "reliability_score": 0.0,
+                    "error_reason": "内容为二进制数据或格式损坏"
+                }
+            },
+            "requirement_type": requirement_type,
+            "target_conversion_type": target_conversion_type,
+            "generation_knowledge": {
+                "concepts": [],
+                "rules": [],
+                "patterns": [],
+                "transformations": []
+            },
+            "validation_knowledge": {
+                "criteria": [],
+                "checklist": [],
+                "error_patterns": []
+            },
+            "examples": {
+                "input_examples": [],
+                "output_examples": [],
+                "transformation_examples": []
+            },
+            "relationships": {
+                "related_knowledge_bases": [],
+                "dependency_graph": {},
+                "cross_references": []
+            }
+        }
+    
     def _calculate_reliability_score(self, content: str) -> float:
         """计算内容可靠性评分"""
         score = 0.5  # 基础分
@@ -107,38 +192,115 @@ class UniversalKnowledgeProcessor:
     
     def _extract_concepts(self, content: str) -> List[Dict]:
         """提取概念定义"""
+        # 清理内容，移除JSON格式残留
+        cleaned_content = self._clean_content_for_extraction(content)
+        
+        # 如果清理后的内容太短或者看起来像JSON数据，跳过处理
+        if len(cleaned_content) < 50 or self._is_json_like_content(cleaned_content):
+            return []
+        
+        # 进一步过滤，只保留有意义的句子
+        meaningful_sentences = []
+        sentences = re.split(r'[.!?。！？\n]', cleaned_content)
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            # 跳过太短的句子
+            if len(sentence) < 15:
+                continue
+            # 跳过包含大量特殊字符的句子
+            special_char_count = sum(1 for c in sentence if c in '{}[]"\':,;')
+            if len(sentence) > 0 and special_char_count / len(sentence) > 0.1:
+                continue
+            # 跳过包含URL或JSON字段的句子
+            if any(keyword in sentence.lower() for keyword in ['http', 'www.', 'redirect_link', 'displayed_link', 'favicon', 'snippet_highlighted_words', 'organic_results', 'search_metadata']):
+                continue
+            # 跳过明显的JSON格式数据
+            if self._is_json_like_content(sentence):
+                continue
+            # 保留包含中文或有意义英文的句子
+            if any('\u4e00' <= c <= '\u9fff' for c in sentence) or (len(sentence) > 20 and any(c.isalpha() for c in sentence)):
+                meaningful_sentences.append(sentence)
+        
+        if len(meaningful_sentences) < 2:
+            return []
+        
         concepts = []
         patterns = self.extraction_config.get('concepts', {}).get('patterns', {})
         definition_indicators = patterns.get('definition_indicators', [])
         
-        # 查找定义模式
-        for indicator in definition_indicators:
-            pattern = rf'([^。！？\n]+){indicator}([^。！？\n]+)'
-            matches = re.findall(pattern, content)
-            
-            for i, (term, definition) in enumerate(matches):
+        # 添加更多概念关键词
+        concept_keywords = ['概念', '定义', '是指', '指的是', '意思是', '表示', '代表', '包括', '包含', '用于', '通过', '可以', '需要']
+        all_indicators = definition_indicators + concept_keywords
+        
+        for sentence in meaningful_sentences[:15]:  # 限制处理数量
+            if any(keyword in sentence for keyword in all_indicators) and len(sentence) > 20:
+                # 提取概念名称（通常在关键词前面）
+                concept_name = "未知概念"
+                for keyword in all_indicators:
+                    if keyword in sentence:
+                        parts = sentence.split(keyword)
+                        if len(parts) > 0 and len(parts[0].strip()) > 0:
+                            concept_name = parts[0].strip()[:30]  # 限制长度
+                        break
+                
                 concept_id = f"concept_{len(concepts) + 1:03d}"
                 concepts.append({
                     "concept_id": concept_id,
-                    "name": term.strip(),
-                    "definition": definition.strip(),
+                    "name": concept_name,
+                    "definition": sentence,
                     "category": "extracted",
                     "attributes": {},
                     "relationships": []
                 })
         
-        return concepts
+        return concepts[:8]  # 限制返回数量
     
     def _extract_rules(self, content: str) -> List[Dict]:
         """提取生成规则"""
+        # 清理内容，移除JSON格式残留
+        cleaned_content = self._clean_content_for_extraction(content)
+        
+        # 如果清理后的内容太短或者看起来像JSON数据，跳过处理
+        if len(cleaned_content) < 50 or self._is_json_like_content(cleaned_content):
+            return []
+        
+        # 进一步过滤，只保留有意义的句子
+        meaningful_sentences = []
+        sentences = re.split(r'[.!?。！？\n]', cleaned_content)
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            # 跳过太短的句子
+            if len(sentence) < 15:
+                continue
+            # 跳过包含大量特殊字符的句子
+            special_char_count = sum(1 for c in sentence if c in '{}[]"\':,;')
+            if len(sentence) > 0 and special_char_count / len(sentence) > 0.1:
+                continue
+            # 跳过包含URL或JSON字段的句子
+            if any(keyword in sentence.lower() for keyword in ['http', 'www.', 'redirect_link', 'displayed_link', 'favicon', 'snippet_highlighted_words', 'organic_results', 'search_metadata']):
+                continue
+            # 跳过明显的JSON格式数据
+            if self._is_json_like_content(sentence):
+                continue
+            # 保留包含中文或有意义英文的句子
+            if any('\u4e00' <= c <= '\u9fff' for c in sentence) or (len(sentence) > 20 and any(c.isalpha() for c in sentence)):
+                meaningful_sentences.append(sentence)
+        
+        if len(meaningful_sentences) < 2:
+            return []
+        
         rules = []
         patterns = self.extraction_config.get('rules', {}).get('patterns', {})
         rule_indicators = patterns.get('rule_indicators', [])
         
-        # 查找规则模式
-        sentences = re.split(r'[。！？\n]', content)
-        for sentence in sentences:
-            if any(indicator in sentence for indicator in rule_indicators):
+        # 添加更多规则关键词
+        rule_keywords = ['必须', '应该', '不能', '禁止', '要求', '规定', '限制', '约束', '条件', '如果', '当', '则']
+        all_indicators = rule_indicators + rule_keywords
+        
+        for sentence in meaningful_sentences[:10]:  # 限制处理数量
+            if any(keyword in sentence for keyword in all_indicators) and len(sentence) > 20:
                 rule_id = f"rule_{len(rules) + 1:03d}"
                 rules.append({
                     "rule_id": rule_id,
@@ -149,29 +311,74 @@ class UniversalKnowledgeProcessor:
                     "applicable_scenarios": ["general"]
                 })
         
-        return rules
+        return rules[:6]  # 限制返回数量
     
     def _extract_patterns(self, content: str) -> List[Dict]:
         """提取模式模板"""
+        # 清理内容，移除JSON格式残留
+        cleaned_content = self._clean_content_for_extraction(content)
+        
+        # 如果清理后的内容太短或者看起来像JSON数据，跳过处理
+        if len(cleaned_content) < 50 or self._is_json_like_content(cleaned_content):
+            return []
+        
+        # 进一步过滤，只保留有意义的句子
+        meaningful_sentences = []
+        sentences = re.split(r'[.!?。！？\n]', cleaned_content)
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            # 跳过太短的句子
+            if len(sentence) < 15:
+                continue
+            # 跳过包含大量特殊字符的句子
+            special_char_count = sum(1 for c in sentence if c in '{}[]"\':,;')
+            if len(sentence) > 0 and special_char_count / len(sentence) > 0.1:
+                continue
+            # 跳过包含URL或JSON字段的句子
+            if any(keyword in sentence.lower() for keyword in ['http', 'www.', 'redirect_link', 'displayed_link', 'favicon', 'snippet_highlighted_words', 'organic_results', 'search_metadata']):
+                continue
+            # 跳过明显的JSON格式数据
+            if self._is_json_like_content(sentence):
+                continue
+            # 保留包含中文或有意义英文的句子
+            if any('\u4e00' <= c <= '\u9fff' for c in sentence) or (len(sentence) > 20 and any(c.isalpha() for c in sentence)):
+                meaningful_sentences.append(sentence)
+        
+        if len(meaningful_sentences) < 2:
+            return []
+        
         patterns = []
         config_patterns = self.extraction_config.get('patterns', {})
         template_indicators = config_patterns.get('template_indicators', [])
         
+        # 添加更多模式关键词
+        pattern_keywords = ['模式', '模板', '格式', '结构', '框架', '样式', '方法', '流程', '步骤']
+        all_indicators = template_indicators + pattern_keywords
+        
         # 查找模板模式
-        sentences = re.split(r'[。！？\n]', content)
-        for sentence in sentences:
-            if any(indicator in sentence for indicator in template_indicators):
+        for sentence in meaningful_sentences[:8]:  # 限制处理数量
+            if any(indicator in sentence for indicator in all_indicators) and len(sentence) > 20:
+                # 提取模式名称
+                pattern_name = "未知模式"
+                for indicator in all_indicators:
+                    if indicator in sentence:
+                        parts = sentence.split(indicator)
+                        if len(parts) > 0 and len(parts[0].strip()) > 0:
+                            pattern_name = parts[0].strip()[:30]  # 限制长度
+                        break
+                
                 pattern_id = f"pattern_{len(patterns) + 1:03d}"
                 patterns.append({
                     "pattern_id": pattern_id,
-                    "name": f"模式{len(patterns) + 1}",
+                    "name": pattern_name,
                     "template": sentence.strip(),
                     "variables": {},
                     "usage_context": "通用场景",
                     "complexity_level": "medium"
                 })
         
-        return patterns
+        return patterns[:5]  # 限制返回数量
     
     def _extract_transformations(self, content: str) -> List[Dict]:
         """提取转换方法"""
@@ -179,12 +386,44 @@ class UniversalKnowledgeProcessor:
         patterns = self.extraction_config.get('transformations', {})
         step_indicators = patterns.get('step_indicators', [])
         
-        # 查找步骤模式
-        sentences = re.split(r'[。！？\n]', content)
-        current_steps = []
+        # 清理内容，移除可能的JSON格式残留
+        cleaned_content = self._clean_content_for_extraction(content)
+        
+        # 如果清理后的内容太短或者看起来像JSON数据，跳过处理
+        if len(cleaned_content) < 50 or self._is_json_like_content(cleaned_content):
+            return []
+        
+        # 进一步过滤，只保留有意义的句子
+        meaningful_sentences = []
+        sentences = re.split(r'[。！？\n]', cleaned_content)
         
         for sentence in sentences:
-            if any(indicator in sentence for indicator in step_indicators):
+            sentence = sentence.strip()
+            # 跳过太短的句子
+            if len(sentence) < 15:
+                continue
+            # 跳过包含大量特殊字符的句子
+            special_char_count = sum(1 for c in sentence if c in '{}[]"\':,;')
+            if len(sentence) > 0 and special_char_count / len(sentence) > 0.1:
+                continue
+            # 跳过包含URL或JSON字段的句子
+            if any(keyword in sentence.lower() for keyword in ['http', 'www.', 'redirect_link', 'displayed_link', 'favicon', 'snippet_highlighted_words']):
+                continue
+            # 跳过明显的JSON格式数据
+            if self._is_json_like_content(sentence):
+                continue
+            # 保留包含中文或有意义英文的句子
+            if any('\u4e00' <= c <= '\u9fff' for c in sentence) or (len(sentence) > 20 and any(c.isalpha() for c in sentence)):
+                meaningful_sentences.append(sentence)
+        
+        if len(meaningful_sentences) < 2:
+            return []
+        
+        # 查找步骤模式
+        current_steps = []
+        
+        for sentence in meaningful_sentences[:10]:  # 限制处理数量
+            if any(indicator in sentence for indicator in step_indicators) and len(sentence) > 20:
                 if current_steps:
                     transformation_id = f"transform_{len(transformations) + 1:03d}"
                     transformations.append({
@@ -197,7 +436,7 @@ class UniversalKnowledgeProcessor:
                     })
                     current_steps = []
                 current_steps.append(sentence.strip())
-            elif current_steps and sentence.strip():
+            elif current_steps and sentence.strip() and len(sentence) > 15:
                 current_steps.append(sentence.strip())
         
         # 处理最后一组步骤
@@ -212,7 +451,80 @@ class UniversalKnowledgeProcessor:
                 "preconditions": []
             })
         
-        return transformations
+        return transformations[:5]  # 限制返回数量
+    
+    def _clean_content_for_extraction(self, content: str) -> str:
+        """清理内容，移除JSON格式残留和特殊字符"""
+        # 首先尝试提取有意义的文本内容
+        meaningful_text = []
+        
+        # 按行分割内容
+        lines = content.split('\n')
+        for line in lines:
+            line = line.strip()
+            # 跳过空行
+            if not line:
+                continue
+            # 跳过明显的JSON数据行
+            if self._is_json_like_content(line):
+                continue
+            # 跳过URL行
+            if line.startswith('http') or 'www.' in line:
+                continue
+            # 跳过包含大量特殊字符的行
+            special_char_count = sum(1 for c in line if c in '{}[]"\':,;')
+            if len(line) > 0 and special_char_count / len(line) > 0.3:
+                continue
+            # 保留有意义的文本
+            if len(line) > 10 and any(c.isalpha() for c in line):
+                meaningful_text.append(line)
+        
+        # 合并有意义的文本
+        cleaned = ' '.join(meaningful_text)
+        
+        # 进一步清理
+        # 移除剩余的JSON结构标识
+        cleaned = re.sub(r'[{}\[\]"\']', ' ', cleaned)
+        # 移除多余的空白字符
+        cleaned = re.sub(r'\s+', ' ', cleaned)
+        # 移除URL编码
+        cleaned = re.sub(r'%[0-9A-Fa-f]{2}', ' ', cleaned)
+        # 移除常见的JSON字段名
+        cleaned = re.sub(r'\b(position|title|link|redirect_link|displayed_link|favicon|date|snippet|snippet_highlighted_words|source|search_metadata|search_parameters|organic_results|pagination)\b:?', ' ', cleaned)
+        
+        return cleaned.strip()
+    
+    def _is_json_like_content(self, text: str) -> bool:
+        """检测文本是否像JSON格式数据"""
+        if not text.strip():
+            return False
+        
+        text_lower = text.lower()
+        
+        # 检查是否包含明显的JSON字段名
+        json_fields = ['search_metadata', 'search_parameters', 'organic_results', 'pagination', 
+                      'redirect_link', 'displayed_link', 'favicon', 'serpapi', 'json_endpoint',
+                      'pixel_position_endpoint', 'created_at', 'processed_at', 'google_url',
+                      'raw_html_file', 'total_time_taken', 'query_displayed', 'total_results',
+                      'time_taken_displayed', 'organic_results_state', 'snippet_highlighted_words']
+        
+        if any(field in text_lower for field in json_fields):
+            return True
+        
+        # 检查是否包含大量JSON特征
+        json_indicators = ['{', '}', '[', ']', '":', "':", "'position':", '"position":']
+        indicator_count = sum(1 for indicator in json_indicators if indicator in text)
+        
+        # 检查特殊字符比例
+        special_chars = sum(1 for c in text if c in '{}[]"\':,;')
+        special_ratio = special_chars / len(text) if len(text) > 0 else 0
+        
+        # 如果特殊字符比例过高，认为是JSON数据
+        if special_ratio > 0.2:
+            return True
+            
+        # 如果包含多个JSON指示符，认为是JSON数据
+        return indicator_count >= 3 or (len(text) > 100 and indicator_count >= 2)
     
     def _extract_criteria(self, content: str) -> List[Dict]:
         """提取验证标准"""

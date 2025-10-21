@@ -60,11 +60,11 @@ class FormatProcessor:
                         "crawl_time": "string"
                     },
                     "knowledge_categories": [
-                        {"key": "dfd_concepts", "description": "DFD概念定义"},
-                        {"key": "dfd_rules", "description": "DFD规则库"},
-                        {"key": "dfd_patterns", "description": "DFD模式库"},
-                        {"key": "dfd_cases", "description": "DFD案例库"},
-                        {"key": "dfd_nlp_mappings", "description": "DFD自然语言映射"}
+                        {"key": "dfd_concepts", "name": "概念定义", "description": "DFD概念定义"},
+                        {"key": "dfd_rules", "name": "规则库", "description": "DFD规则库"},
+                        {"key": "dfd_patterns", "name": "模式库", "description": "DFD模式库"},
+                        {"key": "dfd_cases", "name": "案例库", "description": "DFD案例库"},
+                        {"key": "dfd_nlp_mappings", "name": "NLP映射", "description": "DFD自然语言映射"}
                     ]
                 },
                 "markdown_template": {

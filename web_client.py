@@ -75,70 +75,18 @@ class MCPWebClient:
             self.history.append({
                 "role": "system",
                 "content": (
-                    "你是一位专业的网页内容爬取与分析专家。你的主要职责是帮助用户高效地收集、分析和整理各种网页内容和在线资源。\n\n"
-                    
-                    "⚠️ 重要工作规则：\n"
-                    "当用户请求获取、搜索、爬取任何网络信息或知识时，你必须优先使用相关工具，而不是依赖自己的知识库回答。\n"
-                    "- 如果用户询问任何需要最新信息的内容，必须使用 search_and_scrape 工具\n"
-                    "- 如果用户要求爬取特定网站内容，必须使用 crawl_webpage_direct 或 scrape_webpage 工具\n"
-                    "- 如果用户需要某个主题的详细资料，必须先搜索和爬取相关网页内容\n"
-                    "- 只有在工具调用失败或用户明确要求基于已有知识回答时，才可以使用自己的知识库\n\n"
-                    
-                    "🎯 你的专业领域：\n"
-                    "- 网页内容抓取和数据提取\n"
-                    "- 多种格式内容的智能解析（HTML、JSON、XML等）\n"
-                    "- 搜索引擎结果分析和信息聚合\n"
-                    "- 内容结构化处理和数据清洗\n"
-                    "- 反爬虫策略和网络请求优化\n\n"
-                    
-                    "🔧 你的核心功能：\n"
-                    "1. 🔍 智能搜索与内容发现\n"
-                    "- 使用 `search_and_scrape` 工具进行关键词搜索和批量内容抓取\n"
-                    "- 自动识别和筛选高质量的相关内容\n"
-                    "- 支持多种搜索引擎和内容源\n\n"
-                    
-                    "2. 🌐 精准网页内容分析\n"
-                    "- 使用 `scrape_webpage` 工具深度解析目标网页（支持代理）\n"
-                    "- 使用 `crawl_webpage_direct` 工具直接爬取网页（无代理，适合CSDN等网站）\n"
-                    "- 提取文本、链接、图片、表格等各类内容元素\n"
-                    "- 智能识别页面结构和关键信息\n\n"
-                    
-                    "3. 🛡️ 高效反爬虫策略\n"
-                    "- 智能请求头设置和用户代理轮换\n"
-                    "- 合理的请求间隔和重试机制\n"
-                    "- 遵守robots.txt和网站使用条款\n"
-                    "- 支持代理服务和Tor网络（可选配置）\n\n"
-                    
-                    "4. 📊 内容结构化存储\n"
-                    "- 自动将爬取的内容整理成结构化的JSON格式\n"
-                    "- 包含标题、摘要、正文、来源链接等关键信息\n"
-                    "- 同时生成便于阅读的Markdown格式文档\n"
-                    "- 支持自定义数据格式和字段配置\n\n"
-                    
-                    "5. 💬 专业咨询服务\n"
-                    "- 为用户提供网页爬取策略建议\n"
-                    "- 解答关于内容分析和数据处理的问题\n"
-                    "- 协助优化爬取效率和数据质量\n"
-                    "- 提供技术方案和最佳实践指导\n\n"
-                    
-                    "🎯 适用场景：\n"
-                    "- 学术研究和资料收集\n"
-                    "- 市场调研和竞品分析\n"
-                    "- 新闻资讯和舆情监控\n"
-                    "- 技术文档和知识库构建\n"
-                    "- 电商数据和价格监控\n"
-                    "- 社交媒体内容分析\n\n"
-                    
-                    "工作原则：\n"
-                    "1. 优先使用工具获取最新、准确的网络信息，而非依赖内置知识\n"
-                    "2. 确保数据的结构化存储和便于后续处理\n"
-                    "3. 提供清晰、专业的分析结果和建议\n"
-                    "4. 严格遵循网络爬虫的最佳实践和道德规范\n"
-                    "5. 尊重网站版权和使用条款，合理控制访问频率\n"
+                    "你是一位专业的需求转换DFD知识提取专家。你的职责是从网页与在线资源中直接提取与DFD相关的有效知识（概念、原则、步骤、规则、示例），并结构化输出。\n\n"
+                    "工具使用规则：\n"
+                    "1) 任何涉及搜索、爬取、最新信息的请求，必须调用工具。\n"
+                    "2) 优先使用 `scrape_and_extract_universal` 直接抓取并提取；如需先批量发现内容，先用 `search_and_parse_universal` 找到高质量URL，再对每个URL调用 `scrape_and_extract_universal`；或用 `search_and_scrape` 后，必须用 `extract_universal_knowledge` 对抓取文本做提取。\n\n"
+                    "输出要求：\n"
+                    "- 只陈述知识点本身，避免“报道/文章/论文指出”等元描述。\n"
+                    "- 保持DFD视角与专业性，突出可用于需求到DFD转换的价值。\n"
+                    "- 结构化整理为：概念、原则/规则、步骤/方法、检查清单、示例。\n"
+                    "- 简洁直接，避免冗余与重复。\n\n"
+                    "禁止：在需要工具时直接根据内置知识回答。"
                 )
             })
-
-        # 添加用户消息到历史记录
         self.history.append({"role": "user", "content": query})
 
         messages = self.history.copy()
@@ -205,9 +153,19 @@ class MCPWebClient:
                 messages=messages
             )
             
-            final_content = final_response.choices[0].message.content
+            final_content = final_response.choices[0].message.content or ""
         else:
-            final_content = assistant_message.content
+            final_content = assistant_message.content or ""
+
+        # 当模型返回空内容时的兜底文案
+        if not isinstance(final_content, str):
+            final_content = str(final_content) if final_content is not None else ""
+        if not final_content.strip():
+            final_content = (
+                "这次没有生成文本回复。"
+                "如果你要进行‘搜索并爬取’，请直接输入：搜索并爬取 <关键词>，"
+                "或调用 /api/search_extract_universal 接口。"
+            )
 
         # 将最终回复加入历史记录
         self.history.append({"role": "assistant", "content": final_content})
@@ -246,6 +204,93 @@ class MCPWebClient:
             except Exception as e:
                 print(f"❌ 处理聊天请求时出错: {str(e)}")
                 raise HTTPException(status_code=500, detail=f"处理请求时出错: {str(e)}")
+
+        @self.app.post("/api/search_extract_universal")
+        async def search_extract_universal(request: Request):
+            try:
+                if not self.session:
+                    raise HTTPException(status_code=500, detail="MCP服务器未连接")
+                body = await request.json()
+                keyword = body.get("keyword")
+                if not keyword:
+                    raise HTTPException(status_code=400, detail="缺少keyword")
+                engine = body.get("engine", "google")
+                max_results = int(body.get("max_results", 10))
+                per_url_limit = int(body.get("per_url_limit", 3))
+                requirement_type = body.get("requirement_type", "需求分析")
+                target_conversion_type = body.get("target_conversion_type", "DFD图")
+                auto_save = bool(body.get("auto_save", True))
+
+                # 调用搜索解析工具
+                search_args = {"engine": engine, "keyword": keyword, "max_results": max_results}
+                search_res = await self.session.call_tool("search_and_parse_universal", search_args)
+                # 解析工具返回
+                try:
+                    dumped = [c.model_dump() for c in search_res.content]
+                    parsed_json = json.loads(dumped[0].get("text", dumped[0].get("content", "")))
+                except Exception as e:
+                    raise HTTPException(status_code=500, detail=f"解析搜索结果失败: {str(e)}")
+
+                parsed = parsed_json.get("parsed_response", {})
+                results = parsed.get("results", [])
+                urls = [item.get("url") for item in results if isinstance(item, dict) and item.get("url")]
+                urls = urls[:per_url_limit]
+
+                kb_list = []
+                saved_paths = []
+                for url in urls:
+                    try:
+                        extract_args = {
+                            "url": url,
+                            "requirement_type": requirement_type,
+                            "target_conversion_type": target_conversion_type,
+                            "auto_save": auto_save
+                        }
+                        extract_res = await self.session.call_tool("scrape_and_extract_universal", extract_args)
+                        dumped2 = [c.model_dump() for c in extract_res.content]
+                        result_text = dumped2[0].get("text", dumped2[0].get("content", ""))
+                        
+                        # 尝试解析JSON，如果失败则直接使用文本内容
+                        try:
+                            data2 = json.loads(result_text)
+                            if data2.get("success"):
+                                kb_list.append({
+                                    "url": data2.get("url"),
+                                    "title": data2.get("title"),
+                                    "knowledge_base": data2.get("knowledge_base")
+                                })
+                                if "saved_filepath" in data2:
+                                    saved_paths.append(data2["saved_filepath"])
+                            else:
+                                kb_list.append({"url": url, "error": data2.get("error", "提取失败")})
+                        except json.JSONDecodeError:
+                            # 如果不是JSON格式，说明是直接的文本内容
+                            if result_text.startswith("[ERROR]"):
+                                kb_list.append({"url": url, "error": result_text})
+                            else:
+                                # 成功提取的文本内容
+                                kb_list.append({
+                                    "url": url,
+                                    "title": f"从{url}提取的内容",
+                                    "content": result_text[:500] + "..." if len(result_text) > 500 else result_text
+                                })
+                    except Exception as e:
+                        kb_list.append({"url": url, "error": f"提取失败: {str(e)}"})
+
+                return JSONResponse({
+                    "success": True,
+                    "keyword": keyword,
+                    "engine": engine,
+                    "processed_urls": len(urls),
+                    "knowledge_bases": kb_list,
+                    "saved_filepaths": saved_paths,
+                    "timestamp": datetime.datetime.now().isoformat()
+                })
+            except HTTPException:
+                raise
+            except Exception as e:
+                print(f"❌ search_extract_universal 出错: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"处理失败: {str(e)}")
 
         @self.app.get("/api/health")
         async def health_check():

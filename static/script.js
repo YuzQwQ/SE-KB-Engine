@@ -95,8 +95,11 @@ class ChatInterface {
             
             const data = await response.json();
             
-            // 添加AI回复到界面
-            this.addMessage(data.response, 'assistant');
+            // 添加AI回复到界面（兜底处理空文本）
+            const assistantText = (data && typeof data.response === 'string' && data.response.trim().length > 0)
+                ? data.response
+                : '这次没有生成文本回复。如果你要进行“搜索并爬取”，请直接输入：搜索并爬取 <关键词>，或调用 /api/search_extract_universal 接口。';
+            this.addMessage(assistantText, 'assistant');
             
         } catch (error) {
             console.error('发送消息失败:', error);
