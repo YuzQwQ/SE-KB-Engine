@@ -9,7 +9,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from pydantic import BaseModel
@@ -17,6 +17,7 @@ import uvicorn
 from pathlib import Path
 import zipfile
 import tempfile
+import weakref
 
 load_dotenv()
 
@@ -44,10 +45,34 @@ class MCPWebClient:
         self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
         self.history = []
+        self.websocket_connections = weakref.WeakSet()
         
         # 初始化FastAPI应用
         self.app = FastAPI(title="MCP Client Web Interface", version="1.0.0")
         self.setup_routes()
+
+    async def send_log(self, log_type: str, message: str):
+        """向所有WebSocket连接发送日志消息"""
+        if not self.websocket_connections:
+            return
+        
+        log_data = {
+            "type": log_type,
+            "message": message,
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+        
+        # 创建连接副本以避免在迭代时修改集合
+        connections = list(self.websocket_connections)
+        for websocket in connections:
+            try:
+                await websocket.send_json(log_data)
+            except Exception as e:
+                # 连接已断开，从集合中移除
+                try:
+                    self.websocket_connections.discard(websocket)
+                except:
+                    pass
 
     async def connect_to_server(self, server_script_path: str):
         is_python = server_script_path.endswith('.py')
@@ -71,20 +96,22 @@ class MCPWebClient:
         print(f"✅ 已连接到服务器，可用工具: {[tool.name for tool in response.tools]}")
 
     async def process_query(self, query: str) -> str:
+        await self.send_log("info", f"收到用户查询: {query}")
+        
         if not self.history:
             self.history.append({
                 "role": "system",
                 "content": (
-                    "你是一位专业的需求转换DFD知识提取专家。你的职责是从网页与在线资源中直接提取与DFD相关的有效知识（概念、原则、步骤、规则、示例），并结构化输出。\n\n"
+                    "你是一位专业的需求转换DFD知识提取专家。\n\n"
                     "工具使用规则：\n"
                     "1) 任何涉及搜索、爬取、最新信息的请求，必须调用工具。\n"
-                    "2) 优先使用 `scrape_and_extract_universal` 直接抓取并提取；如需先批量发现内容，先用 `search_and_parse_universal` 找到高质量URL，再对每个URL调用 `scrape_and_extract_universal`；或用 `search_and_scrape` 后，必须用 `extract_universal_knowledge` 对抓取文本做提取。\n\n"
-                    "输出要求：\n"
-                    "- 只陈述知识点本身，避免“报道/文章/论文指出”等元描述。\n"
-                    "- 保持DFD视角与专业性，突出可用于需求到DFD转换的价值。\n"
-                    "- 结构化整理为：概念、原则/规则、步骤/方法、检查清单、示例。\n"
-                    "- 简洁直接，避免冗余与重复。\n\n"
-                    "禁止：在需要工具时直接根据内置知识回答。"
+                    "2) 优先使用 scrape_and_extract_universal 直接抓取并提取。\n\n"
+                    "回复要求：\n"
+                    "- 完成搜索爬取任务后，简要说明已完成的操作和获取的主要内容。\n"
+                    "- 提供核心知识点的结构化总结，包括概念、方法、步骤等。\n"
+                    "- 保持友好专业的语调，给出有价值的信息反馈。\n"
+                    "- 避免输出大量无效URL或格式错误的内容。\n"
+                    "- 简洁明了，突出重点，避免冗余。"
                 )
             })
         self.history.append({"role": "user", "content": query})
@@ -92,6 +119,7 @@ class MCPWebClient:
         messages = self.history.copy()
 
         # 获取当前支持的工具列表
+        await self.send_log("info", "获取可用工具列表...")
         tool_response = await self.session.list_tools()
         available_tools = [{
             "type": "function",
@@ -103,6 +131,7 @@ class MCPWebClient:
         } for tool in tool_response.tools]
 
         # 第一次调用 - 看模型想不想调用工具
+        await self.send_log("info", "正在分析查询并决定是否需要调用工具...")
         response = self.client.chat.completions.create(
             model=self.model,
             messages=messages,
@@ -119,28 +148,50 @@ class MCPWebClient:
 
         # 如果模型想调用工具
         if assistant_message.tool_calls:
+            await self.send_log("info", f"需要调用 {len(assistant_message.tool_calls)} 个工具")
             for tool_call in assistant_message.tool_calls:
                 function_name = tool_call.function.name
                 function_args = json.loads(tool_call.function.arguments)
 
-                print(f"🔧 调用工具: {function_name}")
-                print(f"📝 参数: {json.dumps(function_args, ensure_ascii=False, indent=2)}")
+                await self.send_log("search", f"🔧 调用工具: {function_name}")
+                await self.send_log("info", f"📝 参数: {json.dumps(function_args, ensure_ascii=False, indent=2)}")
 
                 try:
-                    # 调用MCP工具
-                    result = await self.session.call_tool(function_name, function_args)
+                    # 根据工具类型设置不同的超时时间
+                    if function_name in ['search_and_scrape', 'scrape_and_extract_universal', 'search_and_parse_universal']:
+                        timeout_seconds = 300.0  # 搜索爬取工具5分钟超时
+                        await self.send_log("warning", f"⏱️ 搜索爬取工具超时设置: {timeout_seconds/60:.1f}分钟")
+                    else:
+                        timeout_seconds = 120.0  # 其他工具2分钟超时
+                        await self.send_log("info", f"⏱️ 工具超时设置: {timeout_seconds}秒")
+                    
+                    await self.send_log("info", "🚀 开始执行工具...")
+                    # 调用MCP工具，设置超时时间
+                    result = await asyncio.wait_for(
+                        self.session.call_tool(function_name, function_args),
+                        timeout=timeout_seconds
+                    )
                     tool_result = json.dumps([content.model_dump() for content in result.content], ensure_ascii=False)
                     
-                    print(f"✅ 工具调用成功")
+                    await self.send_log("info", f"✅ 工具调用成功，返回数据长度: {len(tool_result)} 字符")
                     
                     messages.append({
                         "role": "tool",
                         "content": tool_result,
                         "tool_call_id": tool_call.id
                     })
+                except asyncio.TimeoutError:
+                    timeout_minutes = int(timeout_seconds / 60)
+                    error_message = f"⏰ 工具调用超时: {function_name} 执行时间超过{timeout_minutes}分钟，请尝试使用更具体的关键词或减少搜索范围"
+                    await self.send_log("error", error_message)
+                    messages.append({
+                        "role": "tool",
+                        "content": error_message,
+                        "tool_call_id": tool_call.id
+                    })
                 except Exception as e:
                     error_message = f"工具调用失败: {str(e)}"
-                    print(f"❌ {error_message}")
+                    await self.send_log("error", error_message)
                     messages.append({
                         "role": "tool",
                         "content": error_message,
@@ -148,14 +199,17 @@ class MCPWebClient:
                     })
 
             # 第二次调用 - 让模型处理工具结果
+            await self.send_log("info", "🤖 正在生成AI回复...")
             final_response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages
             )
             
             final_content = final_response.choices[0].message.content or ""
+            await self.send_log("info", f"✅ AI回复生成完成，长度: {len(final_content)} 字符")
         else:
             final_content = assistant_message.content or ""
+            await self.send_log("info", "💬 直接回复，无需调用工具")
 
         # 当模型返回空内容时的兜底文案
         if not isinstance(final_content, str):
@@ -190,17 +244,44 @@ class MCPWebClient:
         async def debug_page():
             return FileResponse("static/debug.html")
 
+        @self.app.websocket("/ws/logs")
+        async def websocket_logs(websocket: WebSocket):
+            await websocket.accept()
+            self.websocket_connections.add(websocket)
+            try:
+                # 发送连接成功消息
+                await self.send_log("system", "WebSocket连接已建立")
+                # 保持连接
+                while True:
+                    await websocket.receive_text()
+            except WebSocketDisconnect:
+                pass
+            except Exception as e:
+                print(f"WebSocket错误: {e}")
+            finally:
+                try:
+                    self.websocket_connections.discard(websocket)
+                except:
+                    pass
+
         @self.app.post("/api/chat", response_model=ChatResponse)
         async def chat_endpoint(request: ChatRequest):
             try:
                 if not self.session:
                     raise HTTPException(status_code=500, detail="MCP服务器未连接")
                 
-                response = await self.process_query(request.message)
+                # 为整个处理过程设置超时
+                response = await asyncio.wait_for(
+                    self.process_query(request.message),
+                    timeout=360.0  # 6分钟超时，为搜索爬取工具留出充足时间
+                )
                 return ChatResponse(
                     response=response,
                     timestamp=datetime.datetime.now().isoformat()
                 )
+            except asyncio.TimeoutError:
+                print(f"⏰ 聊天请求超时: 处理时间超过2.5分钟")
+                raise HTTPException(status_code=408, detail="请求处理超时，请稍后重试")
             except Exception as e:
                 print(f"❌ 处理聊天请求时出错: {str(e)}")
                 raise HTTPException(status_code=500, detail=f"处理请求时出错: {str(e)}")

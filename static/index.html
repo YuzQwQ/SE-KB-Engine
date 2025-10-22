@@ -14,15 +14,35 @@
             <p>AI 智能对话助手</p>
         </header>
         
-        <div class="chat-container">
-            <div class="chat-messages" id="chatMessages">
-                <div class="message assistant">
-                    <div class="message-content">
-                        <div class="message-text">您好！我是您的AI助手，有什么可以帮助您的吗？</div>
-                        <div class="message-time">刚刚</div>
+        <div class="main-content">
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message assistant">
+                        <div class="message-content">
+                            <div class="message-text">您好！我是您的AI助手，有什么可以帮助您的吗？</div>
+                            <div class="message-time">刚刚</div>
+                        </div>
                     </div>
                 </div>
             </div>
+            
+            <!-- 实时日志面板 -->
+            <div class="log-panel" id="logPanel">
+                <div class="log-header">
+                    <h3>实时日志</h3>
+                    <div class="log-controls">
+                        <button id="clearLogsBtn" class="log-btn">清空</button>
+                        <button id="toggleLogsBtn" class="log-btn">隐藏</button>
+                    </div>
+                </div>
+                <div class="log-content" id="logContent">
+                    <div class="log-entry system">
+                        <span class="log-time">[刚刚]</span>
+                        <span class="log-message">系统已启动，等待用户输入...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
             
             <div class="chat-input-container">
                 <div class="input-wrapper">

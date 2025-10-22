@@ -102,11 +102,134 @@ body {
     z-index: 2;
 }
 
+.main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
 .chat-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    border-right: 1px solid rgba(41, 128, 185, 0.2);
+}
+
+/* 日志面板样式 */
+.log-panel {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(248, 249, 250, 0.95);
+    border-left: 1px solid rgba(41, 128, 185, 0.2);
+}
+
+.log-header {
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.log-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.log-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.log-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.log-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.log-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.log-entry {
+    margin-bottom: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border-left: 3px solid;
+    background: rgba(255, 255, 255, 0.7);
+    animation: fadeInLog 0.3s ease;
+}
+
+@keyframes fadeInLog {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.log-entry.system {
+    border-left-color: #3498db;
+    background: rgba(52, 152, 219, 0.1);
+}
+
+.log-entry.info {
+    border-left-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.1);
+}
+
+.log-entry.warning {
+    border-left-color: #f39c12;
+    background: rgba(243, 156, 18, 0.1);
+}
+
+.log-entry.error {
+    border-left-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.log-entry.search {
+    border-left-color: #9b59b6;
+    background: rgba(155, 89, 182, 0.1);
+}
+
+.log-time {
+    color: #7f8c8d;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.log-message {
+    color: #2c3e50;
+}
+
+.log-panel.hidden {
+    width: 0;
+    overflow: hidden;
+    border: none;
 }
 
 .chat-messages {

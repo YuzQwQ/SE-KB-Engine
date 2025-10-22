@@ -9,9 +9,17 @@ class ChatInterface {
         this.downloadPanel = document.getElementById('downloadPanel');
         this.filesList = document.getElementById('filesList');
         
+        // 日志相关元素
+        this.logPanel = document.getElementById('logPanel');
+        this.logContent = document.getElementById('logContent');
+        this.clearLogsBtn = document.getElementById('clearLogsBtn');
+        this.toggleLogsBtn = document.getElementById('toggleLogsBtn');
+        
         this.initEventListeners();
         this.autoResizeTextarea();
         this.initDownloadFeature();
+        this.initLogFeature();
+        this.initWebSocket();
     }
     
     initEventListeners() {
@@ -67,6 +75,9 @@ class ChatInterface {
         const message = this.messageInput.value.trim();
         if (!message) return;
         
+        // 记录用户输入
+        this.addLog(`用户输入: ${message}`, 'info');
+        
         // 添加用户消息到界面
         this.addMessage(message, 'user');
         
@@ -78,9 +89,11 @@ class ChatInterface {
         
         // 显示加载状态
         this.showLoading();
+        this.addLog('正在发送请求到后端...', 'system');
         
         try {
             // 发送请求到后端
+            this.addLog('开始搜索和处理...', 'search');
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
@@ -93,19 +106,23 @@ class ChatInterface {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
+            this.addLog('收到后端响应，正在解析...', 'system');
             const data = await response.json();
             
             // 添加AI回复到界面（兜底处理空文本）
             const assistantText = (data && typeof data.response === 'string' && data.response.trim().length > 0)
                 ? data.response
-                : '这次没有生成文本回复。如果你要进行“搜索并爬取”，请直接输入：搜索并爬取 <关键词>，或调用 /api/search_extract_universal 接口。';
+                : '这次没有生成文本回复。如果你要进行"搜索并爬取"，请直接输入：搜索并爬取 <关键词>，或调用 /api/search_extract_universal 接口。';
             this.addMessage(assistantText, 'assistant');
+            this.addLog('AI回复已生成并显示', 'info');
             
         } catch (error) {
             console.error('发送消息失败:', error);
+            this.addLog(`请求失败: ${error.message}`, 'error');
             this.addMessage('抱歉，发生了错误，请稍后重试。', 'assistant', true);
         } finally {
             this.hideLoading();
+            this.addLog('请求处理完成', 'system');
         }
     }
     
@@ -338,6 +355,124 @@ class ChatInterface {
             const button = document.getElementById('downloadAll');
             button.innerHTML = originalText;
             button.disabled = false;
+        }
+    }
+    
+    // 日志功能
+    initLogFeature() {
+        // 清空日志按钮
+        this.clearLogsBtn.addEventListener('click', () => {
+            this.clearLogs();
+        });
+        
+        // 切换日志面板显示/隐藏
+        this.toggleLogsBtn.addEventListener('click', () => {
+            this.toggleLogPanel();
+        });
+        
+        // 初始化日志
+        this.addLog('系统已启动，等待用户输入...', 'system');
+    }
+    
+    addLog(type, message, customTimestamp = null) {
+        const logEntry = document.createElement('div');
+        logEntry.className = `log-entry ${type}`;
+        
+        let time;
+        if (customTimestamp) {
+            // 如果提供了自定义时间戳，解析并格式化
+            const date = new Date(customTimestamp);
+            time = date.toLocaleTimeString('zh-CN', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        } else {
+            time = new Date().toLocaleTimeString('zh-CN', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+        
+        logEntry.innerHTML = `
+            <span class="log-time">[${time}]</span>
+            <span class="log-message">${this.escapeHtml(message)}</span>
+        `;
+        
+        this.logContent.appendChild(logEntry);
+        
+        // 自动滚动到底部
+        this.logContent.scrollTop = this.logContent.scrollHeight;
+        
+        // 限制日志条数，避免内存占用过多
+        const maxLogs = 500;
+        const logs = this.logContent.children;
+        if (logs.length > maxLogs) {
+            this.logContent.removeChild(logs[0]);
+        }
+    }
+    
+    clearLogs() {
+        this.logContent.innerHTML = '';
+        this.addLog('日志已清空', 'system');
+    }
+    
+    toggleLogPanel() {
+        const isHidden = this.logPanel.classList.contains('hidden');
+        
+        if (isHidden) {
+            this.logPanel.classList.remove('hidden');
+            this.toggleLogsBtn.textContent = '隐藏';
+        } else {
+            this.logPanel.classList.add('hidden');
+            this.toggleLogsBtn.textContent = '显示';
+        }
+    }
+
+    initWebSocket() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/ws/logs`;
+        
+        this.connectWebSocket(wsUrl);
+    }
+
+    connectWebSocket(wsUrl) {
+        try {
+            this.websocket = new WebSocket(wsUrl);
+            
+            this.websocket.onopen = () => {
+                this.addLog('system', 'WebSocket连接已建立');
+                console.log('WebSocket连接已建立');
+            };
+            
+            this.websocket.onmessage = (event) => {
+                try {
+                    const logData = JSON.parse(event.data);
+                    this.addLog(logData.type, logData.message, logData.timestamp);
+                } catch (e) {
+                    console.error('解析WebSocket消息失败:', e);
+                }
+            };
+            
+            this.websocket.onclose = () => {
+                this.addLog('warning', 'WebSocket连接已断开，尝试重连...');
+                console.log('WebSocket连接已断开，尝试重连...');
+                // 3秒后尝试重连
+                setTimeout(() => {
+                    this.connectWebSocket(wsUrl);
+                }, 3000);
+            };
+            
+            this.websocket.onerror = (error) => {
+                this.addLog('error', 'WebSocket连接错误');
+                console.error('WebSocket错误:', error);
+            };
+        } catch (e) {
+            this.addLog('error', 'WebSocket初始化失败');
+            console.error('WebSocket初始化失败:', e);
         }
     }
 }

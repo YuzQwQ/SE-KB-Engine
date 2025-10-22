@@ -144,7 +144,7 @@ class CrawlerFramework:
         params.update(kwargs)
         
         # 发送请求
-        response = requests.get(config["base_url"], params=params, timeout=30)
+        response = requests.get(config["base_url"], params=params, timeout=120)
         response.raise_for_status()
         
         logger = logging.getLogger(__name__)

@@ -50,7 +50,7 @@ class WebpageCrawler:
         self.session = requests.Session()
         self.session.headers.update(self.headers)
         
-    def fetch_webpage(self, url: str, timeout: int = 30, retry_times: int = 3) -> Dict[str, Any]:
+    def fetch_webpage(self, url: str, timeout: int = 120, retry_times: int = 3) -> Dict[str, Any]:
         """获取网页内容
         
         Args:
