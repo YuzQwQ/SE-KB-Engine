@@ -159,11 +159,11 @@ class MCPWebClient:
                 try:
                     # 根据工具类型设置不同的超时时间
                     if function_name in ['search_and_scrape', 'scrape_and_extract_universal', 'search_and_parse_universal']:
-                        timeout_seconds = 300.0  # 搜索爬取工具5分钟超时
-                        await self.send_log("warning", f"⏱️ 搜索爬取工具超时设置: {timeout_seconds/60:.1f}分钟")
+                        timeout_seconds = 3600.0  # 搜索爬取工具1小时超时
+                        await self.send_log("warning", f"⏱️ 搜索爬取工具超时设置: {timeout_seconds/60:.0f}分钟")
                     else:
-                        timeout_seconds = 120.0  # 其他工具2分钟超时
-                        await self.send_log("info", f"⏱️ 工具超时设置: {timeout_seconds}秒")
+                        timeout_seconds = 1800.0  # 其他工具30分钟超时
+                        await self.send_log("info", f"⏱️ 工具超时设置: {timeout_seconds/60:.0f}分钟")
                     
                     await self.send_log("info", "🚀 开始执行工具...")
                     # 调用MCP工具，设置超时时间
@@ -273,14 +273,14 @@ class MCPWebClient:
                 # 为整个处理过程设置超时
                 response = await asyncio.wait_for(
                     self.process_query(request.message),
-                    timeout=360.0  # 6分钟超时，为搜索爬取工具留出充足时间
+                    timeout=7200.0  # 2小时超时，基本移除时间限制
                 )
                 return ChatResponse(
                     response=response,
                     timestamp=datetime.datetime.now().isoformat()
                 )
             except asyncio.TimeoutError:
-                print(f"⏰ 聊天请求超时: 处理时间超过2.5分钟")
+                print(f"⏰ 聊天请求超时: 处理时间超过2小时")
                 raise HTTPException(status_code=408, detail="请求处理超时，请稍后重试")
             except Exception as e:
                 print(f"❌ 处理聊天请求时出错: {str(e)}")
