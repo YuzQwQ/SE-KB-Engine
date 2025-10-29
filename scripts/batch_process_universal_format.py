@@ -15,6 +15,7 @@ import base64
 import re
 import logging
 from datetime import datetime
+import hashlib
 
 # 添加项目根目录到Python路径
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,6 +25,7 @@ sys.path.append('.')
 from universal_knowledge_processor import UniversalKnowledgeProcessor
 sys.path.append(project_root)
 from server import save_to_knowledge_base
+from utils.simhash_deduplication import get_simhash_instance, calculate_file_simhash, check_file_similarity
 
 # 配置日志
 logging.basicConfig(
@@ -35,6 +37,96 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
+# 处理记录文件
+PROCESSED_RECORD_FILE = 'processed_files_record.json'
+
+def load_processed_record():
+    """加载已处理文件记录"""
+    if os.path.exists(PROCESSED_RECORD_FILE):
+        try:
+            with open(PROCESSED_RECORD_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning(f"加载处理记录失败: {e}")
+    return {}
+
+def save_processed_record(record):
+    """保存已处理文件记录"""
+    try:
+        with open(PROCESSED_RECORD_FILE, 'w', encoding='utf-8') as f:
+            json.dump(record, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        logger.error(f"保存处理记录失败: {e}")
+
+def get_file_hash(file_path):
+    """计算文件的MD5哈希值"""
+    hash_md5 = hashlib.md5()
+    try:
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
+    except Exception as e:
+        logger.error(f"计算文件哈希失败 {file_path}: {e}")
+        return None
+
+def is_file_processed(file_path, processed_record):
+    """检查文件是否已经处理过（支持MD5和SimHash双重检测）"""
+    file_path_str = str(file_path)
+    file_hash = get_file_hash(file_path)
+    
+    if not file_hash:
+        return False
+    
+    # 1. 精确匹配检查（MD5哈希）
+    if file_path_str in processed_record:
+        recorded_hash = processed_record[file_path_str].get('hash')
+        if recorded_hash == file_hash:
+            logger.info(f"文件已处理过（精确匹配），跳过: {file_path.name}")
+            return True
+        else:
+            logger.info(f"文件已修改，重新处理: {file_path.name}")
+    
+    # 2. 相似度检查（SimHash）
+    try:
+        # 提取所有已处理文件的SimHash值
+        processed_simhashes = {}
+        for processed_file, record_data in processed_record.items():
+            simhash_value = record_data.get('simhash')
+            if simhash_value is not None:
+                processed_simhashes[processed_file] = simhash_value
+        
+        if processed_simhashes:
+            is_similar, similar_file, similarity = check_file_similarity(file_path_str, processed_simhashes)
+            if is_similar:
+                logger.info(f"发现相似文件，跳过: {file_path.name} (与 {os.path.basename(similar_file)} 相似度: {similarity:.3f})")
+                return True
+    
+    except Exception as e:
+        logger.warning(f"SimHash相似度检查失败: {e}")
+    
+    return False
+
+def mark_file_processed(file_path, processed_record):
+    """标记文件为已处理（包含MD5和SimHash）"""
+    file_path_str = str(file_path)
+    file_hash = get_file_hash(file_path)
+    
+    if file_hash:
+        # 计算SimHash值
+        simhash_value = None
+        try:
+            simhash_value = calculate_file_simhash(file_path_str)
+        except Exception as e:
+            logger.warning(f"计算SimHash失败 {file_path.name}: {e}")
+        
+        processed_record[file_path_str] = {
+            'hash': file_hash,
+            'simhash': simhash_value,
+            'processed_time': datetime.now().isoformat(),
+            'file_size': os.path.getsize(file_path)
+        }
 
 def decompress_content(content_data):
     """
@@ -70,7 +162,7 @@ def decompress_content(content_data):
                         binary_data = clean_data.encode('latin-1')
                         decompressed = brotli.decompress(binary_data)
                         result = decompressed.decode('utf-8', errors='ignore')
-                        logger.info(f"✅ 使用Brotli成功解压缩，结果长度: {len(result)} 字符")
+                        logger.info(f"[SUCCESS] 使用Brotli成功解压缩，结果长度: {len(result)} 字符")
                         return result
                     except Exception as e:
                         logger.warning(f"Brotli解压缩失败: {e}")
@@ -82,7 +174,7 @@ def decompress_content(content_data):
                         decoded = base64.b64decode(content_data.replace('\\x', '').replace('[', '').replace(']', ''))
                         decompressed = brotli.decompress(decoded)
                         result = decompressed.decode('utf-8', errors='ignore')
-                        logger.info(f"✅ 使用base64+Brotli成功解压缩，结果长度: {len(result)} 字符")
+                        logger.info(f"[SUCCESS] 使用base64+Brotli成功解压缩，结果长度: {len(result)} 字符")
                         return result
                 except Exception as e:
                     logger.debug(f"base64+Brotli解压缩失败: {e}")
@@ -115,7 +207,7 @@ def decompress_content(content_data):
             try:
                 result = method(content_data)
                 if result and is_valid_text_content(result):
-                    logger.info(f"✅ 使用 {method_name} 成功解压缩，结果长度: {len(result)} 字符")
+                    logger.info(f"[SUCCESS] 使用 {method_name} 成功解压缩，结果长度: {len(result)} 字符")
                     return result
                 else:
                     logger.debug(f"使用 {method_name} 解压缩成功但内容无效")
@@ -239,7 +331,7 @@ def process_json_file(file_path, processor):
                 if decompressed_content and is_valid_text_content(decompressed_content):
                     content = decompressed_content
                     source_url = data['raw_data'].get('url', 'unknown')
-                    print(f"✅ 成功解压缩内容，长度: {len(content)} 字符")
+                    print(f"[SUCCESS] 成功解压缩内容，长度: {len(content)} 字符")
                 else:
                     # 如果解压缩失败，尝试使用parsed_data
                     if 'parsed_data' in data and 'content' in data['parsed_data']:
@@ -248,7 +340,7 @@ def process_json_file(file_path, processor):
                         if decompressed_parsed and is_valid_text_content(decompressed_parsed):
                             content = decompressed_parsed
                             source_url = data['parsed_data'].get('url', data['raw_data'].get('url', 'unknown'))
-                            print(f"✅ 从parsed_data成功解压缩内容，长度: {len(content)} 字符")
+                            print(f"[SUCCESS] 从parsed_data成功解压缩内容，长度: {len(content)} 字符")
                         else:
                             logger.warning(f"无法解压缩内容，跳过文件: {file_name}")
                             return None
@@ -282,9 +374,9 @@ def process_json_file(file_path, processor):
             logger.warning(f"文件 {file_path} 内容为空，跳过处理")
             return None
         
-        logger.info(f"📄 处理文件: {file_name}")
-        logger.info(f"📝 内容长度: {len(content)} 字符")
-        logger.info(f"📝 内容预览: {content[:200]}...")
+        logger.info(f"[FILE] 处理文件: {file_name}")
+        logger.info(f"[INFO] 内容长度: {len(content)} 字符")
+        logger.info(f"[INFO] 内容预览: {content[:200]}...")
         
         # 如果内容过长，截取前面部分以提高处理速度
         if len(content) > 50000:
@@ -323,8 +415,8 @@ def process_json_file(file_path, processor):
             result = processor.save_knowledge_base(
                 knowledge_base=knowledge_base
             )
-            logger.info(f"💾 保存结果: {result}")
-            logger.info(f"✅ 成功处理文件: {file_name}")
+            logger.info(f"[SAVE] 保存结果: {result}")
+            logger.info(f"[SUCCESS] 成功处理文件: {file_name}")
             return result
         except Exception as save_error:
             logger.error(f"保存知识库时出错: {save_error}")
@@ -345,57 +437,81 @@ def main():
     """
     批量处理原始数据目录中的所有JSON文件
     """
+    # 加载已处理文件记录
+    processed_record = load_processed_record()
+    logger.info(f"加载已处理文件记录: {len(processed_record)} 个文件")
+    
     # 初始化通用知识处理器
     processor = UniversalKnowledgeProcessor()
-    print(f"✅ 初始化通用知识处理器成功")
+    print(f"[SUCCESS] 初始化通用知识处理器成功")
     
     # 原始数据目录
     raw_data_dir = Path('data/raw')
     
     if not raw_data_dir.exists():
-        print(f"❌ 原始数据目录不存在: {raw_data_dir}")
+        print(f"[ERROR] 原始数据目录不存在: {raw_data_dir}")
         return
     
-    print(f"📂 开始处理目录: {raw_data_dir}")
+    print(f"[INFO] 开始处理目录: {raw_data_dir}")
     
     # 统计信息
     total_files = 0
     processed_files = 0
     failed_files = 0
+    skipped_files = 0
     
     # 遍历所有JSON文件
     json_files = list(raw_data_dir.rglob('*.json'))
-    print(f"📊 找到 {len(json_files)} 个JSON文件待处理")
+    print(f"[INFO] 找到 {len(json_files)} 个JSON文件待处理")
     
     for json_file in json_files:
         total_files += 1
         print(f"\n{'='*50}")
-        print(f"📁 处理第 {total_files} 个文件: {json_file.name}")
+        print(f"[INFO] 处理第 {total_files} 个文件: {json_file.name}")
+        
+        # 检查是否已处理过
+        if is_file_processed(json_file, processed_record):
+            skipped_files += 1
+            continue
         
         result = process_json_file(json_file, processor)
         
         if result:
             processed_files += 1
+            # 标记为已处理
+            mark_file_processed(json_file, processed_record)
         else:
             failed_files += 1
     
+    # 保存处理记录
+    save_processed_record(processed_record)
+    
     # 输出统计结果
     print(f"\n{'='*60}")
-    print(f"🎯 批量处理完成!")
-    print(f"📊 总文件数: {total_files}")
-    print(f"✅ 成功处理: {processed_files}")
-    print(f"❌ 处理失败: {failed_files}")
-    print(f"📈 成功率: {processed_files/total_files*100:.1f}%" if total_files > 0 else "📈 成功率: 0%")
+    print(f"[SUCCESS] 批量处理完成!")
+    print(f"[INFO] 总文件数: {total_files}")
+    print(f"[SUCCESS] 成功处理: {processed_files}")
+    print(f"[INFO] 跳过文件: {skipped_files}")
+    print(f"[ERROR] 处理失败: {failed_files}")
+    print(f"[INFO] 成功率: {processed_files/(total_files-skipped_files)*100:.1f}%" if (total_files-skipped_files) > 0 else "[INFO] 成功率: 0%")
     
     # 检查生成的知识库文件
     kb_dir = Path('shared_data/knowledge_base')
     if kb_dir.exists():
-        kb_files = list(kb_dir.glob('*.json'))
-        print(f"\n📚 知识库文件数量: {len(kb_files)}")
-        for kb_file in kb_files[:10]:  # 只显示前10个文件
-            print(f"  📄 {kb_file.name}")
-        if len(kb_files) > 10:
-            print(f"  ... 还有 {len(kb_files) - 10} 个文件")
+        kb_files = list(kb_dir.rglob('*.json'))
+        print(f"\n[INFO] 知识库文件数量: {len(kb_files)}")
+        
+        # 按分类统计
+        categories = {}
+        for kb_file in kb_files:
+            category = kb_file.parent.name
+            if category not in categories:
+                categories[category] = 0
+            categories[category] += 1
+        
+        print(f"[INFO] 按分类统计:")
+        for category, count in categories.items():
+            print(f"  {category}: {count} 个文件")
 
 if __name__ == "__main__":
     main()

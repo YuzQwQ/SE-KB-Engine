@@ -74,6 +74,38 @@ class MCPWebClient:
                 except:
                     pass
 
+    async def parse_and_send_step_feedback(self, feedback_text: str):
+        """解析分步骤的反馈信息并实时发送"""
+        lines = feedback_text.split('\n')
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+                
+            # 根据内容确定日志类型
+            if line.startswith('🔍') or line.startswith('📋') or line.startswith('🕷️') or line.startswith('📊') or line.startswith('🔄'):
+                # 步骤标题
+                await self.send_log("search", line)
+            elif line.startswith('✅'):
+                # 成功信息
+                await self.send_log("info", line)
+            elif line.startswith('❌'):
+                # 错误信息
+                await self.send_log("error", line)
+            elif line.startswith('⚠️'):
+                # 警告信息
+                await self.send_log("warning", line)
+            elif line.startswith('🎉'):
+                # 完成信息
+                await self.send_log("info", line)
+            else:
+                # 普通信息
+                await self.send_log("info", line)
+            
+            # 添加小延迟以模拟实时效果
+            await asyncio.sleep(0.1)
+
     async def connect_to_server(self, server_script_path: str):
         is_python = server_script_path.endswith('.py')
         is_js = server_script_path.endswith('.js')
@@ -105,7 +137,8 @@ class MCPWebClient:
                     "你是一位专业的需求转换DFD知识提取专家。\n\n"
                     "工具使用规则：\n"
                     "1) 任何涉及搜索、爬取、最新信息的请求，必须调用工具。\n"
-                    "2) 优先使用 scrape_and_extract_universal 直接抓取并提取。\n\n"
+                    "2) 使用 search_and_parse_universal 进行一站式搜索、解析和内容提取。\n"
+                    "3) 根据需要设置 extract_content 参数控制是否进行内容提取。\n\n"
                     "回复要求：\n"
                     "- 完成搜索爬取任务后，简要说明已完成的操作和获取的主要内容。\n"
                     "- 提供核心知识点的结构化总结，包括概念、方法、步骤等。\n"
@@ -158,7 +191,7 @@ class MCPWebClient:
 
                 try:
                     # 根据工具类型设置不同的超时时间
-                    if function_name in ['search_and_scrape', 'scrape_and_extract_universal', 'search_and_parse_universal']:
+                    if function_name in ['search_and_scrape', 'search_and_parse_universal']:
                         timeout_seconds = 3600.0  # 搜索爬取工具1小时超时
                         await self.send_log("warning", f"⏱️ 搜索爬取工具超时设置: {timeout_seconds/60:.0f}分钟")
                     else:
@@ -166,12 +199,25 @@ class MCPWebClient:
                         await self.send_log("info", f"⏱️ 工具超时设置: {timeout_seconds/60:.0f}分钟")
                     
                     await self.send_log("info", "🚀 开始执行工具...")
+                    
                     # 调用MCP工具，设置超时时间
                     result = await asyncio.wait_for(
                         self.session.call_tool(function_name, function_args),
                         timeout=timeout_seconds
                     )
                     tool_result = json.dumps([content.model_dump() for content in result.content], ensure_ascii=False)
+                    
+                    # 显示工具的详细反馈信息
+                    if result.content and len(result.content) > 0:
+                        for content in result.content:
+                            if hasattr(content, 'text') and content.text:
+                                # 检查是否是分步骤的反馈信息
+                                if function_name in ['search_and_scrape', 'search_and_scrape_realtime']:
+                                    # 解析分步骤的反馈并实时发送
+                                    await self.parse_and_send_step_feedback(content.text)
+                                else:
+                                    # 将工具返回的文本内容作为日志发送
+                                    await self.send_log("info", content.text)
                     
                     await self.send_log("info", f"✅ 工具调用成功，返回数据长度: {len(tool_result)} 字符")
                     
@@ -302,9 +348,18 @@ class MCPWebClient:
                 target_conversion_type = body.get("target_conversion_type", "DFD图")
                 auto_save = bool(body.get("auto_save", True))
 
-                # 调用搜索解析工具
-                search_args = {"engine": engine, "keyword": keyword, "max_results": max_results}
+                # 调用增强的搜索解析工具，一次性完成搜索和内容提取
+                search_args = {
+                    "engine": engine, 
+                    "keyword": keyword, 
+                    "max_results": max_results,
+                    "extract_content": True,
+                    "requirement_type": requirement_type,
+                    "target_conversion_type": target_conversion_type,
+                    "auto_save": auto_save
+                }
                 search_res = await self.session.call_tool("search_and_parse_universal", search_args)
+                
                 # 解析工具返回
                 try:
                     dumped = [c.model_dump() for c in search_res.content]
@@ -312,57 +367,43 @@ class MCPWebClient:
                 except Exception as e:
                     raise HTTPException(status_code=500, detail=f"解析搜索结果失败: {str(e)}")
 
-                parsed = parsed_json.get("parsed_response", {})
-                results = parsed.get("results", [])
-                urls = [item.get("url") for item in results if isinstance(item, dict) and item.get("url")]
-                urls = urls[:per_url_limit]
-
+                # 从增强工具的返回结果中提取知识库数据
                 kb_list = []
                 saved_paths = []
-                for url in urls:
-                    try:
-                        extract_args = {
-                            "url": url,
-                            "requirement_type": requirement_type,
-                            "target_conversion_type": target_conversion_type,
-                            "auto_save": auto_save
-                        }
-                        extract_res = await self.session.call_tool("scrape_and_extract_universal", extract_args)
-                        dumped2 = [c.model_dump() for c in extract_res.content]
-                        result_text = dumped2[0].get("text", dumped2[0].get("content", ""))
-                        
-                        # 尝试解析JSON，如果失败则直接使用文本内容
-                        try:
-                            data2 = json.loads(result_text)
-                            if data2.get("success"):
-                                kb_list.append({
-                                    "url": data2.get("url"),
-                                    "title": data2.get("title"),
-                                    "knowledge_base": data2.get("knowledge_base")
-                                })
-                                if "saved_filepath" in data2:
-                                    saved_paths.append(data2["saved_filepath"])
-                            else:
-                                kb_list.append({"url": url, "error": data2.get("error", "提取失败")})
-                        except json.JSONDecodeError:
-                            # 如果不是JSON格式，说明是直接的文本内容
-                            if result_text.startswith("[ERROR]"):
-                                kb_list.append({"url": url, "error": result_text})
-                            else:
-                                # 成功提取的文本内容
-                                kb_list.append({
-                                    "url": url,
-                                    "title": f"从{url}提取的内容",
-                                    "content": result_text[:500] + "..." if len(result_text) > 500 else result_text
-                                })
-                    except Exception as e:
-                        kb_list.append({"url": url, "error": f"提取失败: {str(e)}"})
+                
+                content_extraction = parsed_json.get("content_extraction", {})
+                extracted_knowledge = content_extraction.get("extracted_knowledge", [])
+                
+                for item in extracted_knowledge:
+                    kb_data = {
+                        "url": item.get("url"),
+                        "title": item.get("title"),
+                        "snippet": item.get("snippet"),
+                        "knowledge_base": item.get("knowledge_base"),
+                        "extraction_success": item.get("extraction_success", False)
+                    }
+                    kb_list.append(kb_data)
+                    
+                    # 收集保存的文件路径
+                    if "saved_filepath" in item:
+                        saved_paths.append(item["saved_filepath"])
+                
+                # 处理失败的提取
+                failed_urls = content_extraction.get("failed_urls", [])
+                for failed in failed_urls:
+                    kb_list.append({
+                        "url": failed.get("url"),
+                        "error": failed.get("error", "提取失败"),
+                        "extraction_success": False
+                    })
 
                 return JSONResponse({
                     "success": True,
                     "keyword": keyword,
                     "engine": engine,
-                    "processed_urls": len(urls),
+                    "processed_urls": content_extraction.get("total_urls_processed", 0),
+                    "successful_extractions": content_extraction.get("successful_extractions", 0),
+                    "failed_extractions": content_extraction.get("failed_extractions", 0),
                     "knowledge_bases": kb_list,
                     "saved_filepaths": saved_paths,
                     "timestamp": datetime.datetime.now().isoformat()

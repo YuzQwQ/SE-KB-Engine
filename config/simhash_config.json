@@ -1,0 +1,28 @@
+{
+  "simhash_settings": {
+    "enabled": true,
+    "hash_bits": 64,
+    "similarity_threshold": 0.85,
+    "description": "SimHash去重配置"
+  },
+  "feature_extraction": {
+    "min_word_length": 2,
+    "max_features": 1000,
+    "use_chinese_segmentation": true,
+    "use_english_words": true,
+    "include_numbers": true,
+    "description": "特征提取配置"
+  },
+  "performance": {
+    "max_file_size_mb": 50,
+    "max_recursion_depth": 10,
+    "cache_simhash_results": true,
+    "description": "性能优化配置"
+  },
+  "logging": {
+    "log_similarity_matches": true,
+    "log_feature_extraction": false,
+    "log_performance_metrics": true,
+    "description": "日志配置"
+  }
+}

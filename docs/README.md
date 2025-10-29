@@ -146,41 +146,110 @@ python server.py
 python client.py server.py
 ```
 
+## 🛠️ 核心工具
+
+### search_and_parse_universal
+通用搜索和解析工具 - 一站式搜索、解析和内容提取
+
+**功能特点：**
+- 支持多搜索引擎（Google、Bing、百度、DuckDuckGo）
+- 自动内容抓取和知识提取
+- 智能知识库格式化
+- 自动保存提取结果
+
+**参数说明：**
+- `engine`: 搜索引擎名称
+- `keyword`: 搜索关键词
+- `max_results`: 最大结果数（默认10）
+- `custom_rules`: 自定义解析规则（JSON字符串，可选）
+- `extract_content`: 是否进行内容抓取和知识提取（默认true）
+- `requirement_type`: 需求类型（如：自然语言需求、用户故事等）
+- `target_conversion_type`: 目标转换类型（如：数据流图、用例图等）
+- `auto_save`: 是否自动保存知识库到文件（默认true）
+
+### get_available_search_engines
+获取可用的搜索引擎列表及其配置信息
+
+### extract_universal_knowledge
+使用通用知识库格式提取知识
+
+**参数说明：**
+- `content`: 要提取知识的文本内容
+- `url`: 内容来源URL（可选）
+- `title`: 内容标题（可选）
+- `requirement_type`: 需求类型
+- `target_conversion_type`: 目标转换类型
+
 ## 使用示例
 
-### 1. 技术文档收集
+### 1. 技术文档收集与知识提取
 ```
-搜索 "Python爬虫教程和最佳实践"
+使用search_and_parse_universal工具：
+- engine: "google"
+- keyword: "Python爬虫教程和最佳实践"
+- extract_content: true
+- requirement_type: "技术学习"
+- target_conversion_type: "知识库"
 ```
 
 ### 2. 市场调研分析
 ```
-搜索 "人工智能行业发展趋势报告"
+使用search_and_parse_universal工具：
+- engine: "bing"
+- keyword: "人工智能行业发展趋势报告"
+- max_results: 15
+- extract_content: true
+- requirement_type: "市场调研"
+- target_conversion_type: "分析报告"
 ```
 
 ### 3. 新闻资讯监控
 ```
-搜索 "区块链技术最新动态"
+使用search_and_parse_universal工具：
+- engine: "baidu"
+- keyword: "区块链技术最新动态"
+- extract_content: true
+- requirement_type: "新闻监控"
+- target_conversion_type: "资讯摘要"
 ```
 
-### 4. 网页内容分析
+### 4. 仅搜索不提取内容
 ```
-分析这个网页的内容：https://example.com/article
+使用search_and_parse_universal工具：
+- engine: "duckduckgo"
+- keyword: "机器学习算法"
+- extract_content: false
 ```
 
 ### 5. 竞品信息收集
 ```
-帮我搜索"电商平台用户体验设计案例"
+使用search_and_parse_universal工具：
+- engine: "google"
+- keyword: "电商平台用户体验设计案例"
+- extract_content: true
+- requirement_type: "竞品分析"
+- target_conversion_type: "设计指南"
 ```
 
 ### 6. 学术资料整理
 ```
-搜索 "机器学习算法研究论文"
+使用search_and_parse_universal工具：
+- engine: "google"
+- keyword: "机器学习算法研究论文"
+- max_results: 20
+- extract_content: true
+- requirement_type: "学术研究"
+- target_conversion_type: "论文摘要"
 ```
 
-### 7. 社交媒体分析
+### 7. 直接内容提取
 ```
-分析这个社交媒体页面：https://twitter.com/example
+使用extract_universal_knowledge工具：
+- content: "网页或文档的文本内容"
+- url: "https://example.com/article"
+- title: "文章标题"
+- requirement_type: "内容分析"
+- target_conversion_type: "知识库"
 ```
 
 ## 🎯 适用场景

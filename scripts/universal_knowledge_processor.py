@@ -657,18 +657,83 @@ class UniversalKnowledgeProcessor:
         return examples
     
     def save_knowledge_base(self, knowledge_base: Dict, output_dir: str = "shared_data/knowledge_base") -> str:
-        """保存知识库到文件"""
-        os.makedirs(output_dir, exist_ok=True)
+        """保存知识库到文件，自动分类到合适的子目录"""
+        
+        # 确定分类子目录
+        category = self._categorize_knowledge_base(knowledge_base)
+        
+        # 创建完整的输出目录路径
+        full_output_dir = os.path.join(output_dir, category)
+        os.makedirs(full_output_dir, exist_ok=True)
         
         knowledge_id = knowledge_base.get('metadata', {}).get('knowledge_id', 'unknown')
         filename = f"universal_kb_{knowledge_id}.json"
-        filepath = os.path.join(output_dir, filename)
+        filepath = os.path.join(full_output_dir, filename)
         
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(knowledge_base, f, ensure_ascii=False, indent=2)
         
-        logger.info(f"知识库已保存到: {filepath}")
+        logger.info(f"知识库已保存到: {filepath} (分类: {category})")
         return filepath
+    
+    def _categorize_knowledge_base(self, knowledge_base: Dict) -> str:
+        """根据知识库内容确定分类"""
+        metadata = knowledge_base.get('metadata', {})
+        title = metadata.get('title', '').lower()
+        description = metadata.get('description', '').lower()
+        source_url = metadata.get('source_info', {}).get('source_url', '').lower()
+        reliability = metadata.get('source_info', {}).get('reliability_score', 0)
+        
+        # 检查质量
+        if reliability < 0.7:
+            return 'archived'
+        
+        # 检查内容丰富度
+        concepts_count = len(knowledge_base.get('generation_knowledge', {}).get('concepts', []))
+        if concepts_count < 2:
+            return 'archived'
+        
+        # 按主题分类
+        content_text = f"{title} {description} {source_url}"
+        
+        # DFD相关
+        if any(keyword in content_text for keyword in [
+            'dfd', '数据流图', 'data flow diagram', '数据流程图', 
+            '数据流', 'dataflow', '流程图建模'
+        ]):
+            return 'dfd_modeling'
+        
+        # 需求分析相关
+        elif any(keyword in content_text for keyword in [
+            '需求分析', 'requirement analysis', '需求工程', 'requirement engineering',
+            '需求建模', '业务分析', '系统分析'
+        ]):
+            return 'requirement_analysis'
+        
+        # UML相关
+        elif any(keyword in content_text for keyword in [
+            'uml', 'unified modeling language', '统一建模语言', 
+            '用例图', '类图', '时序图', '活动图'
+        ]):
+            return 'uml_modeling'
+        
+        # 软件工程通用
+        elif any(keyword in content_text for keyword in [
+            '软件工程', 'software engineering', '系统设计', 'system design',
+            '软件设计', '架构设计', '设计模式'
+        ]):
+            return 'software_engineering'
+        
+        # 案例研究
+        elif any(keyword in content_text for keyword in [
+            '案例', 'case study', '实例', '例子', '实战', '项目',
+            '应用', 'application', '实践'
+        ]):
+            return 'case_studies'
+        
+        # 默认未分类
+        else:
+            return 'uncategorized'
     
     def convert_from_old_format(self, old_data: Dict, requirement_type: str = "", 
                                target_conversion_type: str = "") -> Dict:
