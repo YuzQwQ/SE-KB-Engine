@@ -15,6 +15,7 @@ from typing import Dict, List, Any, Optional
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 import logging
+from .html_cleaner import clean_html_content, is_html_content
 
 # 设置日志
 logging.basicConfig(level=logging.INFO)
@@ -149,7 +150,10 @@ class WebpageCrawler:
                 # 移除不需要的元素
                 for unwanted in content_elem.select('script, style, .hljs-button'):
                     unwanted.decompose()
-                content = content_elem.get_text().strip()
+                # 获取原始文本内容
+                raw_content = content_elem.get_text().strip()
+                # 使用HTML清理器清理内容
+                content = clean_html_content(raw_content)
                 break
                 
         # 提取作者信息
@@ -264,9 +268,16 @@ class WebpageCrawler:
         else:
             # 通用解析
             soup = BeautifulSoup(raw_data['content'], 'html.parser')
+            # 获取原始文本内容
+            raw_title = soup.title.get_text().strip() if soup.title else ''
+            raw_content = soup.get_text().strip()
+            # 使用HTML清理器清理内容
+            cleaned_title = clean_html_content(raw_title)
+            cleaned_content = clean_html_content(raw_content)
+            
             parsed_data = {
-                'title': soup.title.get_text().strip() if soup.title else '',
-                'content': soup.get_text().strip(),
+                'title': cleaned_title,
+                'content': cleaned_content,
                 'url': url,
                 'parsed_at': datetime.now().isoformat()
             }

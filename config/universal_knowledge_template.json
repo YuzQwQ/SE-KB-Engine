@@ -26,8 +26,8 @@
           "description": "核心概念和定义",
           "fields": {
             "concept_id": "string",
-            "name": "string",
-            "definition": "string",
+            "name": "简洁的主题短语（15-30字符，概括核心主题）",
+            "definition": "完整的概念定义和详细解释，包含上下文和专业描述",
             "category": "string",
             "attributes": "object",
             "relationships": "array"

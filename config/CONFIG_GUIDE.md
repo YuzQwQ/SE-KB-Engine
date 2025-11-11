@@ -65,6 +65,35 @@ config/
 | `business` | 商业内容分析 | 商业资讯、市场分析、行业报告 |
 | `academic` | 学术研究分析 | 学术论文、研究报告、科学文献 |
 | `news` | 新闻资讯分析 | 新闻报道、时事评论、媒体资讯 |
+| `universal_knowledge` | 通用知识库格式分析 | 按照通用知识库模板结构提取知识 |
+
+### 特殊提示词类型说明
+
+#### universal_knowledge 类型
+
+`universal_knowledge` 是专门为通用知识库格式设计的提示词类型，它能够：
+
+**核心功能：**
+- 按照 `universal_knowledge_template.json` 的结构要求提取知识
+- 识别和分类六大知识类型：概念、规则、模式、转换、验证、示例
+- 支持需求到设计图的转换知识提取
+- 确保输出符合标准化的知识库JSON格式
+
+**适用场景：**
+- 构建符合通用知识库模板的知识内容
+- 从技术文档中提取结构化知识
+- 需求分析和设计转换相关的知识整理
+- 建立可复用的知识库资源
+
+**使用方法：**
+```bash
+# 在 .env 文件中设置
+SYSTEM_PROMPT_TYPE=universal_knowledge
+```
+
+**与其他类型的区别：**
+- `general`: 通用内容分析，输出格式灵活
+- `universal_knowledge`: 专门针对知识库模板结构，输出格式严格
 
 ### 自定义提示词
 
@@ -88,7 +117,7 @@ config/
 
 ```bash
 # 系统提示词配置
-# 可选值: general, dfd, technical, business, academic, news, 或自定义类型
+# 可选值: general, dfd, technical, business, academic, news, universal_knowledge, 或自定义类型
 SYSTEM_PROMPT_TYPE=general
 ```
 

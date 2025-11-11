@@ -138,7 +138,13 @@ class MCPWebClient:
                     "工具使用规则：\n"
                     "1) 任何涉及搜索、爬取、最新信息的请求，必须调用工具。\n"
                     "2) 使用 search_and_parse_universal 进行一站式搜索、解析和内容提取。\n"
-                    "3) 根据需要设置 extract_content 参数控制是否进行内容提取。\n\n"
+                    "3) 根据需要设置 extract_content 参数控制是否进行内容提取。\n"
+                    "4) 注意：scrape_and_extract_universal 工具已被删除，请使用 search_and_parse_universal 替代。\n\n"
+                    "可用的主要工具：\n"
+                    "- search_and_parse_universal: 一站式搜索、解析和内容提取\n"
+                    "- extract_universal_knowledge: 直接从文本内容提取知识\n"
+                    "- scrape_webpage: 抓取单个网页内容\n"
+                    "- get_available_search_engines: 获取可用搜索引擎列表\n\n"
                     "回复要求：\n"
                     "- 完成搜索爬取任务后，简要说明已完成的操作和获取的主要内容。\n"
                     "- 提供核心知识点的结构化总结，包括概念、方法、步骤等。\n"
@@ -182,9 +188,31 @@ class MCPWebClient:
         # 如果模型想调用工具
         if assistant_message.tool_calls:
             await self.send_log("info", f"需要调用 {len(assistant_message.tool_calls)} 个工具")
+            
+            # 获取可用工具名称列表用于验证
+            available_tool_names = [tool.name for tool in tool_response.tools]
+            
             for tool_call in assistant_message.tool_calls:
                 function_name = tool_call.function.name
                 function_args = json.loads(tool_call.function.arguments)
+
+                # 验证工具是否存在
+                if function_name not in available_tool_names:
+                    error_message = f"❌ 工具 '{function_name}' 不存在。可用工具: {', '.join(available_tool_names)}"
+                    await self.send_log("error", error_message)
+                    
+                    # 如果是已删除的工具，提供替代建议
+                    if function_name == "scrape_and_extract_universal":
+                        suggestion = "请使用 'search_and_parse_universal' 工具，它已整合了搜索、解析和内容提取功能。"
+                        await self.send_log("info", f"💡 建议: {suggestion}")
+                        error_message += f" {suggestion}"
+                    
+                    messages.append({
+                        "role": "tool",
+                        "content": error_message,
+                        "tool_call_id": tool_call.id
+                    })
+                    continue
 
                 await self.send_log("search", f"🔧 调用工具: {function_name}")
                 await self.send_log("info", f"📝 参数: {json.dumps(function_args, ensure_ascii=False, indent=2)}")
@@ -309,6 +337,126 @@ class MCPWebClient:
                     self.websocket_connections.discard(websocket)
                 except:
                     pass
+
+        @self.app.post("/api/crawl")
+        async def crawl_endpoint(request: Request):
+            try:
+                if not self.session:
+                    raise HTTPException(status_code=500, detail="MCP服务器未连接")
+                
+                body = await request.json()
+                theme = body.get("theme")
+                search_content = body.get("search_content")
+                
+                if not theme or not search_content:
+                    raise HTTPException(status_code=400, detail="缺少主题或搜索内容")
+                
+                # 主题到工具类型的映射
+                theme_to_tool_mapping = {
+                    "general": "general",
+                    "universal_knowledge": "universal_knowledge", 
+                    "requirement_analysis": "requirement_analysis",
+                    "dfd_expert": "dfd_expert",
+                    "system_design": "system_design",
+                    "requirement_to_dfd": "requirement_to_dfd"
+                }
+                
+                tool_type = theme_to_tool_mapping.get(theme)
+                if not tool_type:
+                    raise HTTPException(status_code=400, detail=f"不支持的主题: {theme}")
+                
+                # 可选参数
+                engine = body.get("engine", "google")
+                max_results = int(body.get("max_results", 10))
+                use_ai = bool(body.get("use_ai", True))
+                prompt_type_override = body.get("prompt_type")
+                target_conversion_type = body.get("target_conversion_type") or ("DFD图" if "dfd" in theme.lower() else "知识库")
+                
+                await self.send_log("info", f"开始爬取 - 主题: {theme}, 搜索内容: {search_content}, 引擎: {engine}, 数量: {max_results}, AI: {use_ai}")
+                
+                # 调用对应的搜索工具（支持AI增强模式）
+                search_args = {
+                    "engine": engine,
+                    "keyword": search_content,
+                    "max_results": max_results,
+                    "extract_content": True,
+                    "requirement_type": tool_type,
+                    "target_conversion_type": target_conversion_type,
+                    "auto_save": True,
+                    "use_ai": use_ai,
+                    "prompt_type": prompt_type_override or tool_type
+                }
+                
+                # 为整个处理过程设置超时
+                search_res = await asyncio.wait_for(
+                    self.session.call_tool("search_and_parse_universal", search_args),
+                    timeout=7200.0  # 2小时超时
+                )
+                
+                # 解析工具返回结果
+                try:
+                    dumped = [c.model_dump() for c in search_res.content]
+                    parsed_json = json.loads(dumped[0].get("text", dumped[0].get("content", "")))
+                except Exception as e:
+                    await self.send_log("error", f"解析搜索结果失败: {str(e)}")
+                    raise HTTPException(status_code=500, detail=f"解析搜索结果失败: {str(e)}")
+                
+                # 提取结果信息
+                content_extraction = parsed_json.get("content_extraction", {})
+                extracted_knowledge = content_extraction.get("extracted_knowledge", [])
+                
+                kb_list = []
+                saved_paths = []
+                
+                for item in extracted_knowledge:
+                    kb_data = {
+                        "url": item.get("url"),
+                        "title": item.get("title"),
+                        "snippet": item.get("snippet"),
+                        "knowledge_base": item.get("knowledge_base"),
+                        "extraction_success": item.get("extraction_success", False),
+                        "extraction_method": item.get("extraction_method")
+                    }
+                    kb_list.append(kb_data)
+                    
+                    if "saved_filepath" in item:
+                        saved_paths.append(item["saved_filepath"])
+                
+                # 处理失败的提取
+                failed_urls = content_extraction.get("failed_urls", [])
+                for failed in failed_urls:
+                    kb_list.append({
+                        "url": failed.get("url"),
+                        "error": failed.get("error", "提取失败"),
+                        "extraction_success": False
+                    })
+                
+                successful_count = content_extraction.get("successful_extractions", 0)
+                total_count = content_extraction.get("total_urls_processed", 0)
+                
+                await self.send_log("success", f"爬取完成 - 成功: {successful_count}/{total_count}")
+                
+                return JSONResponse({
+                    "success": True,
+                    "theme": theme,
+                    "search_content": search_content,
+                    "processed_urls": total_count,
+                    "successful_extractions": successful_count,
+                    "failed_extractions": content_extraction.get("failed_extractions", 0),
+                    "knowledge_bases": kb_list,
+                    "saved_filepaths": saved_paths,
+                    "timestamp": datetime.datetime.now().isoformat()
+                })
+                
+            except asyncio.TimeoutError:
+                await self.send_log("error", "爬取请求超时")
+                raise HTTPException(status_code=408, detail="请求处理超时，请稍后重试")
+            except HTTPException:
+                raise
+            except Exception as e:
+                await self.send_log("error", f"爬取过程出错: {str(e)}")
+                print(f"❌ 处理爬取请求时出错: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"处理请求时出错: {str(e)}")
 
         @self.app.post("/api/chat", response_model=ChatResponse)
         async def chat_endpoint(request: ChatRequest):

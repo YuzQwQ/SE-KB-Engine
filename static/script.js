@@ -1,149 +1,232 @@
-class ChatInterface {
+class CrawlerInterface {
     constructor() {
-        this.messageInput = document.getElementById('messageInput');
-        this.sendButton = document.getElementById('sendButton');
-        this.chatMessages = document.getElementById('chatMessages');
-        this.loading = document.getElementById('loading');
-        this.charCount = document.querySelector('.char-count');
-        this.downloadButton = document.getElementById('downloadButton');
-        this.downloadPanel = document.getElementById('downloadPanel');
-        this.filesList = document.getElementById('filesList');
+        // 获取DOM元素
+        this.topicSelect = document.getElementById('topicSelect');
+        this.searchInput = document.getElementById('searchInput');
+        this.crawlButton = document.getElementById('startCrawlBtn');
+        this.resultsStatus = document.getElementById('resultsStatus');
+        this.resultsContent = document.getElementById('resultsContent');
         
         // 日志相关元素
         this.logPanel = document.getElementById('logPanel');
         this.logContent = document.getElementById('logContent');
-        this.clearLogsBtn = document.getElementById('clearLogsBtn');
-        this.toggleLogsBtn = document.getElementById('toggleLogsBtn');
+        this.clearLogsBtn = document.getElementById('clearLogs');
+        this.toggleLogsBtn = document.getElementById('toggleLogs');
         
+        // 初始化功能
+        this.init();
+    }
+    
+    init() {
         this.initEventListeners();
-        this.autoResizeTextarea();
-        this.initDownloadFeature();
         this.initLogFeature();
         this.initWebSocket();
+        
+        // 初始化状态
+        this.updateStatus('ready', '准备就绪');
+        this.addLog('系统已启动，等待选择主题和搜索内容...', 'system');
     }
     
     initEventListeners() {
-        // 发送按钮点击事件
-        this.sendButton.addEventListener('click', () => this.sendMessage());
-        
-        // 输入框事件
-        this.messageInput.addEventListener('input', () => {
-            this.updateCharCount();
-            this.updateSendButton();
-            this.autoResizeTextarea();
+        // 爬取按钮点击事件
+        this.crawlButton.addEventListener('click', () => {
+            this.startCrawling();
         });
         
-        // 键盘事件
-        this.messageInput.addEventListener('keydown', (e) => {
+        // 搜索输入框回车事件
+        this.searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                this.sendMessage();
+                this.startCrawling();
             }
         });
         
-        // 初始化状态
-        this.updateCharCount();
-        this.updateSendButton();
+        // 输入验证
+        this.searchInput.addEventListener('input', () => {
+            this.validateInput();
+        });
+        
+        this.topicSelect.addEventListener('change', () => {
+            this.validateInput();
+        });
     }
     
-    updateCharCount() {
-        const length = this.messageInput.value.length;
-        this.charCount.textContent = `${length}/2000`;
+    validateInput() {
+        const topic = this.topicSelect.value;
+        const searchText = this.searchInput.value.trim();
         
-        if (length > 1800) {
-            this.charCount.style.color = '#ef4444';
-        } else if (length > 1500) {
-            this.charCount.style.color = '#f59e0b';
-        } else {
-            this.charCount.style.color = '#64748b';
+        this.crawlButton.disabled = !topic || !searchText;
+    }
+    
+    async startCrawling() {
+        const topic = this.topicSelect.value;
+        const searchText = this.searchInput.value.trim();
+        
+        if (!topic || !searchText) {
+            this.addLog('请选择主题并输入搜索内容', 'error');
+            return;
         }
-    }
-    
-    updateSendButton() {
-        const hasText = this.messageInput.value.trim().length > 0;
-        this.sendButton.disabled = !hasText;
-    }
-    
-    autoResizeTextarea() {
-        this.messageInput.style.height = 'auto';
-        const scrollHeight = this.messageInput.scrollHeight;
-        const maxHeight = 120;
-        this.messageInput.style.height = Math.min(scrollHeight, maxHeight) + 'px';
-    }
-    
-    async sendMessage() {
-        const message = this.messageInput.value.trim();
-        if (!message) return;
-        
-        // 记录用户输入
-        this.addLog(`用户输入: ${message}`, 'info');
-        
-        // 添加用户消息到界面
-        this.addMessage(message, 'user');
-        
-        // 清空输入框
-        this.messageInput.value = '';
-        this.updateCharCount();
-        this.updateSendButton();
-        this.autoResizeTextarea();
-        
-        // 显示加载状态
-        this.showLoading();
-        this.addLog('正在发送请求到后端...', 'system');
         
         try {
-            // 发送请求到后端
-            this.addLog('开始搜索和处理...', 'search');
-            const response = await fetch('/api/chat', {
+            this.updateStatus('loading', '正在爬取中...');
+            this.crawlButton.disabled = true;
+            this.addLog(`开始爬取 - 主题: ${this.getTopicName(topic)}, 搜索: ${searchText}`, 'info');
+            
+            // 清空之前的结果
+            this.resultsContent.innerHTML = '';
+            
+            const response = await fetch('/api/crawl', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message: message })
+                body: JSON.stringify({
+                    theme: topic,
+                    search_content: searchText
+                })
             });
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
-            this.addLog('收到后端响应，正在解析...', 'system');
             const data = await response.json();
+            this.addLog('爬取完成，正在处理结果...', 'system');
             
-            // 添加AI回复到界面（兜底处理空文本）
-            const assistantText = (data && typeof data.response === 'string' && data.response.trim().length > 0)
-                ? data.response
-                : '这次没有生成文本回复。如果你要进行"搜索并爬取"，请直接输入：搜索并爬取 <关键词>，或调用 /api/search_extract_universal 接口。';
-            this.addMessage(assistantText, 'assistant');
-            this.addLog('AI回复已生成并显示', 'info');
+            // 添加调试日志
+            console.log('API返回的完整数据:', data);
+            this.addLog(`API返回数据结构: ${JSON.stringify(Object.keys(data))}`, 'debug');
+            
+            if (data.success) {
+                const results = data.knowledge_bases || [];
+                console.log('知识库数据:', results);
+                console.log('知识库数据类型:', typeof results);
+                console.log('知识库数据是否为数组:', Array.isArray(results));
+                
+                this.addLog(`知识库数据长度: ${results ? results.length : 'undefined'}`, 'debug');
+                this.displayResults(results);
+                this.updateStatus('success', `成功爬取 ${results.length} 条结果`);
+                this.addLog(`爬取成功，获得 ${results.length} 条结果`, 'success');
+            } else {
+                throw new Error(data.error || '爬取失败');
+            }
             
         } catch (error) {
-            console.error('发送消息失败:', error);
-            this.addLog(`请求失败: ${error.message}`, 'error');
-            this.addMessage('抱歉，发生了错误，请稍后重试。', 'assistant', true);
+            console.error('爬取失败:', error);
+            this.addLog(`爬取失败: ${error.message}`, 'error');
+            this.updateStatus('error', '爬取失败');
+            this.displayError(error.message);
         } finally {
-            this.hideLoading();
-            this.addLog('请求处理完成', 'system');
+            this.crawlButton.disabled = false;
         }
     }
     
-    addMessage(text, sender, isError = false) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}`;
+    getTopicName(topic) {
+        const topicNames = {
+            'general': '通用内容分析',
+            'requirement_analysis': '需求分析',
+            'dfd_expert': '数据流图(DFD)',
+            'requirement_to_dfd': '需求生成DFD',
+            'system_design': '系统设计',
+            'universal_knowledge': '通用知识库'
+        };
+        return topicNames[topic] || topic;
+    }
+    
+    updateStatus(type, message) {
+        this.resultsStatus.className = `results-status ${type}`;
+        this.resultsStatus.textContent = message;
+    }
+    
+    displayResults(results) {
+        console.log('displayResults 被调用，参数:', results);
+        console.log('results 类型:', typeof results);
+        console.log('results 是否为数组:', Array.isArray(results));
         
-        const currentTime = new Date().toLocaleTimeString('zh-CN', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        if (!results || results.length === 0) {
+            console.log('没有结果或结果为空');
+            this.resultsContent.innerHTML = `
+                <div class="welcome-message">
+                    <h4>没有找到结果</h4>
+                    <p>请尝试使用不同的搜索关键词或选择其他主题。</p>
+                </div>
+            `;
+            return;
+        }
         
-        messageDiv.innerHTML = `
-            <div class="message-content ${isError ? 'error' : ''}">
-                <div class="message-text">${this.escapeHtml(text)}</div>
-                <div class="message-time">${currentTime}</div>
+        const resultsHtml = results.map((result, index) => {
+            return `
+                <div class="crawl-result">
+                    <div class="result-header">
+                        <div class="result-title">结果 ${index + 1}</div>
+                        <div class="result-meta">${new Date().toLocaleString('zh-CN')}</div>
+                    </div>
+                    <div class="result-content">
+                        ${this.formatResultContent(result)}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        this.resultsContent.innerHTML = resultsHtml;
+    }
+    
+    formatResultContent(result) {
+        if (typeof result === 'string') {
+            return `<p>${this.escapeHtml(result)}</p>`;
+        }
+        
+        if (typeof result === 'object') {
+            let html = '';
+            
+            // 显示提取状态
+            const status = result.extraction_success ? '✅ 提取成功' : '❌ 提取失败';
+            html += `<div class="extraction-status"><strong>状态:</strong> ${status}</div>`;
+            
+            // 显示标题
+            if (result.title) {
+                html += `<h5>${this.escapeHtml(result.title)}</h5>`;
+            }
+            
+            // 显示摘要
+            if (result.snippet) {
+                html += `<div class="result-snippet"><strong>摘要:</strong> ${this.escapeHtml(result.snippet)}</div>`;
+            }
+            
+            // 显示知识库内容
+            if (result.knowledge_base) {
+                html += `
+                    <div class="knowledge-base">
+                        <strong>知识库内容:</strong>
+                        <div class="knowledge-content">${this.escapeHtml(JSON.stringify(result.knowledge_base, null, 2))}</div>
+                    </div>
+                `;
+            }
+            
+            // 显示来源URL
+            if (result.url) {
+                html += `<p><strong>来源:</strong> <a href="${result.url}" target="_blank">${this.escapeHtml(result.url)}</a></p>`;
+            }
+            
+            return html || `<p>${this.escapeHtml(JSON.stringify(result))}</p>`;
+        }
+        
+        return `<p>${this.escapeHtml(String(result))}</p>`;
+    }
+    
+    displayError(errorMessage) {
+        this.resultsContent.innerHTML = `
+            <div class="crawl-result">
+                <div class="result-header">
+                    <div class="result-title" style="color: #dc2626;">错误</div>
+                    <div class="result-meta">${new Date().toLocaleString('zh-CN')}</div>
+                </div>
+                <div class="result-content">
+                    <p style="color: #dc2626;">${this.escapeHtml(errorMessage)}</p>
+                    <p>请检查网络连接或稍后重试。</p>
+                </div>
             </div>
         `;
-        
-        this.chatMessages.appendChild(messageDiv);
-        this.scrollToBottom();
     }
     
     escapeHtml(text) {
@@ -152,229 +235,29 @@ class ChatInterface {
         return div.innerHTML;
     }
     
-    scrollToBottom() {
-        setTimeout(() => {
-            this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-        }, 100);
-    }
-    
-    showLoading() {
-        this.loading.style.display = 'flex';
-    }
-    
-    hideLoading() {
-        this.loading.style.display = 'none';
-    }
-    
-    // 下载功能相关方法
-    initDownloadFeature() {
-        // 检查元素是否存在
-        if (!this.downloadButton) {
-            console.error('下载按钮元素未找到');
-            return;
-        }
-        if (!this.downloadPanel) {
-            console.error('下载面板元素未找到');
-            return;
-        }
-        
-        console.log('初始化下载功能...');
-        
-        // 下载按钮点击事件
-        this.downloadButton.addEventListener('click', (e) => {
-            console.log('下载按钮被点击');
-            e.preventDefault();
-            this.showDownloadPanel();
-        });
-        
-        // 关闭下载面板
-        document.getElementById('closeDownloadPanel').addEventListener('click', () => {
-            this.hideDownloadPanel();
-        });
-        
-        // 点击面板外部关闭
-        this.downloadPanel.addEventListener('click', (e) => {
-            if (e.target === this.downloadPanel) {
-                this.hideDownloadPanel();
-            }
-        });
-        
-        // 刷新文件列表
-        document.getElementById('refreshFiles').addEventListener('click', () => {
-            this.loadFilesList();
-        });
-        
-        // 下载全部文件
-        document.getElementById('downloadAll').addEventListener('click', () => {
-            this.downloadAllFiles();
-        });
-        
-        // ESC键关闭面板
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.downloadPanel.classList.contains('show')) {
-                this.hideDownloadPanel();
-            }
-        });
-    }
-    
-    showDownloadPanel() {
-        console.log('显示下载面板');
-        this.downloadPanel.classList.add('show');
-        this.loadFilesList();
-    }
-    
-    hideDownloadPanel() {
-        this.downloadPanel.classList.remove('show');
-    }
-    
-    async loadFilesList() {
-        try {
-            console.log('开始加载文件列表...');
-            this.filesList.innerHTML = '<div class="loading-files">正在加载文件列表...</div>';
-            
-            const response = await fetch('/api/files');
-            console.log('API响应状态:', response.status);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            console.log('获取到的文件数据:', data);
-            this.renderFilesList(data.files);
-        } catch (error) {
-            console.error('加载文件列表失败:', error);
-            this.filesList.innerHTML = `
-                <div class="empty-state">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <h4>加载失败</h4>
-                    <p>无法获取文件列表: ${error.message}</p>
-                </div>
-            `;
-        }
-    }
-    
-    renderFilesList(files) {
-        if (!files || files.length === 0) {
-            this.filesList.innerHTML = `
-                <div class="empty-state">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14,2 14,8 20,8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10,9 9,9 8,9"></polyline>
-                    </svg>
-                    <h4>暂无文件</h4>
-                    <p>还没有爬取任何网页数据</p>
-                </div>
-            `;
-            return;
-        }
-        
-        const filesHtml = files.map(file => {
-            const fileSize = this.formatFileSize(file.size);
-            const modifiedDate = new Date(file.modified).toLocaleString('zh-CN');
-            
-            return `
-                <div class="file-item">
-                    <div class="file-info">
-                        <div class="file-name">${this.escapeHtml(file.name)}</div>
-                        <div class="file-meta">
-                            <span class="file-type ${file.type}">${file.type}</span>
-                            <span>大小: ${fileSize}</span>
-                            <span>修改时间: ${modifiedDate}</span>
-                        </div>
-                    </div>
-                    <button class="download-btn" onclick="chatInterface.downloadFile('${file.type}', '${this.escapeHtml(file.name)}')">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7,10 12,15 17,10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        下载
-                    </button>
-                </div>
-            `;
-        }).join('');
-        
-        this.filesList.innerHTML = filesHtml;
-    }
-    
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 B';
-        const k = 1024;
-        const sizes = ['B', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-    
-    async downloadFile(fileType, fileName) {
-        try {
-            const url = `/api/download/${fileType}/${encodeURIComponent(fileName)}`;
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (error) {
-            console.error('下载文件失败:', error);
-            alert('下载文件失败: ' + error.message);
-        }
-    }
-    
-    async downloadAllFiles() {
-        try {
-            const button = document.getElementById('downloadAll');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<span>正在打包...</span>';
-            button.disabled = true;
-            
-            const url = '/api/download-all';
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = '';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // 恢复按钮状态
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.disabled = false;
-            }, 2000);
-        } catch (error) {
-            console.error('下载全部文件失败:', error);
-            alert('下载全部文件失败: ' + error.message);
-            
-            // 恢复按钮状态
-            const button = document.getElementById('downloadAll');
-            button.innerHTML = originalText;
-            button.disabled = false;
-        }
-    }
+
     
     // 日志功能
     initLogFeature() {
         // 清空日志按钮
-        this.clearLogsBtn.addEventListener('click', () => {
-            this.clearLogs();
-        });
+        if (this.clearLogsBtn) {
+            this.clearLogsBtn.addEventListener('click', () => {
+                this.clearLogs();
+            });
+        }
         
         // 切换日志面板显示/隐藏
-        this.toggleLogsBtn.addEventListener('click', () => {
-            this.toggleLogPanel();
-        });
+        if (this.toggleLogsBtn) {
+            this.toggleLogsBtn.addEventListener('click', () => {
+                this.toggleLogPanel();
+            });
+        }
         
         // 初始化日志
-        this.addLog('系统已启动，等待用户输入...', 'system');
+        this.addLog('系统已启动，等待选择主题和搜索内容...', 'system');
     }
     
-    addLog(type, message, customTimestamp = null) {
+    addLog(message, type, customTimestamp = null) {
         const logEntry = document.createElement('div');
         logEntry.className = `log-entry ${type}`;
         
@@ -444,21 +327,21 @@ class ChatInterface {
             this.websocket = new WebSocket(wsUrl);
             
             this.websocket.onopen = () => {
-                this.addLog('system', 'WebSocket连接已建立');
+                this.addLog('WebSocket连接已建立', 'system');
                 console.log('WebSocket连接已建立');
             };
             
             this.websocket.onmessage = (event) => {
                 try {
                     const logData = JSON.parse(event.data);
-                    this.addLog(logData.type, logData.message, logData.timestamp);
+                    this.addLog(logData.message, logData.type, logData.timestamp);
                 } catch (e) {
                     console.error('解析WebSocket消息失败:', e);
                 }
             };
             
             this.websocket.onclose = () => {
-                this.addLog('warning', 'WebSocket连接已断开，尝试重连...');
+                this.addLog('WebSocket连接已断开，尝试重连...', 'warning');
                 console.log('WebSocket连接已断开，尝试重连...');
                 // 3秒后尝试重连
                 setTimeout(() => {
@@ -467,43 +350,18 @@ class ChatInterface {
             };
             
             this.websocket.onerror = (error) => {
-                this.addLog('error', 'WebSocket连接错误');
+                this.addLog('WebSocket连接错误', 'error');
                 console.error('WebSocket错误:', error);
             };
         } catch (e) {
-            this.addLog('error', 'WebSocket初始化失败');
+            this.addLog('WebSocket初始化失败', 'error');
             console.error('WebSocket初始化失败:', e);
         }
     }
 }
 
-// 页面加载完成后初始化聊天界面
-let chatInterface;
+// 页面加载完成后初始化爬虫界面
+let crawlerInterface;
 document.addEventListener('DOMContentLoaded', () => {
-    chatInterface = new ChatInterface();
-    
-    // 添加一些CSS样式用于错误消息
-    const style = document.createElement('style');
-    style.textContent = `
-        .message-content.error {
-            background: #fef2f2 !important;
-            border: 1px solid #fecaca !important;
-            color: #dc2626 !important;
-        }
-        
-        .message.user .message-content.error {
-            background: #dc2626 !important;
-            color: white !important;
-        }
-    `;
-    document.head.appendChild(style);
-});
-
-// 添加一些实用功能
-window.addEventListener('beforeunload', (e) => {
-    const messageInput = document.getElementById('messageInput');
-    if (messageInput && messageInput.value.trim()) {
-        e.preventDefault();
-        e.returnValue = '您有未发送的消息，确定要离开吗？';
-    }
+    crawlerInterface = new CrawlerInterface();
 });
