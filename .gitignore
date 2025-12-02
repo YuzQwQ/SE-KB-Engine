@@ -81,4 +81,11 @@ reorganization_log.json
 old_format_files.txt
 scripts/shared_data/knowledge_base/
 
+test/
+tests/
+__tests__/
+test_*.py
+*_test.py
+*.test.*
+*.spec.*
  
