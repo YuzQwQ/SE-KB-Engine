@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 class CrawlerFramework:
     """通用爬虫框架核心类"""
     
-    def __init__(self, config_dir: str = "configs/parsers", data_dir: str = "data"):
+    def __init__(self, config_dir: str = "config/parsers", data_dir: str = "data"):
         self.config_dir = Path(config_dir)
         self.data_dir = Path(data_dir)
         self.raw_data_dir = self.data_dir / "raw"

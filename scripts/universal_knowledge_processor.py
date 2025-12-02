@@ -11,6 +11,8 @@ import sys
 
 # 添加utils目录到路径
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
+
+from config.path_config import KNOWLEDGE_BASE_DIR
 from html_cleaner import clean_html_content, is_html_content
 
 # 配置日志
@@ -48,6 +50,14 @@ class UniversalKnowledgeProcessor:
         """加载系统提示词配置"""
         try:
             config_dir = os.path.join(os.path.dirname(__file__), "..", "config")
+            
+            # 优先使用专注版本
+            focused_file = os.path.join(config_dir, "system_prompts_focused.json")
+            if os.path.exists(focused_file):
+                with open(focused_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            
+            # 回退到原始版本
             prompts_file = os.path.join(config_dir, "system_prompts.json")
             with open(prompts_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -269,7 +279,7 @@ class UniversalKnowledgeProcessor:
                 clean_definition = self._clean_definition(sentence)
                 
                 # 新增：基于定义自动生成简短标题作为概念名（必要时回退）
-                concept_name = self._auto_title_if_needed(concept_name, clean_definition)
+                concept_name = self._refine_concept_name(concept_name)
                 
                 concept_id = f"concept_{len(concepts) + 1:03d}"
                 concepts.append({
@@ -1027,7 +1037,7 @@ class UniversalKnowledgeProcessor:
         
         return examples
     
-    def save_knowledge_base(self, knowledge_base: Dict, output_dir: str = "shared_data/knowledge_base") -> str:
+    def save_knowledge_base(self, knowledge_base: Dict, output_dir: str = KNOWLEDGE_BASE_DIR) -> str:
         """保存知识库到文件，自动分类到合适的子目录"""
         
         # 确定分类子目录

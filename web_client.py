@@ -38,10 +38,11 @@ class MCPWebClient:
         self.base_url = os.getenv("BASE_URL")
         self.model = os.getenv("MODEL")
 
-        if not self.openai_api_key:
-            raise ValueError("❌ 未找到 OpenAI API Key，请在 .env 文件中设置OPENAI_API_KEY")
-
-        self.client = OpenAI(api_key=self.openai_api_key, base_url=self.base_url)
+        # 允许在未配置 API Key 的情况下启动，仅禁用聊天功能
+        if self.openai_api_key:
+            self.client = OpenAI(api_key=self.openai_api_key, base_url=self.base_url)
+        else:
+            self.client = None
         self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
         self.history = []
@@ -129,6 +130,14 @@ class MCPWebClient:
 
     async def process_query(self, query: str) -> str:
         await self.send_log("info", f"收到用户查询: {query}")
+        
+        # 若未配置 OpenAI Key，则直接返回提示，避免阻塞其他工具功能
+        if self.client is None:
+            await self.send_log("warning", "未配置 OpenAI API Key，聊天功能已禁用。请在 .env 设置 OPENAI_API_KEY 后再试。")
+            return (
+                "未配置 OpenAI API Key，聊天功能不可用。\n"
+                "但搜索与爬取工具仍可用：请使用 /api/crawl 或 /api/search_extract_universal 接口。"
+            )
         
         if not self.history:
             self.history.append({

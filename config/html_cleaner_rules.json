@@ -1,0 +1,58 @@
+{
+  "version": "1.0",
+  "blacklist_tags": [
+    "script", "style", "link", "meta", "iframe", "svg", "canvas",
+    "noscript", "form", "input", "button", "footer", "header", "nav", "aside"
+  ],
+  "blacklist_keywords": [
+    "header", "footer", "nav", "toolbar", "sidebar", "side-bar", "recommend", "related",
+    "comment", "copyright", "login", "signup", "share", "advert", "ad", "ads",
+    "ad-", "ads-", "banner", "popup", "modal", "cookie", "tip", "metadata",
+    "statistics", "stat", "report", "like", "dislike", "follow", "qr", "avatar",
+    "breadcrumbs", "sponsor", "promotion", "marketing", "track", "analytics",
+    "widget", "badge", "pager", "next-prev", "toc", "guide", "disclaimer",
+    "feedback", "survey", "newsletter", "subscription", "download-btn"
+  ],
+  "whitelist_tags": [
+    "p", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "li", "img",
+    "pre", "code", "blockquote", "table", "tr", "td", "th", "strong", "em",
+    "b", "i", "u", "br", "figure", "figcaption"
+  ],
+  "main_container_selectors": [
+    "article", "main", "#content", "#main-content", ".post", ".article-content",
+    ".entry-content", ".content", ".entry", ".markdown-body", "[role=main]",
+    "#content_views"
+  ],
+  "scoring": {
+    "text_len_min": 800,
+    "link_density_max": 0.4,
+    "noise_penalty_per_hit": 0.3,
+    "list_ratio_penalty": 0.2,
+    "heading_ratio_penalty": 0.2
+  },
+  "image_filters": {
+    "min_width": 48,
+    "min_height": 48,
+    "filename_exclude_keywords": [
+      "avatar", "logo", "icon", "qr", "qrcode", "barcode", "ads", "ad",
+      "banner", "tracker", "spacer", "blank"
+    ]
+  },
+  "text_normalization": {
+    "remove_emoji": true,
+    "max_consecutive_newlines": 2
+  },
+  "markdown_options": {
+    "table_style": "pipe",
+    "infer_code_language": false
+  },
+  "domain_overrides": {
+    "csdn.net": {
+      "remove_selectors": [
+        ".hljs-button", ".article-bar-top", ".tool-box", ".recommend-box",
+        ".blog_category", ".toolbar-ad", ".csdn-toolbar", "#csdn_toolbox"
+      ],
+      "main_selectors": ["#content_views", ".article_content", "article"]
+    }
+  }
+}

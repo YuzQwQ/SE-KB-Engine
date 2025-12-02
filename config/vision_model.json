@@ -1,0 +1,17 @@
+{
+  "provider": "http",
+  "endpoint": "http://localhost:8000/v1/vision",
+  "api_key": "",
+  "timeout": 30,
+  "request_schema": {
+    "url_field": "image_url",
+    "base64_field": "image_base64",
+    "tasks_field": "tasks"
+  },
+  "response_schema": {
+    "ocr_field": "ocr",
+    "description_field": "description",
+    "dfd_field": "dfd"
+  },
+  "default_tasks": ["ocr", "description", "dfd"]
+}

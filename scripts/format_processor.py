@@ -1,3 +1,5 @@
+
+from config.path_config import KNOWLEDGE_BASE_DIR
 import json
 import re
 import os
@@ -437,7 +439,7 @@ class FormatProcessor:
         with open(self.config_file, 'w', encoding='utf-8') as f:
             json.dump(templates, f, ensure_ascii=False, indent=2)
     
-    def save_knowledge_base(self, data: Dict, base_filename: str = None, output_dir: str = "shared_data/knowledge_base") -> Dict:
+    def save_knowledge_base(self, data: Dict, base_filename: str = None, output_dir: str = KNOWLEDGE_BASE_DIR) -> Dict:
         """根据格式配置保存知识库数据到独立文件"""
         try:
             from datetime import datetime as _dt

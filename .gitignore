@@ -1,153 +1,84 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-*.pyo
-*.pyd
-build/
-dist/
-wheels/
-*.egg-info/
-*.egg
-.Python
-pip-log.txt
-pip-delete-this-directory.txt
+# ---- OS & Editor junk ----
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
 
-# Virtual environments
+# ---- Python caches & venv ----
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.pylint.d/
+.cache/
+
 .venv/
 venv/
-venv_enhanced/
-env/
 ENV/
-env.bak/
-venv.bak/
+env/
 
-# Configuration files
+# ---- Logs & coverage ----
+logs/
+*.log
+.coverage
+coverage.xml
+
+# ---- Builds & bundles ----
+dist/
+build/
+
+# ---- Node (if present) ----
+node_modules/
+
+# ---- Playwright ----
+ms-playwright/
+playwright/.cache/
+
+# ---- Environment & secrets ----
 .env
-.env.local
-.env.development
-.env.test
-.env.production
-config/torrc
-config/torrc_proxy
+**/.env
+*.env
+*.key
+*.pem
+*.crt
+*.cert
 
-# Crawling results and data
-data/
-shared_data/
-web_cache.db
-*.db
+# ---- Local databases ----
 *.sqlite
-*.sqlite3
+*.db
 
-# Processing and record files
+# ---- Project data outputs ----
+# root-level data (crawler outputs)
+data/
+data/raw/
+data/parsed/
+
+# export package data outputs
+export/crawler_core/data/
+export/crawler_core/data/raw/
+export/crawler_core/data/parsed/
+
+# export package local env
+export/crawler_core/.env
+
+# ---- Knowledge base artifacts ----
+# only ignore generated artifacts, keep schemas/rules/templates versioned
+se_kb/artifacts/
+se-kb/artifacts/
+
+se_kb/
+
+# ---- Additional local outputs ----
+venv_enhanced/
+*.zip
+export/crawler_core.zip
 processed_files_record.json
 reorganization_log.json
 old_format_files.txt
+scripts/shared_data/knowledge_base/
 
-# Tor data
-tor_data/
-tor_data_debug/
-
-# Logs and debug files
-*.log
-*.log.*
-mcp_server.log
-debug.log
-error.log
-access.log
-
-# IDE files
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-
-# Cache and temporary files
-*.tmp
-*.temp
-*.cache
-.cache/
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-.nox/
-
-# Package managers
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-package-lock.json
-yarn.lock
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# PEP 582
-__pypackages__/
-
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Test files and coverage
-.coverage
-.pytest_cache/
-htmlcov/
-.tox/
-.nox/
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-
-# Backup files
-*.bak
-*.backup
-*.orig
-
-# Compressed files
-*.zip
-*.tar.gz
-*.rar
-*.7z
-
-# Large data files
-*.csv
-*.json.gz
-*.parquet
+ 

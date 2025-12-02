@@ -145,30 +145,76 @@
     },
     "extraction_config": {
       "concepts": {
+        "max_count": 15,
+        "min_confidence": 0.7,
+        "diversification_strategy": "semantic_variation",
         "patterns": {
-          "definition_indicators": ["定义", "概念", "是指", "指的是", "表示"],
-          "category_indicators": ["类型", "种类", "分类", "类别"],
-          "attribute_indicators": ["属性", "特征", "特点", "性质"]
+          "definition_indicators": ["定义", "概念", "是指", "指的是", "表示", "所谓", "即", "称为"],
+          "category_indicators": ["类型", "种类", "分类", "类别", "分为", "包括"],
+          "attribute_indicators": ["属性", "特征", "特点", "性质", "特性"]
+        },
+        "semantic_filters": {
+          "min_length": 20,
+          "max_length": 500,
+          "forbidden_patterns": ["^\\d+[\\.\\s]", "^第[一二三四五六七八九十]+章", "^[A-Z]\\.[\\s]"],
+          "required_keywords": ["是", "指", "为", "表示"]
         }
       },
       "rules": {
+        "max_count": 12,
+        "min_confidence": 0.6,
+        "diversification_strategy": "condition_action_variation",
         "patterns": {
-          "rule_indicators": ["规则", "约束", "限制", "要求", "必须", "应该"],
-          "condition_indicators": ["如果", "当", "在...情况下", "条件"],
-          "action_indicators": ["则", "那么", "执行", "进行", "操作"]
+          "rule_indicators": ["规则", "约束", "限制", "要求", "必须", "应该", "应当", "需要"],
+          "condition_indicators": ["如果", "当", "在...情况下", "条件", "假设", "若"],
+          "action_indicators": ["则", "那么", "执行", "进行", "操作", "应用", "使用"]
+        },
+        "complexity_levels": ["basic", "intermediate", "advanced"],
+        "validation_criteria": {
+          "min_condition_length": 10,
+          "min_action_length": 15,
+          "max_total_length": 300
         }
       },
       "patterns": {
-        "template_indicators": ["模板", "模式", "范式", "样式", "格式"],
-        "usage_indicators": ["使用", "应用", "适用于", "场景"]
+        "max_count": 10,
+        "min_confidence": 0.65,
+        "diversification_strategy": "template_structure_variation",
+        "patterns": {
+          "template_indicators": ["模板", "模式", "范式", "样式", "格式", "结构", "框架"],
+          "usage_indicators": ["使用", "应用", "适用于", "场景", "情况", "环境"]
+        },
+        "template_variations": ["structural", "behavioral", "creational", "architectural"],
+        "validation_rules": {
+          "min_template_elements": 2,
+          "max_template_complexity": 5,
+          "required_placeholders": true
+        }
       },
       "transformations": {
-        "step_indicators": ["步骤", "阶段", "过程", "流程"],
-        "method_indicators": ["方法", "技术", "工具", "手段"]
+        "max_count": 8,
+        "min_confidence": 0.7,
+        "diversification_strategy": "step_complexity_variation",
+        "patterns": {
+          "step_indicators": ["步骤", "阶段", "过程", "流程", "顺序"],
+          "method_indicators": ["方法", "技术", "工具", "手段", "方式"]
+        },
+        "step_complexity": ["simple", "moderate", "complex"],
+        "validation_requirements": {
+          "min_step_count": 2,
+          "max_step_count": 15,
+          "required_tools": true,
+          "precondition_completeness": 0.8
+        }
       },
       "validation": {
-        "criteria_indicators": ["标准", "指标", "准则", "要求"],
-        "error_indicators": ["错误", "问题", "缺陷", "异常", "故障"]
+        "criteria_indicators": ["标准", "指标", "准则", "要求", "规范"],
+        "error_indicators": ["错误", "问题", "缺陷", "异常", "故障", "失败"],
+        "quality_thresholds": {
+          "min_reliability_score": 0.75,
+          "max_similarity_threshold": 0.85,
+          "min_content_diversity": 0.6
+        }
       }
     }
   }

@@ -2,10 +2,14 @@
 # -*- coding: utf-8 -*-
 """
 网页爬虫模块
-专门用于爬取网页内容，支持CSDN等网站
+专门用于爬取网页内容，支持CSDN等网站。
+
+增强：
+- 首选 httpx + BeautifulSoup 静态抓取与解析
+- 若正文过少或解析失败，则回退到 Playwright 动态渲染抓取
 """
 
-import requests
+import httpx
 import time
 import json
 import re
@@ -15,7 +19,9 @@ from typing import Dict, List, Any, Optional
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 import logging
-from .html_cleaner import clean_html_content, is_html_content
+from .html_cleaner import clean_html_content, is_html_content, html_cleaner, clean_and_structure
+from .image_analyzer import analyze_images as analyze_images_fn
+from .playwright_fetcher import fetch_rendered_html_sync
 
 # 设置日志
 logging.basicConfig(level=logging.INFO)
@@ -33,26 +39,45 @@ class WebpageCrawler:
         self.raw_data_dir.mkdir(parents=True, exist_ok=True)
         self.parsed_data_dir.mkdir(parents=True, exist_ok=True)
         
-        # 默认请求头，模拟真实浏览器
+        # 默认请求头，模拟真实浏览器（可选：随机化 UA 与语言）
+        import os as _os, random as _rnd
+        use_random = _os.getenv('HTTPX_RANDOM_UA', '1').strip() not in ('0', 'false', 'False')
+        ua_pool = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        ]
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'User-Agent': _rnd.choice(ua_pool) if use_random else ua_pool[0],
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Accept-Language': _rnd.choice(['zh-CN,zh;q=0.9,en;q=0.8', 'en-US,en;q=0.9,zh-CN;q=0.6']) if use_random else 'zh-CN,zh;q=0.9,en;q=0.8',
             'Accept-Encoding': 'gzip, deflate, br',
             'Connection': 'keep-alive',
             'Upgrade-Insecure-Requests': '1',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
             'Sec-Fetch-Site': 'none',
-            'Cache-Control': 'max-age=0'
+            'Cache-Control': 'no-cache'
         }
         
-        # 会话对象，保持连接
-        self.session = requests.Session()
-        self.session.headers.update(self.headers)
-        
-    def fetch_webpage(self, url: str, timeout: int = 120, retry_times: int = 3) -> Dict[str, Any]:
-        """获取网页内容
+        # httpx 客户端配置（按需创建）
+        self._client: Optional[httpx.Client] = None
+
+    def _get_client(self, timeout: int = 20, follow_redirects: bool = True) -> httpx.Client:
+        if self._client is None:
+            self._client = httpx.Client(
+                headers=self.headers,
+                timeout=timeout,
+                follow_redirects=follow_redirects,
+            )
+        else:
+            # 更新超时与跳转设置（避免复用导致不一致）
+            self._client.timeout = timeout
+            self._client.follow_redirects = follow_redirects
+        return self._client
+
+    def fetch_webpage(self, url: str, timeout: int = 20, retry_times: int = 3) -> Dict[str, Any]:
+        """使用 httpx 获取网页内容（静态抓取）
         
         Args:
             url: 目标网址
@@ -72,12 +97,18 @@ class WebpageCrawler:
                     logger.info(f"第{attempt + 1}次尝试，等待{delay}秒...")
                     time.sleep(delay)
                 
-                response = self.session.get(url, timeout=timeout)
+                client = self._get_client(timeout=timeout)
+                # 轻量随机停顿，模拟人类节奏
+                try:
+                    import random as _r
+                    time.sleep(_r.uniform(0.4, 1.6))
+                except Exception:
+                    pass
+                response = client.get(url)
                 response.raise_for_status()
                 
                 # 检测编码
-                if response.encoding == 'ISO-8859-1':
-                    response.encoding = response.apparent_encoding
+                # httpx 会自动推断编码，保持默认即可；如需强制可在此调整
                 
                 result = {
                     'url': url,
@@ -87,13 +118,14 @@ class WebpageCrawler:
                     'encoding': response.encoding,
                     'timestamp': datetime.now().isoformat(),
                     'success': True,
-                    'error': None
+                    'error': None,
+                    'source': 'httpx'
                 }
                 
                 logger.info(f"成功获取网页内容，状态码: {response.status_code}")
                 return result
                 
-            except requests.exceptions.RequestException as e:
+            except httpx.HTTPError as e:
                 logger.warning(f"第{attempt + 1}次尝试失败: {str(e)}")
                 if attempt == retry_times - 1:
                     return {
@@ -104,8 +136,61 @@ class WebpageCrawler:
                         'encoding': None,
                         'timestamp': datetime.now().isoformat(),
                         'success': False,
-                        'error': str(e)
+                        'error': str(e),
+                        'source': 'httpx'
                     }
+
+    @staticmethod
+    def _looks_dynamic(html: str) -> bool:
+        markers = [
+            '__NUXT__', 'data-reactroot', 'id="__next"', 'ng-version',
+            'skeleton', 'loading', 'id="root"', 'id="app"',
+            'window.__APOLLO_STATE__', '__INITIAL_STATE__'
+        ]
+        html_lc = (html or '').lower()
+        return any(m.lower() in html_lc for m in markers)
+
+    @staticmethod
+    def _main_selector_hits(soup: BeautifulSoup) -> int:
+        selectors = [
+            'article', 'main', '#content', '.post', '.article', '.content',
+            '[role="main"]', '.entry-content', '#content_views'
+        ]
+        hits = 0
+        for sel in selectors:
+            try:
+                elems = soup.select(sel)
+                if elems:
+                    hits += 1
+            except Exception:
+                continue
+        return hits
+
+    @staticmethod
+    def _compute_metrics(html: str, cleaned_text: str, soup: BeautifulSoup) -> Dict[str, Any]:
+        html_len = len(html or '')
+        cleaned_len = len(cleaned_text or '')
+        density = (cleaned_len / html_len) if html_len else 0.0
+        hits = WebpageCrawler._main_selector_hits(soup)
+        dynamic = WebpageCrawler._looks_dynamic(html or '')
+        return {
+            'html_length': html_len,
+            'cleaned_length': cleaned_len,
+            'text_density': round(density, 4),
+            'main_selector_hits': hits,
+            'dynamic_markers_found': dynamic,
+        }
+
+    @staticmethod
+    def _should_fallback(metrics: Dict[str, Any]) -> bool:
+        # 触发条件：
+        # 1) 命中动态指纹且正文较短；或
+        # 2) 正文过少或密度偏低，同时主体选择器未命中
+        if metrics.get('dynamic_markers_found') and metrics.get('cleaned_length', 0) < 2000:
+            return True
+        if (metrics.get('cleaned_length', 0) < 1200 or metrics.get('text_density', 0) < 0.18) and metrics.get('main_selector_hits', 0) == 0:
+            return True
+        return False
                     
     def parse_csdn_article(self, html_content: str, url: str) -> Dict[str, Any]:
         """解析CSDN文章内容
@@ -244,8 +329,8 @@ class WebpageCrawler:
             'parsed_file': str(parsed_filepath) if parsed_filepath else None
         }
         
-    def crawl_and_parse(self, url: str, save_data: bool = True) -> Dict[str, Any]:
-        """爬取并解析网页
+    def crawl_and_parse(self, url: str, save_data: bool = True, image_analysis_options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """爬取并解析网页（httpx+bs4，必要时回退到Playwright）
         
         Args:
             url: 目标网址
@@ -254,38 +339,132 @@ class WebpageCrawler:
         Returns:
             包含原始数据和解析数据的完整结果
         """
-        # 获取网页内容
+        # 1) 静态抓取
         raw_data = self.fetch_webpage(url)
         
         if not raw_data['success']:
             logger.error(f"获取网页失败: {raw_data['error']}")
-            return raw_data
+            # 尝试动态渲染回退
+            logger.info("尝试使用 Playwright 动态渲染进行回退...")
+            import os as _os
+            human_sim = _os.getenv('PLAYWRIGHT_HUMAN_SIM', '1').strip() not in ('0', 'false', 'False')
+            # 若存在代理池（导出包中实现），此处支持通过环境中的 PROXY_URL/PROXY_POOL_FILE 传入单代理
+            proxy_server = os.getenv('PROXY_URL') or None
+            rendered_html = fetch_rendered_html_sync(url, human_simulation=human_sim, proxy_server=proxy_server)
+            if rendered_html:
+                raw_data = {
+                    'url': url,
+                    'status_code': 200,
+                    'headers': {},
+                    'content': rendered_html,
+                    'encoding': 'utf-8',
+                    'timestamp': datetime.now().isoformat(),
+                    'success': True,
+                    'error': None,
+                    'source': 'playwright'
+                }
+                logger.info("动态渲染成功，继续解析页面内容。")
+            else:
+                logger.warning("动态渲染回退不可用或失败，尝试使用 r.jina.ai 代理抓取...")
+                try:
+                    proxy_url = f"https://r.jina.ai/{url}"
+                    client = self._get_client()
+                    resp = client.get(proxy_url)
+                    resp.raise_for_status()
+                    raw_data = {
+                        'url': url,
+                        'status_code': resp.status_code,
+                        'headers': dict(resp.headers),
+                        'content': resp.text,
+                        'encoding': resp.encoding,
+                        'timestamp': datetime.now().isoformat(),
+                        'success': True,
+                        'error': None,
+                        'source': 'r.jina.ai'
+                    }
+                    logger.info("代理抓取成功，继续解析页面内容。")
+                except Exception as e:
+                    logger.warning(f"代理抓取失败，返回静态抓取失败结果: {e}")
+                    return raw_data
             
-        # 解析内容
+        # 2) 解析与指标（静态）
         parsed_data = None
+        soup_static = BeautifulSoup(raw_data['content'], 'html.parser')
+        structured_static = clean_and_structure(raw_data['content'], url)
+        metrics_static = self._compute_metrics(raw_data['content'], structured_static.get('clean_text', ''), soup_static)
+        fallback_used = False
+        fallback_reason = None
+
+        # 选择站点解析器
         if 'csdn.net' in url:
-            parsed_data = self.parse_csdn_article(raw_data['content'], url)
+            csdn_data = self.parse_csdn_article(raw_data['content'], url)
+            # 合并站点特定字段
+            parsed_data = {**structured_static,
+                           'author': csdn_data.get('author', ''),
+                           'publish_time': csdn_data.get('publish_time', ''),
+                           'tags': csdn_data.get('tags', [])}
+            parsed_data['word_count'] = len(parsed_data.get('clean_text', '') or '')
+            # 若 CSDN 解析正文过短，则也考虑回退
+            if len(parsed_data.get('clean_text', '')) < 1200:
+                fallback_reason = 'csdn_content_too_short'
         else:
-            # 通用解析
-            soup = BeautifulSoup(raw_data['content'], 'html.parser')
-            # 获取原始文本内容
-            raw_title = soup.title.get_text().strip() if soup.title else ''
-            raw_content = soup.get_text().strip()
-            # 使用HTML清理器清理内容
-            cleaned_title = clean_html_content(raw_title)
-            cleaned_content = clean_html_content(raw_content)
-            
-            parsed_data = {
-                'title': cleaned_title,
-                'content': cleaned_content,
-                'url': url,
-                'parsed_at': datetime.now().isoformat()
-            }
-            
+            parsed_data = {**structured_static,
+                           'url': url,
+                           'parsed_at': datetime.now().isoformat()}
+            parsed_data['word_count'] = len(parsed_data.get('clean_text', '') or '')
+
+        # 3) 触发回退：Playwright 动态渲染
+        if fallback_reason or self._should_fallback(metrics_static):
+            logger.info(f"触发动态渲染回退: reason={fallback_reason or 'metrics'}")
+            import os as _os
+            human_sim = _os.getenv('PLAYWRIGHT_HUMAN_SIM', '1').strip() not in ('0', 'false', 'False')
+            proxy_server = os.getenv('PROXY_URL') or None
+            rendered_html = fetch_rendered_html_sync(url, human_simulation=human_sim, proxy_server=proxy_server)
+            if rendered_html:
+                fallback_used = True
+                raw_data['content'] = rendered_html
+                raw_data['source'] = 'playwright'
+                # 重新解析
+                soup_dyn = BeautifulSoup(rendered_html, 'html.parser')
+                structured_dyn = clean_and_structure(rendered_html, url)
+                metrics_dyn = self._compute_metrics(rendered_html, structured_dyn.get('clean_text', ''), soup_dyn)
+                if 'csdn.net' in url:
+                    csdn_data = self.parse_csdn_article(rendered_html, url)
+                    parsed_data = {**structured_dyn,
+                                   'author': csdn_data.get('author', ''),
+                                   'publish_time': csdn_data.get('publish_time', ''),
+                                   'tags': csdn_data.get('tags', [])}
+                else:
+                    parsed_data = {**structured_dyn,
+                                   'url': url,
+                                   'parsed_at': datetime.now().isoformat()}
+                parsed_data['word_count'] = len(parsed_data.get('clean_text', '') or '')
+                metrics_static['fallback_used'] = True
+                metrics_static['fallback_metrics'] = metrics_dyn
+            else:
+                logger.warning("Playwright 未可用或渲染失败，保留静态结果")
+                metrics_static['fallback_used'] = False
+
+        # 4) 图片文本化分析（可选）：不保存图片，不维护元数据，只写入文本输出
+        if image_analysis_options is not None and parsed_data and parsed_data.get('images'):
+            try:
+                textual_images = analyze_images_fn(parsed_data.get('images', []), url, image_analysis_options)
+                parsed_data['images'] = textual_images
+                # 去除 Markdown 中的图片链接，确保知识库仅包含纯文本
+                md = parsed_data.get('markdown_content') or parsed_data.get('markdown') or ''
+                if md:
+                    md_text = re.sub(r'!\[[^\]]*\]\([^\)]+\)', '', md)
+                    md_text = re.sub(r'\n{3,}', '\n\n', md_text).strip()
+                    parsed_data['markdown_content'] = md_text
+                    parsed_data['markdown'] = md_text
+            except Exception as e:
+                logger.warning(f"图片文本化分析异常: {e}")
+
         result = {
             'raw_data': raw_data,
             'parsed_data': parsed_data,
-            'success': True
+            'success': True,
+            'metrics': metrics_static
         }
         
         # 保存数据
@@ -303,5 +482,8 @@ class WebpageCrawler:
         
     def __del__(self):
         """清理资源"""
-        if hasattr(self, 'session'):
-            self.session.close()
+        try:
+            if hasattr(self, '_client') and self._client is not None:
+                self._client.close()
+        except Exception:
+            pass
