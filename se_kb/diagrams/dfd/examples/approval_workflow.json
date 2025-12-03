@@ -1,0 +1,46 @@
+{
+  "case_name": "Purchase Approval Workflow",
+  "description": "采购申请的多级审批与会签流程",
+  "requirements_text": [
+    "员工提交采购申请并上传相关材料。",
+    "系统进行形式审查，随后进入部门经理与财务会签。",
+    "会签通过后生成采购订单并通知供应商；不通过则返回修改意见。"
+  ],
+  "dfd_elements": {
+    "external_entities": [
+      { "id": "E1", "name": "Employee" },
+      { "id": "E2", "name": "Manager" },
+      { "id": "E3", "name": "Finance" },
+      { "id": "E4", "name": "Supplier" }
+    ],
+    "processes": [
+      { "id": "P1", "name": "Submit Request" },
+      { "id": "P2", "name": "Form Check" },
+      { "id": "P3", "name": "Manager Review" },
+      { "id": "P4", "name": "Finance Review" },
+      { "id": "P5", "name": "Aggregate Decisions" },
+      { "id": "P6", "name": "Create Purchase Order" },
+      { "id": "P7", "name": "Notify Supplier & Employee" }
+    ],
+    "data_stores": [
+      { "id": "D1", "name": "Requests DB" },
+      { "id": "D2", "name": "Purchase Orders DB" }
+    ],
+    "data_flows": [
+      { "from": "Employee", "to": "P1", "data": "Request Form" },
+      { "from": "P1", "to": "D1", "data": "Store Request" },
+      { "from": "P1", "to": "P2", "data": "Request Data" },
+      { "from": "P2", "to": "P3", "data": "Manager Review Task" },
+      { "from": "P2", "to": "P4", "data": "Finance Review Task" },
+      { "from": "Manager", "to": "P3", "data": "Review Decision" },
+      { "from": "Finance", "to": "P4", "data": "Review Decision" },
+      { "from": "P3", "to": "P5", "data": "Manager Decision" },
+      { "from": "P4", "to": "P5", "data": "Finance Decision" },
+      { "from": "P5", "to": "P6", "data": "Aggregated Approval" },
+      { "from": "P6", "to": "D2", "data": "Create Purchase Order" },
+      { "from": "P7", "to": "Supplier", "data": "PO Notification" },
+      { "from": "P7", "to": "Employee", "data": "Decision Notification" },
+      { "from": "P6", "to": "P7", "data": "Notification Content" }
+    ]
+  }
+}

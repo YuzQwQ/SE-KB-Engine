@@ -1,0 +1,259 @@
+{
+  "description": "Core concepts from Chapter 7 on systems engineering, requirements analysis, and structured analysis (DFD-based).",
+  "concepts": [
+    {
+      "id": "c_001",
+      "name": "System",
+      "english_term": "system",
+      "definition": "An integrated whole composed of multiple interacting elements arranged in a particular structure to perform certain functions and achieve specific goals, emphasizing relationships among elements, the overall system, and its environment.",
+      "representation": "concept",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.1.1 System theory",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_002",
+      "name": "Systems Engineering",
+      "english_term": "systems engineering",
+      "definition": "An engineering discipline that applies systems science to the design, development, management and control of large, complex systems, seeking overall optimization rather than local optima and integrating techniques from operations research, probability and statistics, and modern management.",
+      "representation": "concept",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.1.2 Systems engineering",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_003",
+      "name": "Systems Engineering Layer Structure",
+      "english_term": "systems engineering layers",
+      "definition": "A hierarchical view where a world view is decomposed into domains, domains into elements, and elements into components, enabling engineers to locate the product within a global business and product context before focusing on detailed technical views.",
+      "representation": "layered_view",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.1.3 Layer structure",
+      "confidence": 0.92
+    },
+    {
+      "id": "c_004",
+      "name": "Business Process Engineering",
+      "english_term": "business process engineering",
+      "definition": "An approach that, from an enterprise-wide information perspective, defines a data architecture, application architecture and technical infrastructure to support business activities, clarifying how the target system fits into the enterprise information system.",
+      "representation": "concept",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.1.4 Business process engineering",
+      "confidence": 0.93
+    },
+    {
+      "id": "c_005",
+      "name": "Product Engineering",
+      "english_term": "product engineering",
+      "definition": "An engineering process that transforms a defined set of user-desired capabilities into a real product by allocating system-level requirements to software, hardware, data and people, and then performing concurrent engineering within each component.",
+      "representation": "concept",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.1.5 Product engineering",
+      "confidence": 0.93
+    },
+    {
+      "id": "c_006",
+      "name": "Requirements Analysis",
+      "english_term": "requirements analysis",
+      "definition": "A decisive phase in software engineering that thoroughly understands the problem to be solved and precisely defines what the software should do—its purpose, scope, functions, performance, constraints and interfaces—through intensive communication between users and developers.",
+      "representation": "concept",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.2 and §7.2.1 Overview",
+      "confidence": 0.96
+    },
+    {
+      "id": "c_007",
+      "name": "Characteristics of Requirements Analysis",
+      "english_term": "requirements analysis characteristics",
+      "definition": "Requirements analysis is important yet difficult: users and developers have communication barriers, user needs evolve dynamically, and the cost of change grows nonlinearly as the lifecycle progresses, making early correctness highly valuable.",
+      "representation": "concept",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.2.1 Characteristics",
+      "confidence": 0.96
+    },
+    {
+      "id": "c_008",
+      "name": "Goals of Software Requirements Analysis",
+      "english_term": "requirements analysis goals",
+      "definition": "To describe software functions and performance, clarify design constraints and interfaces with other system elements, and define other effectiveness requirements so that accepted user requirements can serve as a solid basis for design.",
+      "representation": "concept",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.2.2 Goals",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_009",
+      "name": "Requirements Analysis Process",
+      "english_term": "requirements analysis process",
+      "definition": "A four-part process consisting of problem identification, analysis and synthesis, documentation, and review: identify and classify requirements, refine and reconcile them into a logical model, document them in specifications and manuals, and then formally review for correctness, completeness and consistency.",
+      "representation": "process_model",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.2.3 Process",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_010",
+      "name": "Requirements Elicitation Techniques",
+      "english_term": "requirements elicitation",
+      "definition": "Techniques such as studying system-level requirement specifications, market research, interviewing users and domain experts, on-site observation, questionnaires, meetings with users at different levels, consulting key personnel, document analysis and using diagrams like DFDs to investigate and clarify user needs.",
+      "representation": "technique_set",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.2.4 Requirements acquisition",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_011",
+      "name": "Structured Analysis Method",
+      "english_term": "structured analysis (SA)",
+      "definition": "A top-down, data-flow-oriented analysis method that reduces errors by iteratively decomposing complex problems into simpler ones and building a logical model of the target system using data flow diagrams, data dictionaries, E-R diagrams and state transition diagrams.",
+      "representation": "analysis_method",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3 Structured analysis method",
+      "confidence": 0.96
+    },
+    {
+      "id": "c_012",
+      "name": "Analysis Model",
+      "english_term": "analysis model",
+      "definition": "A logical model of the target system generated in structured analysis, centered on the data dictionary and accompanied by three diagrams—DFD for function and data flow, E-R for data structure, and state transition diagrams for behavior—that together describe what the system should do.",
+      "representation": "analysis_model",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3 and Figure 7-6",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_013",
+      "name": "Data Flow Diagram",
+      "english_term": "data flow diagram (DFD)",
+      "definition": "A graphical representation of the logical model of a software system that shows how data flows through processes, data stores and external entities, highlighting logical data movement and transformation without physical implementation details.",
+      "representation": "dfd_diagram",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3.1 Data flow diagram",
+      "confidence": 0.97
+    },
+    {
+      "id": "c_014",
+      "name": "DFD Data Flow",
+      "english_term": "data flow",
+      "definition": "A directed connection in a DFD that represents a set of related data elements moving as a logical unit between processes, data stores or external entities, indicating the direction of information movement.",
+      "representation": "dfd_data_flow",
+      "naming_rule": "Name data flows with nouns or noun phrases that describe the data content, such as 'order details' or 'withdrawal amount'.",
+      "constraints": [
+        "Each data flow should represent a single logical packet of related data.",
+        "Data flows connected to data stores may be left unnamed when the store name already explains the content."
+      ],
+      "examples": [
+        "A 'WithdrawalAmount' flow from the ATM keypad to the 'Process withdrawal' process."
+      ],
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3.1 DFD components",
+      "confidence": 0.96
+    },
+    {
+      "id": "c_015",
+      "name": "DFD Process",
+      "english_term": "process",
+      "definition": "A transformation step in a DFD that consumes input data flows, performs logical operations, and produces output data flows, representing the functions that the system must perform.",
+      "representation": "dfd_process",
+      "naming_rule": "Use user-oriented verb–object phrases such as 'validate order' or 'record transaction', and assign layer-based identifiers (e.g., 3.4) according to the decomposition structure.",
+      "constraints": [
+        "A process should normally have at least one input and one output data flow.",
+        "A process without inputs or outputs indicates missing or unnecessary data flows that must be reconsidered."
+      ],
+      "examples": [
+        "In the order handling example, 'Validate order' is a process.",
+        "In the ATM example, '3.3-Handle withdrawal' is a process on a lower-level DFD."
+      ],
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3.1 DFD processes and decomposition",
+      "confidence": 0.96
+    },
+    {
+      "id": "c_016",
+      "name": "DFD Data Store",
+      "english_term": "data store",
+      "definition": "A repository in a DFD that temporarily or persistently holds data used by processes, such as files or databases, abstracting away physical storage details.",
+      "representation": "dfd_data_store",
+      "naming_rule": "Name data stores after the collection they contain, such as 'Customer file' or 'Account ledger'.",
+      "constraints": [
+        "Data flows from a process to a store represent write or update operations; flows from a store to a process represent reads.",
+        "Processes that write to a store should typically be accompanied by processes that read from it; otherwise some processing may be missing."
+      ],
+      "examples": [
+        "An 'Account file' data store used by ATM withdrawal and balance inquiry processes."
+      ],
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3.1 Data store and Table 7-1 notes",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_017",
+      "name": "DFD External Entity",
+      "english_term": "external entity",
+      "definition": "A source or sink of data outside the system boundary that exchanges information with the system, such as users, departments or external systems, drawn to clarify where data originates and where it goes.",
+      "representation": "dfd_external_entity",
+      "naming_rule": "Use role or organization names such as 'Customer', 'Trainee', or 'Bank clearing center'.",
+      "examples": [
+        "The 'Trainee' entity in the enrollment DFD.",
+        "The 'Customer' using the ATM in the ATM DFD."
+      ],
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3.1 External entities",
+      "confidence": 0.94
+    },
+    {
+      "id": "c_018",
+      "name": "Data Dictionary",
+      "english_term": "data dictionary (DD)",
+      "definition": "An organized list of all data elements related to the software system, giving precise logical definitions for data flows, data stores and data elements so that developers and users share a consistent understanding of inputs, outputs, stored data and intermediate results.",
+      "representation": "data_dictionary",
+      "naming_rule": "",
+      "constraints": [
+        "Every name appearing in DFDs should correspond to an entry in the data dictionary.",
+        "Each entry name must be unique and have only one definition."
+      ],
+      "examples": [
+        "An entry describing the ATM 'account number' element including alias, type, length and value constraints.",
+        "An entry describing the 'withdrawal amount' element with numeric type and allowed range."
+      ],
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3.1 Data dictionary",
+      "confidence": 0.97
+    },
+    {
+      "id": "c_019",
+      "name": "Entity–Relationship Diagram",
+      "english_term": "entity–relationship diagram (E-R diagram)",
+      "definition": "A conceptual data modeling diagram that uses entities, relationships and attributes to describe the static data structure, often serving as the basis for database design.",
+      "representation": "er_diagram",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3 E-R diagram description",
+      "confidence": 0.94
+    },
+    {
+      "id": "c_020",
+      "name": "State Transition Diagram",
+      "english_term": "state transition diagram",
+      "definition": "A behavioral modeling diagram that shows the possible states of a system or component and the transitions between states triggered by external events, capturing dynamic system behavior.",
+      "representation": "state_transition_diagram",
+      "naming_rule": "",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3 State transition diagram",
+      "confidence": 0.94
+    }
+  ]
+}

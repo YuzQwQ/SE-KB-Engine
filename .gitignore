@@ -70,7 +70,6 @@ export/crawler_core/.env
 se_kb/artifacts/
 se-kb/artifacts/
 
-se_kb/
 
 # ---- Additional local outputs ----
 venv_enhanced/

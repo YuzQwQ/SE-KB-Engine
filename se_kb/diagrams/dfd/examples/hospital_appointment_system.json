@@ -1,0 +1,50 @@
+{
+  "case_name": "Hospital Appointment System",
+  "description": "患者在线预约、医生查看排班、前台确认就诊的医疗流程",
+  "requirements_text": [
+    "患者可以查看医生排班并提交预约。",
+    "系统需要验证患者信息并检查该时间段是否已有预约。",
+    "系统将预约写入数据库，并发送确认信息给患者。",
+    "医生可以查看每日预约列表。",
+    "前台在患者到达时确认就诊并更新状态。",
+    "系统记录整个就诊流程供后续统计分析使用。"
+  ],
+  "dfd_elements": {
+    "external_entities": [
+      { "id": "E1", "name": "Patient" },
+      { "id": "E2", "name": "Doctor" },
+      { "id": "E3", "name": "Receptionist" }
+    ],
+    "processes": [
+      { "id": "P1", "name": "View Schedule & Request Appointment" },
+      { "id": "P2", "name": "Validate Patient & Check Availability" },
+      { "id": "P3", "name": "Create Appointment" },
+      { "id": "P4", "name": "Doctor View Appointments" },
+      { "id": "P5", "name": "Check-in & Update Visit Status" }
+    ],
+    "data_stores": [
+      { "id": "D1", "name": "Doctor Schedule DB" },
+      { "id": "D2", "name": "Appointment DB" },
+      { "id": "D3", "name": "Patient Info DB" }
+    ],
+    "data_flows": [
+      { "from": "Patient", "to": "P1", "data": "Schedule Request" },
+      { "from": "P1", "to": "D1", "data": "Query Schedule" },
+      { "from": "D1", "to": "P1", "data": "Schedule Info" },
+
+      { "from": "P1", "to": "P2", "data": "Appointment Request" },
+      { "from": "P2", "to": "D3", "data": "Query Patient Info" },
+      { "from": "P2", "to": "D2", "data": "Check Appointment Availability" },
+
+      { "from": "P2", "to": "P3", "data": "Validated Appointment" },
+      { "from": "P3", "to": "D2", "data": "New Appointment Record" },
+
+      { "from": "Doctor", "to": "P4", "data": "View Appointments Request" },
+      { "from": "P4", "to": "D2", "data": "Query Appointments" },
+      { "from": "D2", "to": "P4", "data": "Appointment List" },
+
+      { "from": "Receptionist", "to": "P5", "data": "Check-in Info" },
+      { "from": "P5", "to": "D2", "data": "Update Visit Status" }
+    ]
+  }
+}

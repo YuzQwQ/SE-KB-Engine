@@ -1,0 +1,46 @@
+{
+  "description": "基本加工（Primitive Process）的规约模板库，用于描述底层过程的可执行规范。",
+  "templates": [
+    {
+      "id": "pspec_structured_english",
+      "name": "结构化语言（Structured English）",
+      "sections": ["Inputs", "Preconditions", "Steps", "Postconditions", "Exceptions"],
+      "example": {
+        "Inputs": ["cardNumber", "password", "amount"],
+        "Preconditions": ["cardNumber 格式正确", "password 长度为 6"],
+        "Steps": [
+          "验证密码",
+          "读取账户余额",
+          "检查金额范围与限额",
+          "生成更新指令"
+        ],
+        "Postconditions": ["输出 验证结果 或 更新指令"],
+        "Exceptions": ["密码错误", "余额不足", "系统超时"]
+      }
+    },
+    {
+      "id": "pspec_decision_table",
+      "name": "判定表（Decision Table）",
+      "structure": {
+        "conditions": ["密码正确", "额度足够", "账户未冻结"],
+        "actions": ["允许交易", "拒绝交易", "进入人工审核"],
+        "rules": [
+          {"Y": [1,1,1], "A": ["允许交易"]},
+          {"Y": [1,0,1], "A": ["拒绝交易"]},
+          {"Y": [1,1,0], "A": ["进入人工审核"]}
+        ]
+      }
+    },
+    {
+      "id": "pspec_decision_tree",
+      "name": "判定树（Decision Tree）",
+      "nodes": [
+        {"id": "n1", "type": "condition", "text": "密码正确?", "yes": "n2", "no": "e_pwd_error"},
+        {"id": "n2", "type": "condition", "text": "额度足够?", "yes": "n3", "no": "e_quota_low"},
+        {"id": "n3", "type": "action", "text": "生成更新指令"},
+        {"id": "e_pwd_error", "type": "exception", "text": "密码错误"},
+        {"id": "e_quota_low", "type": "exception", "text": "额度不足"}
+      ]
+    }
+  ]
+}

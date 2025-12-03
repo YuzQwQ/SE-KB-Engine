@@ -1,0 +1,30 @@
+{
+  "leveling_principles": [
+    {
+      "id": "l_001_parent_child_io_balance",
+      "description": "In layered DFDs, the input and output data flows of a parent process must match the external input and output data flows of its child diagram (after ignoring minor auxiliary flows), so that the hierarchy is balanced and understandable.",
+      "detection_hint": "For each decomposed process, compare the set of incoming and outgoing flows on the parent with the set of flows that cross the child diagram boundary; the two sets should be equal."
+    },
+    {
+      "id": "l_002_layer_depth_control",
+      "description": "Decompose the system into as few intermediate layers as possible while keeping each layer understandable; too many layers make the model hard to read.",
+      "detection_hint": "Check that the number of DFD levels (0,1,2,...) is not excessive and that each level adds meaningful detail without unnecessary fragmentation."
+    },
+    {
+      "id": "l_003_uniform_granularity",
+      "description": "Within a single DFD, the granularity of processes should be roughly uniform so that some parts are not at basic-processing level while others still require several further layers of decomposition.",
+      "detection_hint": "Inspect each diagram to see whether most processes are either basic or decomposable to roughly the same depth; if some nodes are much deeper than others, reconsider the partitioning."
+    }
+  ],
+  "decomposition_rules": [
+    {
+      "id": "d_001_child_process_limit",
+      "description": "A single process should usually be decomposed into no more than about 7–8 child processes; more children suggest that the decomposition boundary should be reconsidered or an additional intermediate level introduced.",
+      "threshold": 8
+    },
+    {
+      "id": "d_002_top_down_by_data_flow",
+      "description": "Apply a top-down, data-flow-driven decomposition: start from the 0-level DFD that defines the system boundary and main input/output flows, then successively decompose major processes into lower-level diagrams following the main data flows."
+    }
+  ]
+}

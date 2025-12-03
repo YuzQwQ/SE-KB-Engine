@@ -1,0 +1,72 @@
+{
+  "description": "基于公开资料（IBM, Wikipedia, GeeksforGeeks, 云社区等）整理的 DFD 理论规则",
+  "rules": [
+    {
+      "id": "naming_rule",
+      "title": "命名规则",
+      "detail": "DFD 各元素命名应该清晰、一致：数据流使用动词短语；过程 (process) 使用“动词 + 名词”；外部实体和数据存储使用名词。参考 IBM DFD 符号规范。"
+    },
+    {
+      "id": "balancing_principle",
+      "title": "平衡原则 (Balancing)",
+      "detail": "在分层 DFD 中，父图与子图必须保持数据流的输入输出一致。分解时，不得引入新的数据流，也不得丢失父层的数据流。"
+    },
+    {
+      "id": "decomposition_principle",
+      "title": "分解原则 (Decomposition)",
+      "detail": "按照自顶向下 (top-down) 方法将高层过程分解为子过程。每个父过程下的子过程数量通常在 3-7 个之间，以保持可读性和模块清晰度。"
+    },
+    {
+      "id": "external_entity_identification",
+      "title": "外部实体识别",
+      "detail": "外部实体 (External Entity) 是系统外部与系统交换数据的源/汇。命名应为名词。应识别所有对系统有输入或接收系统输出的外界角色。"
+    },
+    {
+      "id": "data_store_identification",
+      "title": "数据存储 (Data Store) 识别",
+      "detail": "数据存储代表系统中持久保存的数据（例如数据库、文件）。数据存储应由名词命名，且在 DFD 中明确表示读 (read) 和写 (write) 的过程。"
+    },
+    {
+      "id": "data_flow_direction_rw",
+      "title": "数据流方向与读写规则",
+      "detail": "数据流连接必须明确源 (source) 和目标 (target)。当数据存储 (Data Store) 被读写时，应使用不同的 DFD 数据流箭头或不同标注来表示读 (读取) 与写 (写入) 操作。"
+    },
+    {
+      "id": "hierarchy_and_fanout",
+      "title": "层级与扇出限制",
+      "detail": "在分解过程中，应避免过多扇出 (fan-out) 以减少复杂性。每一层子过程通常不宜超过 7 个子项，以保证 DFD 可读性。"
+    }
+  ],
+  "references": [
+    {
+      "source": "IBM",
+      "url": "https://www.ibm.com/cn-zh/topics/data-flow-diagram",
+      "note": "IBM 对 DFD 的基本概念 (外部实体、数据流、处理、存储) 进行了定义和说明。"
+    },
+    {
+      "source": "Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Data-flow_diagram",
+      "note": "维基百科关于 DFD 的层次、分解、结构的一般描述。"
+    },
+    {
+      "source": "CSDN (叫醒你笛莎)",
+      "url": "https://damodev.csdn.net/6863a849b93e2f4179626534.html",
+      "note": "提供了分层分解原则与数据完整性原则。"
+    },
+    {
+      "source": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org/developing-dfd-model-of-system/",
+      "note": "讨论了 DFD 分解 (decomposition) 和子过程数量 (3–7) 的建议。"
+    },
+    {
+      "source": "Visual Paradigm",
+      "url": "https://www.visual-paradigm.com/guide/data-flow-diagram/what-is-data-flow-diagram/",
+      "note": "介绍 DFD 层次与平衡原则。"
+    },
+    {
+      "source": "腾讯云 / 云社区",
+      "url": "https://cloud.tencent.com/developer/article/2085871",
+      "note": "DFD 平衡规则 (软件工程考试参考)。"
+    }
+  ]
+}

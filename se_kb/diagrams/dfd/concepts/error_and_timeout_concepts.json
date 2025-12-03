@@ -1,0 +1,35 @@
+{
+  "description": "错误、超时与补偿在 DFD 中的概念与建议：分类、处理策略、幂等与重试、审计与回滚。",
+  "taxonomy": [
+    {"id": "validation_error", "name": "校验错误", "examples": ["格式错误", "缺少必填项", "范围非法"]},
+    {"id": "business_error", "name": "业务错误", "examples": ["余额不足", "权限不足", "额度超限"]},
+    {"id": "system_error", "name": "系统错误", "examples": ["网络超时", "存储失败", "依赖服务不可达"]}
+  ],
+  "handling_patterns": [
+    {
+      "id": "error_branch",
+      "name": "错误分支",
+      "guidelines": ["校验失败进入错误分支并生成消息", "记录日志与上下文", "提示用户或通知下游"]
+    },
+    {
+      "id": "timeout_handling",
+      "name": "超时处理",
+      "guidelines": ["等待输入与超时事件分支", "超时提示与会话释放", "回到主流程或取消交易"]
+    },
+    {
+      "id": "compensation",
+      "name": "补偿与回滚",
+      "guidelines": ["业务失败时回滚已写入操作", "生成补偿事件", "保证最终一致性"]
+    },
+    {
+      "id": "retry_backoff",
+      "name": "重试与退避",
+      "guidelines": ["幂等操作支持重复执行", "退避策略避免拥塞", "重试上限与告警"]
+    },
+    {
+      "id": "idempotency",
+      "name": "幂等检查",
+      "guidelines": ["使用唯一请求ID", "在数据存储中记录处理状态", "防止重复更新"]
+    }
+  ]
+}

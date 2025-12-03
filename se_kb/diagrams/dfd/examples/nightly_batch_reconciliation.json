@@ -1,0 +1,43 @@
+{
+  "case_name": "Nightly Batch Reconciliation",
+  "description": "每晚批量对账与报表生成，包含异常报告与补偿",
+  "requirements_text": [
+    "系统在夜间窗口批量读取交易与订单数据。",
+    "系统聚合生成对账报表与统计。",
+    "对异常项生成任务并在次日通知。"
+  ],
+  "dfd_elements": {
+    "external_entities": [
+      { "id": "E1", "name": "Scheduler" },
+      { "id": "E2", "name": "Finance Team" }
+    ],
+    "processes": [
+      { "id": "P1", "name": "Trigger Batch Window" },
+      { "id": "P2", "name": "Load Transactions" },
+      { "id": "P3", "name": "Load Orders" },
+      { "id": "P4", "name": "Aggregate & Reconcile" },
+      { "id": "P5", "name": "Generate Reports" },
+      { "id": "P6", "name": "Create Exception Tasks" },
+      { "id": "P7", "name": "Notify Finance" }
+    ],
+    "data_stores": [
+      { "id": "D1", "name": "Transaction Warehouse" },
+      { "id": "D2", "name": "Order Warehouse" },
+      { "id": "D3", "name": "Reports DB" },
+      { "id": "D4", "name": "Exception Tasks DB" }
+    ],
+    "data_flows": [
+      { "from": "Scheduler", "to": "P1", "data": "Batch Trigger" },
+      { "from": "P2", "to": "D1", "data": "Read Transactions" },
+      { "from": "P3", "to": "D2", "data": "Read Orders" },
+      { "from": "P2", "to": "P4", "data": "Transactions" },
+      { "from": "P3", "to": "P4", "data": "Orders" },
+      { "from": "P4", "to": "P5", "data": "Reconciliation Result" },
+      { "from": "P5", "to": "D3", "data": "Store Reports" },
+      { "from": "P4", "to": "P6", "data": "Exceptions" },
+      { "from": "P6", "to": "D4", "data": "Create Exception Tasks" },
+      { "from": "P7", "to": "Finance Team", "data": "Send Report Link" },
+      { "from": "P5", "to": "P7", "data": "Report Summary" }
+    ]
+  }
+}

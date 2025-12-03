@@ -1,0 +1,50 @@
+{
+  "case_name": "E-commerce Checkout",
+  "description": "用户下单结账、库存扣减、支付与通知的典型电商流程",
+  "requirements_text": [
+    "用户在购物车中选择商品并提交订单。",
+    "系统校验库存与优惠券并计算应付金额。",
+    "系统发起第三方支付并根据回调更新订单状态。",
+    "支付成功后扣减库存并发送通知给用户。"
+  ],
+  "dfd_elements": {
+    "external_entities": [
+      { "id": "E1", "name": "Customer" },
+      { "id": "E2", "name": "Payment Gateway" },
+      { "id": "E3", "name": "Notification Service" }
+    ],
+    "processes": [
+      { "id": "P1", "name": "Submit Order" },
+      { "id": "P2", "name": "Validate Inventory & Coupon" },
+      { "id": "P3", "name": "Calculate Payable" },
+      { "id": "P4", "name": "Initiate Payment" },
+      { "id": "P5", "name": "Handle Payment Callback" },
+      { "id": "P6", "name": "Update Order Status" },
+      { "id": "P7", "name": "Deduct Inventory" },
+      { "id": "P8", "name": "Send Notification" }
+    ],
+    "data_stores": [
+      { "id": "D1", "name": "Order Database" },
+      { "id": "D2", "name": "Inventory Database" },
+      { "id": "D3", "name": "Coupon Database" }
+    ],
+    "data_flows": [
+      { "from": "Customer", "to": "P1", "data": "Order Request" },
+      { "from": "P1", "to": "D1", "data": "Create Order" },
+      { "from": "P1", "to": "P2", "data": "Order Items" },
+      { "from": "P2", "to": "D2", "data": "Check Inventory" },
+      { "from": "P2", "to": "D3", "data": "Check Coupon" },
+      { "from": "P2", "to": "P3", "data": "Validation Result" },
+      { "from": "P3", "to": "P4", "data": "Payment Request" },
+      { "from": "P4", "to": "Payment Gateway", "data": "Payment Payload" },
+      { "from": "Payment Gateway", "to": "P5", "data": "Payment Callback" },
+      { "from": "P5", "to": "P6", "data": "Payment Result" },
+      { "from": "P6", "to": "D1", "data": "Update Order Status" },
+      { "from": "P6", "to": "P7", "data": "Trigger Inventory Deduction" },
+      { "from": "P7", "to": "D2", "data": "Deduct Stock" },
+      { "from": "P6", "to": "P8", "data": "Notification Content" },
+      { "from": "P8", "to": "Notification Service", "data": "Send Message" },
+      { "from": "Notification Service", "to": "Customer", "data": "Notify Result" }
+    ]
+  }
+}

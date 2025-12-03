@@ -1,0 +1,41 @@
+{
+  "case_name": "User Login with 2FA",
+  "description": "用户登录包含密码验证与二次验证码校验，含超时与锁定",
+  "requirements_text": [
+    "用户输入用户名与密码进行初次验证。",
+    "系统向短信网关发送验证码并校验用户输入。",
+    "多次失败触发账户锁定与告警；超时返回主界面。"
+  ],
+  "dfd_elements": {
+    "external_entities": [
+      { "id": "E1", "name": "User" },
+      { "id": "E2", "name": "SMS Gateway" }
+    ],
+    "processes": [
+      { "id": "P1", "name": "Collect Credentials" },
+      { "id": "P2", "name": "Validate Password" },
+      { "id": "P3", "name": "Send OTP" },
+      { "id": "P4", "name": "Validate OTP" },
+      { "id": "P5", "name": "Create Session" },
+      { "id": "P6", "name": "Handle Error/Lockout" },
+      { "id": "P7", "name": "Handle Timeout" }
+    ],
+    "data_stores": [
+      { "id": "D1", "name": "User Account DB" },
+      { "id": "D2", "name": "Session Store" },
+      { "id": "D3", "name": "Audit Log" }
+    ],
+    "data_flows": [
+      { "from": "User", "to": "P1", "data": "Username + Password" },
+      { "from": "P2", "to": "D1", "data": "Verify Credentials" },
+      { "from": "P2", "to": "P3", "data": "Need OTP?" },
+      { "from": "P3", "to": "SMS Gateway", "data": "OTP Request" },
+      { "from": "SMS Gateway", "to": "P4", "data": "OTP Delivery Info" },
+      { "from": "User", "to": "P4", "data": "OTP Input" },
+      { "from": "P4", "to": "P5", "data": "OTP Validated" },
+      { "from": "P5", "to": "D2", "data": "Create Session" },
+      { "from": "P6", "to": "D3", "data": "Audit Failure" },
+      { "from": "P7", "to": "D3", "data": "Audit Timeout" }
+    ]
+  }
+}

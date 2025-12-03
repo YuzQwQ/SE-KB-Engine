@@ -1,0 +1,89 @@
+{
+  "validation_rules": [
+    {
+      "id": "v_001_parent_child_balance",
+      "name": "Parent–child I/O balance",
+      "definition": "A decomposed process must have the same set of input and output data flows as its child DFD boundary flows, ensuring that the parent and child diagrams are balanced.",
+      "detect_logic": "For each process with a child DFD, compute the set of input and output flow names on the parent node and compare it with the set of flows that cross the child diagram boundary; report imbalance if the sets differ.",
+      "severity": "error",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "note": "If imbalance is found, check whether some flows are missing on the child diagram, unnecessary on the parent, or should be split/merged using the data dictionary."
+    },
+    {
+      "id": "v_002_data_balance",
+      "name": "Data balance within a process",
+      "definition": "A process that has outputs but no inputs, or inputs that never contribute to outputs, indicates missing or superfluous data flows.",
+      "detect_logic": "For each process, ensure there is at least one input and one output flow, and that each output can be traced to some input or data store; flag processes with zero inputs or zero outputs or with obviously unused inputs.",
+      "severity": "error",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "note": "Add missing flows or remove unnecessary ones so that each process has meaningful inputs and outputs."
+    },
+    {
+      "id": "v_003_data_store_flow_direction",
+      "name": "Data store flow direction",
+      "definition": "The direction of data flows between processes and data stores must reflect read, write or update semantics; misuse of arrow direction leads to ambiguous models.",
+      "detect_logic": "Check flows incident on data stores: flows from a process into a store are writes or updates; flows from a store to a process are reads; disallow flows that contradict these patterns unless explicitly modeled as read/write.",
+      "severity": "error",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "note": "Correct any arrows whose direction does not match the intended read or write operation."
+    },
+  {
+      "id": "v_004_uniform_decomposition",
+      "name": "Uniform decomposition check",
+      "definition": "Within the same DFD, having some processes already at basic level while others still require many additional layers of decomposition reduces readability.",
+      "detect_logic": "Measure the decomposition depth for each major branch; if some branches are several levels deeper than others on the same diagram, mark the diagram as non-uniform.",
+      "severity": "warning",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "note": "Consider repartitioning and redrawing the parent diagram following the steps similar to the guideline table for redrawing parent DFDs."
+    }
+    ,
+    {
+      "id": "v_005_process_naming_pattern",
+      "name": "Process naming pattern",
+      "definition": "Process names should follow 'Verb + Noun' in a single language (Chinese or English), 2–32 characters.",
+      "detect_logic": "Match against CN/EN pattern hints and check presence of known verbs from the verbs-to-process mapping; flag names that are only nouns or ambiguous.",
+      "severity": "warning",
+      "pattern_hint": {
+        "cn": "^(?=.{2,32}$)[\\u4e00-\\u9fa5]+[\\u4e00-\\u9fa5\\s]+$",
+        "en": "^(?=.{2,32}$)[A-Za-z]+(?:\\s+[A-Za-z]+)+$"
+      },
+      "error_message": "Process name should be a verb+noun phrase, e.g., '验证密码', 'Update Order'."
+    },
+    {
+      "id": "v_006_data_flow_naming_pattern",
+      "name": "Data flow naming pattern",
+      "definition": "Data flow names should be verb phrases or data-object phrases that describe the movement, avoid raw IDs or generic words.",
+      "detect_logic": "Require at least one verb or request/response keyword; disallow names like '数据' or '信息' alone.",
+      "severity": "warning",
+      "examples_good": ["request_*", "business_result", "update_order_status"],
+      "examples_bad": ["数据", "信息", "流1"]
+    },
+    {
+      "id": "v_007_data_store_naming_pattern",
+      "name": "Data store naming pattern",
+      "definition": "Data store names should be nouns, optionally suffixed with '库'/'存储'/'Database'.",
+      "detect_logic": "Disallow obvious verbs in data store names; prefer noun-only names with optional suffixes.",
+      "severity": "warning",
+      "pattern_hint": {
+        "cn": "^[\\u4e00-\\u9fa5]+(库|存储)?$",
+        "en": "^[A-Za-z]+(?:\\s+Database)?$"
+      }
+    },
+    {
+      "id": "v_008_external_entity_naming_pattern",
+      "name": "External entity naming pattern",
+      "definition": "External entity names should be nouns or role names (User, Admin, 银行、支付网关), not actions.",
+      "detect_logic": "Disallow typical action verbs in external entity names; allow role/organization/service nouns.",
+      "severity": "info",
+      "examples_good": ["顾客", "银行", "支付网关", "Delivery Staff"],
+      "examples_bad": ["处理支付", "更新订单"]
+    },
+    {
+      "id": "v_009_language_consistency",
+      "name": "Language consistency",
+      "definition": "Within a single diagram, prefer consistent language (Chinese or English) for element names to avoid mixed-language confusion.",
+      "detect_logic": "Compute the proportion of CN vs EN tokens across names; if both exceed a threshold (e.g., >30% each), warn for consistency.",
+      "severity": "info"
+    }
+  ]
+}

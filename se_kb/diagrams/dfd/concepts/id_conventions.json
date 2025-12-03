@@ -1,0 +1,27 @@
+{
+  "description": "DFD 元素标识符（ID）约定：前缀、唯一性与引用策略。",
+  "prefixes": {
+    "process": "P",
+    "data_flow": "F",
+    "data_store": "DS",
+    "external_entity": "E"
+  },
+  "patterns": {
+    "process": "^P[\\w-]+$",
+    "data_flow": "^F[\\w-]+$",
+    "data_store": "^DS[\\w-]+$",
+    "external_entity": "^E[\\w-]+$"
+  },
+  "rules": [
+    "同一图内 ID 唯一，不可重复",
+    "跨层引用统一使用 ID（优先）而非名称",
+    "生成策略可使用 uuid4 + 前缀或语义化短名",
+    "数据流引用使用 ID，过程 inputs/outputs 仅引用 F* ID"
+  ],
+  "examples": [
+    {"type": "process", "id": "P_validate_input"},
+    {"type": "data_flow", "id": "F_request_123"},
+    {"type": "data_store", "id": "DS_order"},
+    {"type": "external_entity", "id": "E_bank"}
+  ]
+}

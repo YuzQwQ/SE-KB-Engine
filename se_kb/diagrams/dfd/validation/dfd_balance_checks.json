@@ -1,0 +1,86 @@
+{
+  "description": "DFD modeling and refinement rules distilled from Chapter 7 Structured Analysis.",
+  "rules": [
+    {
+      "id": "r_001_data_store_flow_direction",
+      "detail": "When drawing data flows between processes and data stores, arrows must reflect the access type: arrows into a store represent write or update, arrows out of a store represent reads; only when a process both reads and writes for different purposes should a bidirectional arrow be used.",
+      "level": "error",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "Table 7-1: Reasonable use of data stores",
+      "confidence": 0.96,
+      "check": "manual"
+    },
+    {
+      "id": "r_002_data_store_read_after_write",
+      "detail": "If there is a process that writes to a data store, the model should normally contain at least one process that later reads from that store; otherwise, important use of the stored data may be missing from the DFD.",
+      "level": "warning",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "Table 7-1: Reasonable use of data stores",
+      "confidence": 0.9,
+      "check": "manual"
+    },
+    {
+      "id": "r_003_parent_child_balance",
+      "detail": "For each process decomposed into a child DFD, the set of input and output data flows of the parent process must equal the union of external input and output flows of the child diagram (ignoring minor auxiliary flows), ensuring balance between parent and child diagrams.",
+      "level": "error",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "Table 7-1 and §7.3.1: Keeping parent and child balanced",
+      "confidence": 0.97,
+      "check": "manual"
+    },
+    {
+      "id": "r_004_data_balance",
+      "detail": "A process should not have outputs with no corresponding inputs, nor inputs that never contribute to outputs; such imbalances indicate omitted or unnecessary data flows that must be added or removed.",
+      "level": "error",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "Table 7-1: Maintaining data balance",
+      "confidence": 0.97,
+      "check": "manual"
+    },
+    {
+      "id": "r_005_uniform_decomposition",
+      "detail": "Within a single DFD, avoid having some processes already at basic (non-decomposable) level while others still require several additional layers of decomposition; decomposition granularity within the same diagram should be as uniform as reasonably possible.",
+      "level": "warning",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "Table 7-2: Uniform decomposition",
+      "confidence": 0.93,
+      "check": "manual"
+    },
+    {
+      "id": "r_006_limit_child_process_count",
+      "detail": "When decomposing a process, avoid creating too many child processes; in practice, each process should usually be decomposed into no more than about 7–8 children to maintain comprehensibility.",
+      "level": "warning",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3.1 Decomposition principles",
+      "confidence": 0.94,
+      "check": "manual"
+    },
+    {
+      "id": "r_007_minimize_interprocess_flows",
+      "detail": "Reduce the number of data flows between processes as much as possible so that processes are relatively independent, with loose coupling and high cohesion, and unnecessary connector flows are avoided.",
+      "level": "warning",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "Table 7-2: Simplify connections between processes",
+      "confidence": 0.93,
+      "check": "manual"
+    },
+    {
+      "id": "r_008_consistent_and_unambiguous_naming",
+      "detail": "Names of all DFD elements—processes, data flows, data stores and external entities—must be correct, accurate and unambiguous, improving readability and preventing multiple interpretations of the same element.",
+      "level": "info",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "Table 7-2: Reasonable naming",
+      "confidence": 0.92,
+      "check": "manual"
+    },
+    {
+      "id": "r_009_iterative_refinement",
+      "detail": "Treat DFD modeling as an iterative process: initial diagrams are often incomplete or inaccurate and should be repeatedly inspected, corrected and even redrawn until they accurately reflect the problem domain.",
+      "level": "info",
+      "source": "Chapter 7 Structured Analysis (course notes)",
+      "source_location": "§7.3.1 Discussion on improving DFDs",
+      "confidence": 0.9,
+      "check": "manual"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DFD_Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "diagram_type", "system", "level", "processes", "data_flows", "external_entities"],
+  "properties": {
+    "id": { "type": "string" },
+    "diagram_type": { "const": "dfd" },
+    "system": { "type": "string", "description": "系统名称" },
+    "level": { "type": "integer", "minimum": 0 },
+    "parent_process_id": { "type": "string", "pattern": "^P[\\w-]+$" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+(\\.\\d+)?$" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "source": { "type": "string" },
+        "naming_language": { "enum": ["cn", "en", "mixed"] }
+      }
+    },
+    "processes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/process" }
+    },
+    "data_flows": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/data_flow" }
+    },
+    "data_stores": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/data_store" }
+    },
+    "external_entities": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/external_entity" }
+    }
+  },
+  "definitions": {
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^P[\\w-]+$" },
+        "name": { "type": "string", "minLength": 2, "pattern": "^[\u4e00-\u9fa5A-Za-z]+[\u4e00-\u9fa5A-Za-z\\s]*$" },
+        "inputs": { "type": "array", "items": { "type": "string", "pattern": "^F[\\w-]+$" }, "uniqueItems": true },
+        "outputs": { "type": "array", "items": { "type": "string", "pattern": "^F[\\w-]+$" }, "uniqueItems": true },
+        "sub_dfd": { "type": "string", "pattern": ".+\\.json$" }
+      }
+    },
+    "data_flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "source", "target"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^F[\\w-]+$" },
+        "name": { "type": "string", "pattern": "^[\u4e00-\u9fa5A-Za-z][\u4e00-\u9fa5A-Za-z_\\-\\s]*$" },
+        "source": { "type": "string", "pattern": "^(P|E|DS)[\\w-]+$" },
+        "target": { "type": "string", "pattern": "^(P|E|DS)[\\w-]+$" },
+        "access": { "enum": ["read", "write", "read/write"] }
+      }
+    },
+    "data_store": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^DS[\\w-]+$" },
+        "name": { "type": "string", "pattern": "^[\u4e00-\u9fa5A-Za-z]+(库|存储|Database)?$" }
+      }
+    },
+    "external_entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^E[\\w-]+$" },
+        "name": { "type": "string", "pattern": "^[\u4e00-\u9fa5A-Za-z][\u4e00-\u9fa5A-Za-z\\s]*$" }
+      }
+    }
+  }
+}

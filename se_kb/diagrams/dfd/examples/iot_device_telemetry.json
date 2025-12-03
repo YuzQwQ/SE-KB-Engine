@@ -1,0 +1,38 @@
+{
+  "case_name": "IoT Device Telemetry Processing",
+  "description": "设备上报遥测数据，系统进行缓冲、校验、存储与告警",
+  "requirements_text": [
+    "设备周期性上报遥测数据。",
+    "系统进行格式校验与限流，并写入时序数据库。",
+    "当数据超阈值时触发告警并通知运维。"
+  ],
+  "dfd_elements": {
+    "external_entities": [
+      { "id": "E1", "name": "Device" },
+      { "id": "E2", "name": "Ops Team" }
+    ],
+    "processes": [
+      { "id": "P1", "name": "Receive Telemetry" },
+      { "id": "P2", "name": "Validate & Rate Limit" },
+      { "id": "P3", "name": "Buffer in Queue" },
+      { "id": "P4", "name": "Persist to Time-series DB" },
+      { "id": "P5", "name": "Threshold Check & Alert" }
+    ],
+    "data_stores": [
+      { "id": "D1", "name": "Message Queue" },
+      { "id": "D2", "name": "Time-series Database" },
+      { "id": "D3", "name": "Alerts DB" }
+    ],
+    "data_flows": [
+      { "from": "Device", "to": "P1", "data": "Telemetry Packet" },
+      { "from": "P1", "to": "P2", "data": "Raw Data" },
+      { "from": "P2", "to": "P3", "data": "Validated Data" },
+      { "from": "P3", "to": "D1", "data": "Enqueue" },
+      { "from": "D1", "to": "P4", "data": "Dequeue Batch" },
+      { "from": "P4", "to": "D2", "data": "Write Series" },
+      { "from": "P4", "to": "P5", "data": "Latest Metrics" },
+      { "from": "P5", "to": "D3", "data": "Create Alert" },
+      { "from": "P5", "to": "Ops Team", "data": "Alert Notification" }
+    ]
+  }
+}

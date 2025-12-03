@@ -1,0 +1,38 @@
+{
+  "case_name": "Payment Gateway Reconciliation",
+  "description": "支付对账与异常处理：交易查询、差异识别、补偿与通知",
+  "requirements_text": [
+    "系统每日从支付网关拉取交易明细。",
+    "系统与本地订单进行对账，识别成功/失败/缺失交易。",
+    "对差异项生成补偿任务并通知相关人员。"
+  ],
+  "dfd_elements": {
+    "external_entities": [
+      { "id": "E1", "name": "Payment Gateway" },
+      { "id": "E2", "name": "Finance Team" }
+    ],
+    "processes": [
+      { "id": "P1", "name": "Scheduled Fetch Transactions" },
+      { "id": "P2", "name": "Load Local Orders" },
+      { "id": "P3", "name": "Match & Identify Differences" },
+      { "id": "P4", "name": "Generate Compensation" },
+      { "id": "P5", "name": "Notify Finance" }
+    ],
+    "data_stores": [
+      { "id": "D1", "name": "Local Order DB" },
+      { "id": "D2", "name": "Reconciliation Report DB" },
+      { "id": "D3", "name": "Compensation Tasks DB" }
+    ],
+    "data_flows": [
+      { "from": "Payment Gateway", "to": "P1", "data": "Daily Transaction File" },
+      { "from": "P1", "to": "P3", "data": "Gateway Transactions" },
+      { "from": "P2", "to": "D1", "data": "Query Local Orders" },
+      { "from": "D1", "to": "P3", "data": "Local Orders" },
+      { "from": "P3", "to": "D2", "data": "Reconciliation Report" },
+      { "from": "P3", "to": "P4", "data": "Difference Items" },
+      { "from": "P4", "to": "D3", "data": "Compensation Task" },
+      { "from": "P4", "to": "P5", "data": "Notify Content" },
+      { "from": "P5", "to": "Finance Team", "data": "Notification" }
+    ]
+  }
+}

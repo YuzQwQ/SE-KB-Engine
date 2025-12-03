@@ -1,0 +1,40 @@
+{
+  "description": "DFD 建模的重要原则，用于指导选择模板、验证图的正确性和可读性。",
+  "principles": [
+    {
+      "id": "balanced_decomposition",
+      "name": "平衡原则（Balancing）",
+      "detail": "父图的输入输出必须在子图完整出现，不能增减。",
+      "source": "教材第 7 章",
+      "examples": {
+        "good": [
+          "父图输入：卡号与密码；父图输出：登录结果；子图边界包含相同的输入与输出"
+        ],
+        "bad": [
+          "子图新增了‘风控评分’作为边界输出，但父图没有对应数据流",
+          "子图遗漏了‘登录结果’，导致父子不平衡"
+        ]
+      }
+    },
+    {
+      "id": "meaningful_decomposition",
+      "name": "有意义的分解",
+      "detail": "每层分解 3–7 个子过程，避免过度复杂或过度简单。"
+    },
+    {
+      "id": "consistent_naming",
+      "name": "一致且清晰的命名",
+      "detail": "数据流采用动词短语或数据对象短语；过程使用动词+名词；存储名词化；外部实体对应真实世界角色或系统。"
+    },
+    {
+      "id": "minimize_interprocess_flows",
+      "name": "减少过程间数据流",
+      "detail": "过程应高内聚低耦合，减少不必要的横向数据传递。"
+    },
+    {
+      "id": "primitive_process_spec",
+      "name": "基本加工的规约要求",
+      "detail": "最底层过程必须提供加工规约（结构化语言、判定树、判定表）。"
+    }
+  ]
+}

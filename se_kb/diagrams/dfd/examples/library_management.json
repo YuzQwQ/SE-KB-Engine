@@ -1,0 +1,39 @@
+{
+  "case_name": "Library Management System",
+  "description": "用户借书、还书、查询图书信息的典型图书馆业务",
+  "requirements_text": [
+    "读者可以通过系统查询图书信息。",
+    "当读者借书时，需要验证读者身份，并记录借阅记录。",
+    "当读者还书时，系统更新书籍状态并删除借阅记录。",
+    "管理员可以添加、删除和更新图书信息。"
+  ],
+  "dfd_elements": {
+    "external_entities": [
+      { "id": "E1", "name": "Reader" },
+      { "id": "E2", "name": "Librarian" }
+    ],
+    "processes": [
+      { "id": "P1", "name": "Query Book Information" },
+      { "id": "P2", "name": "Verify Reader & Record Borrowing" },
+      { "id": "P3", "name": "Update Return Status" },
+      { "id": "P4", "name": "Manage Books" }
+    ],
+    "data_stores": [
+      { "id": "D1", "name": "Book Database" },
+      { "id": "D2", "name": "Borrow Records" }
+    ],
+    "data_flows": [
+      { "from": "Reader", "to": "P1", "data": "Query" },
+      { "from": "P1", "to": "Reader", "data": "Book Info" },
+
+      { "from": "Reader", "to": "P2", "data": "Borrow Request" },
+      { "from": "P2", "to": "D2", "data": "Borrow Record" },
+
+      { "from": "Reader", "to": "P3", "data": "Return Request" },
+      { "from": "P3", "to": "D2", "data": "Delete Borrow Record" },
+
+      { "from": "Librarian", "to": "P4", "data": "Book Update Command" },
+      { "from": "P4", "to": "D1", "data": "Updated Book Data" }
+    ]
+  }
+}
