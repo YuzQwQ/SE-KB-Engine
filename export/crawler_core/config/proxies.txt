@@ -1,9 +1,0 @@
-# 代理池示例文件（每行一个代理；删除注释后使用）
-# 支持格式：
-# - http://host:port
-# - http://user:pass@host:port
-# - socks5://host:port
-
-# http://127.0.0.1:7890
-# socks5://127.0.0.1:9050
-# http://user:pass@proxy.example.com:8080

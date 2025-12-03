@@ -1,0 +1,17 @@
+{
+  "description": "Structure Chart（结构图）理论规则",
+  "principles": [
+    {
+      "id": "module_definition",
+      "detail": "每个模块只能执行单一功能，名称应使用 PascalCase 风格。"
+    },
+    {
+      "id": "coupling_minimization",
+      "detail": "模块间调用应尽量减少数据耦合，避免非必要调用。"
+    },
+    {
+      "id": "cohesion_maximization",
+      "detail": "同一模块内部功能需保持高内聚性。"
+    }
+  ]
+}
