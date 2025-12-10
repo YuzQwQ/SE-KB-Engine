@@ -1,0 +1,88 @@
+{
+  "id": "dfd-001",
+  "diagram_type": "dfd",
+  "system": "工厂订货系统",
+  "level": 0,
+  "parent_process_id": null,
+  "metadata": {
+    "version": "1.0",
+    "created_at": "2023-01-01T00:00:00Z",
+    "source": "https://blog.csdn.net/I_r_o_n_M_a_n/article/details/121309525",
+    "naming_language": "cn"
+  },
+  "processes": [
+    {
+      "id": "P1",
+      "name": "生成订货报表",
+      "inputs": [
+        "F2"
+      ],
+      "outputs": [
+        "F3"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "处理事务",
+      "inputs": [
+        "F1"
+      ],
+      "outputs": [
+        "F4",
+        "F5"
+      ]
+    }
+  ],
+  "data_flows": [
+    {
+      "id": "F1",
+      "name": "事务",
+      "source": "E1",
+      "target": "P2"
+    },
+    {
+      "id": "F2",
+      "name": "库存清单",
+      "source": "DS1",
+      "target": "P2"
+    },
+    {
+      "id": "F3",
+      "name": "订货报表",
+      "source": "P1",
+      "target": "E2"
+    },
+    {
+      "id": "F4",
+      "name": "更新后的库存清单",
+      "source": "P2",
+      "target": "DS1"
+    },
+    {
+      "id": "F5",
+      "name": "订货信息",
+      "source": "P2",
+      "target": "DS2"
+    }
+  ],
+  "data_stores": [
+    {
+      "id": "DS1",
+      "name": "库存清单"
+    },
+    {
+      "id": "DS2",
+      "name": "订货信息"
+    }
+  ],
+  "external_entities": [
+    {
+      "id": "E1",
+      "name": "仓库管理员"
+    },
+    {
+      "id": "E2",
+      "name": "采购员"
+    }
+  ]
+}

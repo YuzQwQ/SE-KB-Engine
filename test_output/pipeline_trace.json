@@ -1,0 +1,32 @@
+{
+  "pipeline_start": "2025-12-07T09:55:37.506947",
+  "title": "软件工程 -- 数据流图的画法_数据流图怎么画-CSDN博客",
+  "url": "https://blog.csdn.net/I_r_o_n_M_a_n/article/details/121309525",
+  "stage1": {
+    "skipped": true,
+    "force_types": [
+      "diagrams.dfd.concepts",
+      "diagrams.dfd.rules",
+      "theory"
+    ]
+  },
+  "stage2": {
+    "diagrams.dfd.concepts": {
+      "tokens": 5245,
+      "model": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+      "type_id": "diagrams.dfd.concepts"
+    },
+    "diagrams.dfd.rules": {
+      "tokens": 4345,
+      "model": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+      "type_id": "diagrams.dfd.rules"
+    },
+    "theory": {
+      "tokens": 4658,
+      "model": "Qwen/Qwen3-Next-80B-A3B-Instruct",
+      "type_id": "theory"
+    }
+  },
+  "pipeline_end": "2025-12-07T09:56:09.120886",
+  "total_tokens": 14248
+}

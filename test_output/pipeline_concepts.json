@@ -1,0 +1,167 @@
+{
+  "generation_knowledge": {
+    "concepts": [
+      {
+        "concept_id": "concept_001",
+        "name": "数据流图（DFD）",
+        "definition": "数据流图（Data Flow Diagram，DFD）是一种图形化技术，用于描绘信息流和数据从输入移动到输出过程中所经受的变换，它仅表示系统逻辑功能，不涉及具体物理实现，是分析员与用户沟通的工具，支持分层次建模，提供功能建模和信息流建模机制。",
+        "category": "建模技术",
+        "attributes": {
+          "type": "逻辑模型",
+          "purpose": "功能建模与信息流建模",
+          "abstraction_level": "可分层"
+        },
+        "relationships": [
+          "relates_to: 数据流",
+          "relates_to: 处理",
+          "relates_to: 数据存储",
+          "relates_to: 源点和终点"
+        ]
+      },
+      {
+        "concept_id": "concept_002",
+        "name": "数据流",
+        "definition": "数据流是处于运动状态的数据，表示特定数据在系统中从一个处理、数据存储或源点/终点流向另一个实体的方向，通常用箭头表示，其内容应具有具体语义，避免使用‘数据’、‘信息’等空洞名称。",
+        "category": "基本符号",
+        "attributes": {
+          "state": "动态",
+          "representation": "箭头",
+          "naming_principle": "具体动词+宾语"
+        },
+        "relationships": [
+          "relates_to: 处理",
+          "relates_to: 数据存储",
+          "relates_to: 源点和终点"
+        ]
+      },
+      {
+        "concept_id": "concept_003",
+        "name": "处理",
+        "definition": "处理是数据流图中变换数据的逻辑单元，用圆角矩形表示，代表对数据的加工操作，可以是一个程序、程序模块、人工操作（如目视检查）或一系列步骤，其命名应反映完整功能，避免使用‘加工’、‘处理’等笼统词汇，推荐使用‘具体动词+宾语’结构。",
+        "category": "基本符号",
+        "attributes": {
+          "representation": "圆角矩形",
+          "scope": "逻辑功能单元",
+          "naming_principle": "具体动词+宾语"
+        },
+        "relationships": [
+          "relates_to: 数据流",
+          "relates_to: 数据存储",
+          "relates_to: 顶层数据流图"
+        ]
+      },
+      {
+        "concept_id": "concept_004",
+        "name": "数据存储",
+        "definition": "数据存储是处于静止状态的数据，用开口矩形或两条平行横线表示，代表系统中持久保存的数据，如文件、数据库元素、记录片段等，可存储于磁盘、内存、穿孔卡片甚至人的记忆中，其与数据流本质相同，仅状态不同，命名需反映完整内容而非局部属性。",
+        "category": "基本符号",
+        "attributes": {
+          "state": "静态",
+          "representation": "开口矩形或双横线",
+          "storage_media": "多种物理介质"
+        },
+        "relationships": [
+          "relates_to: 数据流",
+          "relates_to: 处理"
+        ]
+      },
+      {
+        "concept_id": "concept_005",
+        "name": "源点和终点",
+        "definition": "源点和终点是数据流图中数据的外部提供者或接收者，用正方形或立方体表示，代表系统边界外的实体，如人员、设备或传感器，不属于系统内部实现部分，命名应使用其在问题域中的习惯名称，如‘采购员’、‘仓库管理员’。",
+        "category": "基本符号",
+        "attributes": {
+          "location": "系统边界外",
+          "representation": "正方形或立方体",
+          "naming_principle": "问题域习惯名称"
+        },
+        "relationships": [
+          "relates_to: 数据流"
+        ]
+      },
+      {
+        "concept_id": "concept_006",
+        "name": "顶层数据流图",
+        "definition": "顶层数据流图是数据流图的最高抽象层次，仅包含一个代表整个系统的处理节点，以及所有外部源点和终点，用于清晰展示系统与外部环境的数据交互关系，是细化和分层建模的起点。",
+        "category": "分层模型",
+        "attributes": {
+          "level": "0层（最高层）",
+          "components": "一个处理 + 多个源点/终点",
+          "purpose": "系统边界定义与沟通"
+        },
+        "relationships": [
+          "relates_to: 0层数据流图",
+          "relates_to: 分层细化"
+        ]
+      },
+      {
+        "concept_id": "concept_007",
+        "name": "0层数据流图",
+        "definition": "0层数据流图是对顶层数据流图中唯一处理的细化，展示系统内部的主要功能模块（如‘处理事务’、‘产生报表’）及关联的数据存储和数据流，是功能级建模的起点，其输入输出必须与父层保持一致，确保信息连续性。",
+        "category": "分层模型",
+        "attributes": {
+          "level": "1层（顶层的下一层）",
+          "decomposition_rule": "保持输入输出一致性",
+          "purpose": "功能模块分解"
+        },
+        "relationships": [
+          "relates_to: 顶层数据流图",
+          "relates_to: 子图"
+        ]
+      },
+      {
+        "concept_id": "concept_008",
+        "name": "分层细化",
+        "definition": "分层细化是将数据流图中的一个处理逐步分解为更细粒度的子处理的过程，每一层都保持与上层一致的输入输出数据流，当分解涉及具体实现细节（如算法、文件操作）时应停止，确保模型聚焦于‘做什么’而非‘怎样做’。",
+        "category": "建模方法",
+        "attributes": {
+          "principle": "信息连续性",
+          "stop_condition": "涉及实现细节",
+          "naming_convention": "层级编号（如1.1, 1.1.1）"
+        },
+        "relationships": [
+          "relates_to: 顶层数据流图",
+          "relates_to: 0层数据流图",
+          "relates_to: 处理"
+        ]
+      },
+      {
+        "concept_id": "concept_009",
+        "name": "数据流图命名规范",
+        "definition": "数据流图命名规范要求：源点/终点使用问题域习惯名；数据流和数据存储命名应反映完整内容，避免‘数据’、‘信息’等空洞词；处理命名应由具体及物动词加宾语构成，避免笼统动词，若需两个动词则应拆分处理，命名困难常提示分解不当。",
+        "category": "建模规范",
+        "attributes": {
+          "scope": "所有成分",
+          "goal": "提升可理解性",
+          "troubleshooting": "命名困难 = 分解不当"
+        },
+        "relationships": [
+          "relates_to: 数据流",
+          "relates_to: 处理",
+          "relates_to: 数据存储",
+          "relates_to: 源点和终点"
+        ]
+      },
+      {
+        "concept_id": "concept_010",
+        "name": "数据流图的逻辑性原则",
+        "definition": "数据流图的逻辑性原则强调仅描绘系统‘做什么’，不涉及‘怎样做’，忽略错误处理、文件打开/关闭等内务操作，不表现分支或循环条件，仅展示所有可能的数据流向，确保模型聚焦于功能逻辑而非控制流程。",
+        "category": "建模原则",
+        "attributes": {
+          "focus": "功能逻辑",
+          "exclusions": [
+            "错误处理",
+            "内务操作",
+            "控制结构"
+          ],
+          "core_principle": "描述变换而非实现"
+        },
+        "relationships": [
+          "relates_to: 数据流图",
+          "relates_to: 处理",
+          "relates_to: 分层细化"
+        ]
+      }
+    ]
+  }
+}

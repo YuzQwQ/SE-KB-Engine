@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识库构建系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🧠</span>
+                <h1>知识库构建系统</h1>
+            </div>
+            <p class="subtitle">搜索 → 爬取 → 抽取 → 知识库</p>
+        </header>
+
+        <!-- 搜索区域 -->
+        <section class="search-section">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="输入搜索关键词，如：数据流图 绘制步骤 教程"
+                    autocomplete="off"
+                >
+                <button id="searchBtn" class="btn-primary">
+                    <span class="btn-icon">🚀</span>
+                    <span class="btn-text">开始构建</span>
+                </button>
+            </div>
+            
+            <!-- 选项 -->
+            <div class="options">
+                <div class="option-group">
+                    <label>爬取数量:</label>
+                    <select id="limitSelect">
+                        <option value="3">3 个网页</option>
+                        <option value="5" selected>5 个网页</option>
+                        <option value="10">10 个网页</option>
+                        <option value="15">15 个网页</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label>知识类型:</label>
+                    <select id="typeSelect">
+                        <option value="">自动识别</option>
+                        <option value="diagrams.dfd.concepts">DFD 概念</option>
+                        <option value="diagrams.dfd.rules">DFD 规则</option>
+                        <option value="diagrams.dfd.examples">DFD 示例</option>
+                        <option value="theory">软件工程理论</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- 进度区域 -->
+        <section class="progress-section" id="progressSection">
+            <div class="progress-header">
+                <span class="status-badge" id="statusBadge">等待中</span>
+                <span class="progress-text" id="progressText">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </section>
+
+        <!-- 日志区域 -->
+        <section class="log-section">
+            <div class="log-header">
+                <h3>📋 执行日志</h3>
+                <button id="clearBtn" class="btn-small">清空</button>
+            </div>
+            <div class="log-container" id="logContainer">
+                <div class="log-placeholder">
+                    等待任务开始...
+                </div>
+            </div>
+        </section>
+
+        <!-- 结果区域 -->
+        <section class="result-section" id="resultSection">
+            <h3>📦 抽取结果</h3>
+            <div class="result-list" id="resultList">
+                <!-- 动态填充 -->
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>SE-KB Knowledge Builder • Powered by LLM</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
+
+

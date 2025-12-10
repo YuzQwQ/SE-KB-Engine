@@ -1,0 +1,121 @@
+{
+  "description": "软件工程理论概念集",
+  "concepts": [
+    {
+      "id": "c_001",
+      "name": "系统",
+      "english_term": "System",
+      "definition": "由相互关联的组件构成的整体，用于实现特定功能；在软件工程中，系统指由软件、硬件、人员和数据组成的信息处理单元。",
+      "representation": "concept",
+      "source": "CSDN博客 - 数据流图的画法",
+      "source_location": "2.2 开始画数据流图",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_002",
+      "name": "系统工程",
+      "english_term": "Systems Engineering",
+      "definition": "一种跨学科的方法，用于设计、分析和管理复杂系统，强调从整体视角理解系统结构与行为，包括需求分析、建模、分解与验证等阶段。",
+      "representation": "concept",
+      "source": "CSDN博客 - 数据流图的画法",
+      "source_location": "1.1 数据流图的概念",
+      "confidence": 0.93
+    },
+    {
+      "id": "c_003",
+      "name": "层次结构",
+      "english_term": "Hierarchical Structure",
+      "definition": "系统或模型按抽象层级组织的方式，高层表示概要功能，低层逐步细化为具体处理步骤，确保信息连续性与逻辑一致性。",
+      "representation": "layered_view",
+      "source": "CSDN博客 - 数据流图的画法",
+      "source_location": "2.2 开始画数据流图, 5. 说明：顶层数据流图和0层的关系",
+      "confidence": 0.96
+    },
+    {
+      "id": "c_004",
+      "name": "需求分析",
+      "english_term": "Requirements Analysis",
+      "definition": "通过识别、建模和文档化用户与系统之间的交互需求，明确系统必须‘做什么’，而不涉及‘如何做’，是软件开发前期的核心活动。",
+      "representation": "process",
+      "source": "CSDN博客 - 数据流图的画法",
+      "source_location": "1.1 数据流图的概念, 2.1 数据流图有4种成分分析",
+      "confidence": 0.94
+    },
+    {
+      "id": "c_005",
+      "name": "结构化分析",
+      "english_term": "Structured Analysis",
+      "definition": "一种基于数据流和功能分解的系统分析方法，使用数据流图（DFD）等工具描述系统的逻辑功能，强调‘做什么’而非‘怎么做’，适用于需求建模阶段。",
+      "representation": "methodology",
+      "source": "CSDN博客 - 数据流图的画法",
+      "source_location": "1.1 数据流图的概念, 2.2 开始画数据流图",
+      "confidence": 0.97
+    },
+    {
+      "id": "c_006",
+      "name": "数据流图",
+      "english_term": "Data Flow Diagram (DFD)",
+      "definition": "一种图形化建模技术，用于描绘信息在系统中如何流动、被处理和存储，由源点/终点、处理、数据存储和数据流四种基本符号组成，不涉及具体实现细节。",
+      "representation": "concept",
+      "source": "CSDN博客 - 数据流图的画法",
+      "source_location": "1.1 数据流图的概念",
+      "confidence": 0.98
+    },
+    {
+      "id": "c_007",
+      "name": "模块",
+      "english_term": "Module",
+      "definition": "软件系统中可独立开发、测试和维护的功能单元；在数据流图中，一个处理框可代表一个模块、一组程序或人工处理过程。",
+      "representation": "concept",
+      "source": "CSDN博客 - 数据流图的画法",
+      "source_location": "1.2 数据流图的基本符号",
+      "confidence": 0.92
+    },
+    {
+      "id": "c_008",
+      "name": "耦合",
+      "english_term": "Coupling",
+      "definition": "模块之间相互依赖的程度；在数据流图中，通过数据流的复杂性和数量间接体现模块间耦合，理想状态是低耦合，即模块间仅通过必要数据交互。",
+      "representation": "concept",
+      "source": "CSDN博客 - 数据流图的画法",
+      "source_location": "2.2 开始画数据流图",
+      "confidence": 0.9
+    },
+    {
+      "id": "c_009",
+      "name": "内聚",
+      "english_term": "Cohesion",
+      "definition": "模块内部各元素彼此关联的紧密程度；在数据流图中，一个处理应只完成一个明确功能，高内聚意味着处理逻辑集中、职责单一。",
+      "representation": "concept",
+      "source": "CSDN博客 - 数据流图的画法",
+      "source_location": "2.2 开始画数据流图",
+      "confidence": 0.93
+    }
+  ],
+  "principles": [
+    {
+      "id": "principle_001",
+      "detail": "数据流图应仅描述系统‘做什么’，而非‘如何做’，避免涉及具体实现细节、控制流、条件分支或循环结构。"
+    },
+    {
+      "id": "principle_002",
+      "detail": "数据流图应分层细化，顶层图展示系统与外部实体的交互，逐层分解至功能级，保持输入/输出数据流的连续性。"
+    },
+    {
+      "id": "principle_003",
+      "detail": "命名应具体、语义清晰：数据流/存储命名反映内容而非结构，处理命名应为‘动词+宾语’结构，避免使用‘处理’‘数据’等空洞词汇。"
+    },
+    {
+      "id": "principle_004",
+      "detail": "数据流图中忽略错误处理、内务操作（如打开/关闭文件）和物理实现细节，聚焦于逻辑功能建模。"
+    },
+    {
+      "id": "principle_005",
+      "detail": "当为处理或数据流命名困难时，往往是分解不当的信号，应重新审视功能划分，确保高内聚、低耦合的结构设计。"
+    },
+    {
+      "id": "principle_006",
+      "detail": "数据存储表示持久数据，数据流表示运动中的数据，二者本质相同但状态不同；数据流图中可重复出现相同符号以提升可读性，需用斜线标记以避免歧义。"
+    }
+  ]
+}

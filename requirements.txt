@@ -17,3 +17,5 @@ fastmcp
 fastapi
 uvicorn[standard]
 pydantic
+flask
+flask-cors

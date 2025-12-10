@@ -1,0 +1,103 @@
+{
+  "rules": [
+    {
+      "id": "r_001_data_balance",
+      "name": "数据平衡规则",
+      "detail": "每个处理（加工）必须有至少一个输入数据流和一个输出数据流，确保数据流的完整性，不能有孤立的处理。",
+      "level": "error",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "auto"
+    },
+    {
+      "id": "r_002_hierarchy_balance",
+      "name": "层次平衡规则",
+      "detail": "当一个处理被分解为子图时，子图的输入和输出数据流必须与父图中该处理的输入输出数据流完全一致，保持数据流的连续性和一致性。",
+      "level": "error",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "auto"
+    },
+    {
+      "id": "r_003_datastore_access",
+      "name": "数据存储访问规则",
+      "detail": "数据存储必须通过数据流进行读取（输出）或写入（输入），不能直接连接源点/终点或处理而不经过数据流；读写操作必须显式表示为数据流。",
+      "level": "error",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "auto"
+    },
+    {
+      "id": "r_004_naming_dataflow",
+      "name": "数据流命名规则",
+      "detail": "数据流名称应反映其完整内容，避免使用空洞词汇如‘数据’、‘信息’、‘输入’；应使用具体名词短语，如‘订货报表’、‘事务信息’。",
+      "level": "warning",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "manual",
+      "pattern_hint": "^[A-Za-z\\u4e00-\\u9fa5]+(\\s*[A-Za-z\\u4e00-\\u9fa5]+)*$"
+    },
+    {
+      "id": "r_005_naming_process",
+      "name": "处理命名规则",
+      "detail": "处理名称应由一个具体的及物动词加具体宾语构成（如‘生成订货报表’、‘更新库存清单’），避免使用‘加工’、‘处理’等笼统动词；若需两个动词，应拆分为两个处理。",
+      "level": "warning",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "manual",
+      "pattern_hint": "^[A-Za-z\\u4e00-\\u9fa5]+[A-Za-z\\u4e00-\\u9fa5\\s]+[A-Za-z\\u4e00-\\u9fa5]+$"
+    },
+    {
+      "id": "r_006_naming_source_sink",
+      "name": "源点/终点命名规则",
+      "detail": "源点和终点应使用其在现实域中的实际名称（如‘采购员’、‘仓库管理员’），避免使用技术性术语，以增强可理解性。",
+      "level": "info",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "manual"
+    },
+    {
+      "id": "r_007_decomposition_limit",
+      "name": "分解粒度规则",
+      "detail": "处理的分解应止于逻辑功能层面，一旦涉及具体实现细节（如文件打开、格式打印、算法实现），则不应继续分解。",
+      "level": "error",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "manual"
+    },
+    {
+      "id": "r_008_consistency_style",
+      "name": "命名风格一致性规则",
+      "detail": "整个DFD中应统一命名风格：数据流和数据存储使用名词短语，处理使用动宾结构，源点/终点使用角色名称，避免混用术语或语言风格。",
+      "level": "warning",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "manual"
+    },
+    {
+      "id": "r_009_ignore_control_flow",
+      "name": "忽略控制流规则",
+      "detail": "DFD中不应包含条件分支、循环或控制流逻辑（如if-else、while），仅描绘数据流动和变换，控制逻辑属于实现细节。",
+      "level": "error",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "auto"
+    },
+    {
+      "id": "r_010_ignore_internal_ops",
+      "name": "忽略内务处理规则",
+      "detail": "DFD中应忽略文件打开/关闭、错误处理、系统初始化等内务操作，仅关注核心业务数据流。",
+      "level": "error",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "auto"
+    },
+    {
+      "id": "r_011_duplicate_symbol_marking",
+      "name": "重复符号标记规则",
+      "detail": "若同一数据源点、终点或数据存储在图中出现多次，应在符号一角添加短斜线标记（n-1条），以表明其为同一实体的重复出现，避免歧义。",
+      "level": "info",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "manual"
+    },
+    {
+      "id": "r_012_layer_numbering",
+      "name": "层次编号规则",
+      "detail": "处理编号应采用层级结构（如1、1.1、1.1.1），父层编号为整数，子层编号为父编号加小数点后序号，确保可追踪和引用。",
+      "level": "info",
+      "source": "CSDN博客 - 数据流图的画法",
+      "check": "manual",
+      "pattern_hint": "^\\d+(\\.\\d+)*$"
+    }
+  ]
+}
