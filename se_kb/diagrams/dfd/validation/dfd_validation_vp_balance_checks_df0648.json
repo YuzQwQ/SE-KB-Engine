@@ -1,0 +1,84 @@
+{
+  "content_slug": "balance_checks",
+  "validation_rules": [
+    {
+      "id": "v_001_data_flow_balance",
+      "name": "数据流平衡校验",
+      "definition": "每个程序必须至少有一个输入数据流和一个输出数据流，确保数据流的输入输出守恒。",
+      "detect_logic": "检查每个程序节点是否至少连接一个输入数据流和一个输出数据流，缺失任一者视为异常。",
+      "severity": "error",
+      "pattern_hint": {
+        "cn": "程序.*?(?<!输入).*(?<!输出)",
+        "en": "process.*?(?<!input).*(?<!output)"
+      },
+      "error_message": "程序缺少输入或输出数据流，违反数据流平衡原则。",
+      "examples_good": [
+        "申请付款 → 输入: 客户信息, 输出: 付款确认",
+        "计算佣金 → 输入: 销售记录, 输出: 佣金明细"
+      ],
+      "examples_bad": [
+        "圆角矩形 → 仅有输入，无输出",
+        "验证订单 → 仅有输出，无输入"
+      ]
+    },
+    {
+      "id": "v_002_data_store_balance",
+      "name": "数据存储平衡校验",
+      "definition": "每个数据存储必须至少有一个输入数据流（写入）和一个输出数据流（读取或确认）。",
+      "detect_logic": "检查每个数据存储节点是否至少连接一个输入数据流和一个输出数据流，若仅单向连接则视为错误。",
+      "severity": "error",
+      "pattern_hint": {
+        "cn": "数据存储.*?(?<!输入).*(?<!输出)",
+        "en": "data store.*?(?<!input).*(?<!output)"
+      },
+      "error_message": "数据存储缺少输入或输出数据流，必须有读写双向连接。",
+      "examples_good": [
+        "库存 → 输入: 订单更新, 输出: 库存查询",
+        "应收账款 → 输入: 收款记录, 输出: 账单生成"
+      ],
+      "examples_bad": [
+        "订单 → 仅有输入，无输出",
+        "每日付款 → 仅有输出，无输入"
+      ]
+    },
+    {
+      "id": "v_003_external_entity_connection",
+      "name": "外部实体连接校验",
+      "definition": "外部实体必须仅通过数据流连接到程序，不能直接连接到数据存储或其他外部实体。",
+      "detect_logic": "检查外部实体是否仅与程序节点建立数据流连接，若连接至数据存储或其它外部实体则为违规。",
+      "severity": "error",
+      "pattern_hint": {
+        "cn": "外部实体.*?->.*?(数据存储|外部实体)",
+        "en": "external entity.*?->.*?(data store|external entity)"
+      },
+      "error_message": "外部实体不能直接连接数据存储或其他外部实体，必须通过程序中转。",
+      "examples_good": [
+        "客户 → 申请付款",
+        "供应商 → 接收发票"
+      ],
+      "examples_bad": [
+        "客户 → 库存",
+        "客户 → 供应商"
+      ]
+    },
+    {
+      "id": "v_004_decomposition_consistency",
+      "name": "层级分解一致性校验",
+      "definition": "父图与子图之间必须保持输入输出数据流的一致性，子图的输入输出应与父图中对应程序的流完全匹配。",
+      "detect_logic": "对比父图中程序的输入输出数据流与子图中所有入口和出口数据流，确保名称、数量和类型一致。",
+      "severity": "error",
+      "pattern_hint": {
+        "cn": "父图.*?程序.*?输入输出.*?不匹配子图",
+        "en": "parent diagram.*?process.*?input output.*?mismatch child diagram"
+      },
+      "error_message": "父图与子图的数据流输入输出不一致，违反分解一致性原则。",
+      "examples_good": [
+        "父图: 程序P1 输入: 客户信息, 输出: 订单确认 → 子图: P1 输入: 客户信息, 输出: 订单确认",
+        "父图: 程序P2 输入: 销售记录 → 子图: P2 输入: 销售记录"
+      ],
+      "examples_bad": [
+        "父图: 程序P1 输入: 客户信息 → 子图: P1 输入: 客户ID, 客户电话"
+      ]
+    }
+  ]
+}

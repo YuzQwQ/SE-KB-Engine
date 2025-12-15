@@ -1,0 +1,328 @@
+{
+  "content_slug": "dfd_template_library",
+  "description": "DFD 模板库",
+  "categories": [
+    {
+      "id": "top_level",
+      "name": "顶层上下文图",
+      "templates": [
+        {
+          "id": "context_diagram",
+          "name": "系统上下文图模板",
+          "dfd_level": 0,
+          "pattern_type": "context",
+          "placeholders": {
+            "processes": [
+              "P1_System"
+            ],
+            "external_entities": [
+              "E_User",
+              "E_ExternalSystem",
+              "E_Admin"
+            ]
+          },
+          "structure": {
+            "nodes": {
+              "P1_System": {
+                "type": "process",
+                "label": "系统名称"
+              }
+            },
+            "data_flows": [
+              {
+                "from": "E_User",
+                "to": "P1_System",
+                "label": "输入数据"
+              },
+              {
+                "from": "P1_System",
+                "to": "E_User",
+                "label": "输出数据"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "系统边界定义",
+            "项目启动阶段需求对齐",
+            "利益相关者沟通"
+          ],
+          "notes": [
+            "顶层图仅包含一个处理节点，代表整个系统",
+            "外部实体应为系统外直接交互的主体，如用户、其他系统、设备等",
+            "数据流命名应为名词短语，体现数据内容而非动作"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "decomposition",
+      "name": "功能分解结构",
+      "templates": [
+        {
+          "id": "functional_decomposition_level_0",
+          "name": "第0层功能分解模板",
+          "dfd_level": 0,
+          "pattern_type": "functional_decomposition",
+          "placeholders": {
+            "processes": [
+              "P1_UserManagement",
+              "P2_TransactionProcessing",
+              "P3_OrderManagement"
+            ],
+            "external_entities": [
+              "E_User",
+              "E_PaymentGateway"
+            ],
+            "data_stores": [
+              "D_UserDB",
+              "D_OrderDB"
+            ]
+          },
+          "structure": {
+            "nodes": {
+              "P1_UserManagement": {
+                "type": "process",
+                "label": "用户管理"
+              },
+              "P2_TransactionProcessing": {
+                "type": "process",
+                "label": "交易处理"
+              },
+              "P3_OrderManagement": {
+                "type": "process",
+                "label": "订单管理"
+              },
+              "D_UserDB": {
+                "type": "data_store",
+                "label": "用户数据库"
+              },
+              "D_OrderDB": {
+                "type": "data_store",
+                "label": "订单数据库"
+              }
+            },
+            "data_flows": [
+              {
+                "from": "E_User",
+                "to": "P1_UserManagement",
+                "label": "登录信息"
+              },
+              {
+                "from": "P1_UserManagement",
+                "to": "D_UserDB",
+                "label": "存储用户数据"
+              },
+              {
+                "from": "D_UserDB",
+                "to": "P1_UserManagement",
+                "label": "查询用户信息"
+              },
+              {
+                "from": "E_User",
+                "to": "P2_TransactionProcessing",
+                "label": "支付请求"
+              },
+              {
+                "from": "P2_TransactionProcessing",
+                "to": "D_OrderDB",
+                "label": "创建订单"
+              },
+              {
+                "from": "P3_OrderManagement",
+                "to": "E_PaymentGateway",
+                "label": "触发支付"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "系统核心功能模块划分",
+            "需求规格说明书配套图示",
+            "架构设计评审"
+          ],
+          "notes": [
+            "第0层分解应保持每个加工可独立理解，避免过度细化",
+            "每个加工至少有一个输入和一个输出数据流",
+            "编号规则：P1, P2, P3... 对应顶层P1的分解为P1.1, P1.2..."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data_store_interaction",
+      "name": "数据存储交互模板",
+      "templates": [
+        {
+          "id": "crud_operations",
+          "name": "CRUD操作数据存储模板",
+          "dfd_level": 1,
+          "pattern_type": "data_store_interaction",
+          "placeholders": {
+            "processes": [
+              "P1_CreateUser",
+              "P2_ReadUser",
+              "P3_UpdateUser",
+              "P4_DeleteUser"
+            ],
+            "data_stores": [
+              "D_UserProfile"
+            ]
+          },
+          "structure": {
+            "nodes": {
+              "P1_CreateUser": {
+                "type": "process",
+                "label": "创建用户"
+              },
+              "P2_ReadUser": {
+                "type": "process",
+                "label": "读取用户"
+              },
+              "P3_UpdateUser": {
+                "type": "process",
+                "label": "更新用户"
+              },
+              "P4_DeleteUser": {
+                "type": "process",
+                "label": "删除用户"
+              },
+              "D_UserProfile": {
+                "type": "data_store",
+                "label": "用户档案"
+              }
+            },
+            "data_flows": [
+              {
+                "from": "P1_CreateUser",
+                "to": "D_UserProfile",
+                "label": "新增用户数据"
+              },
+              {
+                "from": "D_UserProfile",
+                "to": "P2_ReadUser",
+                "label": "返回用户信息"
+              },
+              {
+                "from": "P3_UpdateUser",
+                "to": "D_UserProfile",
+                "label": "更新用户数据"
+              },
+              {
+                "from": "P4_DeleteUser",
+                "to": "D_UserProfile",
+                "label": "删除用户记录"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "用户管理模块设计",
+            "数据库接口规范定义",
+            "API数据流建模"
+          ],
+          "notes": [
+            "每个CRUD操作应独立为一个加工，避免合并",
+            "数据存储与加工之间的双向数据流是标准模式",
+            "避免加工直接连接其他加工，必须通过数据存储或数据流中转"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "error_handling",
+      "name": "错误与超时处理模板",
+      "templates": [
+        {
+          "id": "error_timeout_handling",
+          "name": "异常与超时处理模板",
+          "dfd_level": 1,
+          "pattern_type": "error_handling",
+          "placeholders": {
+            "processes": [
+              "P1_ProcessPayment",
+              "P2_LogError",
+              "P3_SendAlert"
+            ],
+            "external_entities": [
+              "E_User",
+              "E_PaymentGateway"
+            ],
+            "data_stores": [
+              "D_ErrorLog"
+            ]
+          },
+          "structure": {
+            "nodes": {
+              "P1_ProcessPayment": {
+                "type": "process",
+                "label": "处理支付"
+              },
+              "P2_LogError": {
+                "type": "process",
+                "label": "记录错误"
+              },
+              "P3_SendAlert": {
+                "type": "process",
+                "label": "发送告警"
+              },
+              "D_ErrorLog": {
+                "type": "data_store",
+                "label": "错误日志"
+              }
+            },
+            "data_flows": [
+              {
+                "from": "E_User",
+                "to": "P1_ProcessPayment",
+                "label": "支付请求"
+              },
+              {
+                "from": "P1_ProcessPayment",
+                "to": "E_PaymentGateway",
+                "label": "调用支付接口"
+              },
+              {
+                "from": "E_PaymentGateway",
+                "to": "P1_ProcessPayment",
+                "label": "响应（成功）"
+              },
+              {
+                "from": "E_PaymentGateway",
+                "to": "P1_ProcessPayment",
+                "label": "响应（失败/超时）"
+              },
+              {
+                "from": "P1_ProcessPayment",
+                "to": "P2_LogError",
+                "label": "错误详情"
+              },
+              {
+                "from": "P2_LogError",
+                "to": "D_ErrorLog",
+                "label": "写入日志"
+              },
+              {
+                "from": "P2_LogError",
+                "to": "P3_SendAlert",
+                "label": "触发告警"
+              },
+              {
+                "from": "P3_SendAlert",
+                "to": "E_User",
+                "label": "通知用户失败"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "支付/接口调用系统设计",
+            "高可用系统容错设计",
+            "运维监控系统对接"
+          ],
+          "notes": [
+            "异常路径必须显式建模，不能隐含",
+            "错误处理应包含日志记录、告警通知、用户反馈三要素",
+            "超时视为一种失败响应，应与业务错误同等对待"
+          ]
+        }
+      ]
+    }
+  ]
+}

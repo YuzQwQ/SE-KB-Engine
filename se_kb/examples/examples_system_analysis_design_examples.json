@@ -1,0 +1,144 @@
+{
+  "content_slug": "system_analysis_design_examples",
+  "examples": [
+    {
+      "example_id": "event_driven_system_model",
+      "title": "事件驱动系统需求建模",
+      "input": "系统的所有处理过程都是由事件驱动或触发的。外部事件如用户操作，内部事件如定时任务，状态事件如系统异常。事件由触发器、来源、动作、响应和目的地构成。",
+      "output": {
+        "event_type": "外部事件",
+        "trigger": "用户点击提交按钮",
+        "source": "前端用户界面",
+        "activity": "创建订单记录",
+        "response": "返回订单确认号",
+        "destination": "用户屏幕"
+      },
+      "annotations": [
+        "事件驱动是系统分析的核心方法，用于识别系统边界和交互点。",
+        "事件五要素（触发器、来源、动作、响应、目的地）是结构化需求建模的基础。"
+      ]
+    },
+    {
+      "example_id": "dfds_quality_check",
+      "title": "数据流图（DFD）质量评估原则",
+      "input": "评估DFD质量需遵循：复杂性最小化、7±2原则、接口最小化、数据流一致性、平衡性、避免黑洞和奇迹。",
+      "output": {
+        "check_item": "黑洞检查",
+        "description": "上层DFD定义了数据流'客户信息'，但下层子图中未使用该数据流，违反平衡原则。",
+        "violation_type": "黑洞"
+      },
+      "annotations": [
+        "黑洞指上层定义的数据在下层消失，表示需求遗漏。",
+        "奇迹指下层出现上层未定义的数据，表示设计越界。",
+        "7±2原则用于控制单页处理过程数量，提升可读性。"
+      ]
+    },
+    {
+      "example_id": "requirements_collection_methods",
+      "title": "系统需求收集方法组合",
+      "input": "识别系统需求的方法包括：分发调查表、复查现有报表、主持用户面谈、观察工作流、建立原型、主持JAD会议。",
+      "output": {
+        "method": "主持JAD会议",
+        "purpose": "快速对齐多方利益相关者对系统功能的共识",
+        "context": "用于复杂业务流程如财务审批流程的需求定义"
+      },
+      "annotations": [
+        "JAD（联合应用设计）会议是高效收集跨部门需求的结构化方法。",
+        "原型法适用于用户需求模糊或交互界面复杂的场景。"
+      ]
+    },
+    {
+      "example_id": "system_development_life_cycle",
+      "title": "信息系统生存周期阶段划分",
+      "input": "信息系统生存周期包括：规划、开发、演化（运行与维护）、管理、支持。",
+      "output": {
+        "phase": "演化过程",
+        "sub_phases": [
+          "运行：系统应用于业务、管理和决策",
+          "维护：适应环境变化，进行版本更新"
+        ],
+        "note": "版本更新属于维护，不属于开发过程"
+      },
+      "annotations": [
+        "演化过程贯穿系统生命周期，强调持续适应性。",
+        "维护与开发严格区分：开发是新建，维护是迭代优化。"
+      ]
+    },
+    {
+      "example_id": "use_case_development_process",
+      "title": "用例图开发步骤",
+      "input": "开发用例图需：参照事件表、确定参与者、开发场景、识别通用内部用例、划分用例。",
+      "output": {
+        "step": "确定参与者",
+        "participants": [
+          "业务操作用户",
+          "管理用户",
+          "主管用户",
+          "系统管理员"
+        ],
+        "output_link": "用例：创建订单、审核订单、生成报表"
+      },
+      "annotations": [
+        "参与者是与系统交互的外部角色，需按业务角色划分。",
+        "通用内部用例（如登录、权限校验）应被抽象为独立用例供复用。"
+      ]
+    },
+    {
+      "example_id": "feasibility_analysis_criteria",
+      "title": "项目可行性分析维度",
+      "input": "可行性分析包括经济可行性（成本/收益）、组织和文化可行性（人员能力）、技术可行性、进度可行性。",
+      "output": {
+        "type": "组织和文化可行性",
+        "assessment": "开发团队缺乏ERP系统经验，需外部培训或引入顾问",
+        "risk_level": "中高"
+      },
+      "annotations": [
+        "组织可行性关注人员技能、文化接受度和变革阻力。",
+        "技术可行性需评估现有技术栈能否支撑新系统架构。"
+      ]
+    },
+    {
+      "example_id": "system_boundary_vs_automation_boundary",
+      "title": "系统边界与自动化边界区分",
+      "input": "系统边界是系统与环境的输入输出分界；自动化边界是系统内自动与手动操作的分界。",
+      "output": {
+        "boundary_type": "自动化边界",
+        "example": "订单审核流程中，系统自动校验金额，人工审批超过限额的订单",
+        "automated": "金额校验",
+        "manual": "超限审批"
+      },
+      "annotations": [
+        "系统边界定义系统与外部实体（如客户、银行）的交互点。",
+        "自动化边界影响系统设计中的角色权限与流程拆分。"
+      ]
+    },
+    {
+      "example_id": "object_oriented_design_steps",
+      "title": "面向对象设计类图开发步骤",
+      "input": "设计类图需：决定需要设计的类、建立属性列表、查找方法（参考顺序图）、描述方法逻辑（参考状态图）。",
+      "output": {
+        "class_name": "Order",
+        "attributes": [
+          "orderId: String",
+          "amount: Decimal",
+          "status: Enum"
+        ],
+        "methods": [
+          "submit(): Boolean",
+          "approve(): Boolean",
+          "cancel(): Boolean"
+        ],
+        "source_diagrams": [
+          "顺序图：用户→Order→Payment",
+          "状态图：Order状态：草稿→已提交→已审批→已完成"
+        ]
+      },
+      "annotations": [
+        "类图设计必须与OOA阶段的用例和顺序图保持一致。",
+        "状态图用于定义对象行为的生命周期，指导方法逻辑实现。"
+      ]
+    }
+  ],
+  "_source_url": "",
+  "_added_at": "2025-12-14T10:45:43.990173"
+}

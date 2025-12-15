@@ -19,3 +19,4 @@ uvicorn[standard]
 pydantic
 flask
 flask-cors
+numpy

@@ -17,79 +17,174 @@
                 <span class="logo-icon">🧠</span>
                 <h1>知识库构建系统</h1>
             </div>
-            <p class="subtitle">搜索 → 爬取 → 抽取 → 知识库</p>
+            <p class="subtitle">搜索 → 爬取 → 抽取 → 精炼 → 知识库</p>
         </header>
 
-        <!-- 搜索区域 -->
-        <section class="search-section">
-            <div class="search-box">
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="输入搜索关键词，如：数据流图 绘制步骤 教程"
-                    autocomplete="off"
-                >
-                <button id="searchBtn" class="btn-primary">
-                    <span class="btn-icon">🚀</span>
-                    <span class="btn-text">开始构建</span>
-                </button>
-            </div>
-            
-            <!-- 选项 -->
-            <div class="options">
-                <div class="option-group">
-                    <label>爬取数量:</label>
-                    <select id="limitSelect">
-                        <option value="3">3 个网页</option>
-                        <option value="5" selected>5 个网页</option>
-                        <option value="10">10 个网页</option>
-                        <option value="15">15 个网页</option>
-                    </select>
-                </div>
-                <div class="option-group">
-                    <label>知识类型:</label>
-                    <select id="typeSelect">
-                        <option value="">自动识别</option>
-                        <option value="diagrams.dfd.concepts">DFD 概念</option>
-                        <option value="diagrams.dfd.rules">DFD 规则</option>
-                        <option value="diagrams.dfd.examples">DFD 示例</option>
-                        <option value="theory">软件工程理论</option>
-                    </select>
-                </div>
-            </div>
-        </section>
+        <!-- Tab 切换 -->
+        <div class="tab-container">
+            <button class="tab-btn active" data-tab="crawl">
+                🌐 爬取知识
+            </button>
+            <button class="tab-btn" data-tab="refine">
+                ✨ 去重精炼
+            </button>
+        </div>
 
-        <!-- 进度区域 -->
-        <section class="progress-section" id="progressSection">
-            <div class="progress-header">
-                <span class="status-badge" id="statusBadge">等待中</span>
-                <span class="progress-text" id="progressText">0%</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </section>
-
-        <!-- 日志区域 -->
-        <section class="log-section">
-            <div class="log-header">
-                <h3>📋 执行日志</h3>
-                <button id="clearBtn" class="btn-small">清空</button>
-            </div>
-            <div class="log-container" id="logContainer">
-                <div class="log-placeholder">
-                    等待任务开始...
+        <!-- 爬取 Tab -->
+        <div class="tab-content active" id="crawl-tab">
+            <!-- 搜索区域 -->
+            <section class="search-section">
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="输入搜索关键词，如：数据流图 绘制步骤 教程"
+                        autocomplete="off"
+                    >
+                    <button id="searchBtn" class="btn-primary">
+                        <span class="btn-icon">🚀</span>
+                        <span class="btn-text">开始构建</span>
+                    </button>
                 </div>
-            </div>
-        </section>
+                
+                <!-- 选项 -->
+                <div class="options">
+                    <div class="option-group">
+                        <label>爬取数量:</label>
+                        <select id="limitSelect">
+                            <option value="3">3 个网页</option>
+                            <option value="5" selected>5 个网页</option>
+                            <option value="10">10 个网页</option>
+                            <option value="15">15 个网页</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label>知识类型:</label>
+                        <select id="typeSelect">
+                            <option value="">自动识别</option>
+                            <option value="diagrams.dfd.concepts">DFD 概念</option>
+                            <option value="diagrams.dfd.rules">DFD 规则</option>
+                            <option value="diagrams.dfd.examples">DFD 示例</option>
+                            <option value="theory">软件工程理论</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
 
-        <!-- 结果区域 -->
-        <section class="result-section" id="resultSection">
-            <h3>📦 抽取结果</h3>
-            <div class="result-list" id="resultList">
-                <!-- 动态填充 -->
-            </div>
-        </section>
+            <!-- 进度区域 -->
+            <section class="progress-section" id="progressSection">
+                <div class="progress-header">
+                    <span class="status-badge" id="statusBadge">等待中</span>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </section>
+
+            <!-- 日志区域 -->
+            <section class="log-section">
+                <div class="log-header">
+                    <h3>📋 执行日志</h3>
+                    <button id="clearBtn" class="btn-small">清空</button>
+                </div>
+                <div class="log-container" id="logContainer">
+                    <div class="log-placeholder">
+                        等待任务开始...
+                    </div>
+                </div>
+            </section>
+
+            <!-- 结果区域 -->
+            <section class="result-section" id="resultSection">
+                <h3>📦 抽取结果</h3>
+                <div class="result-list" id="resultList">
+                    <!-- 动态填充 -->
+                </div>
+            </section>
+        </div>
+
+        <!-- 精炼 Tab -->
+        <div class="tab-content" id="refine-tab">
+            <section class="refine-section">
+                <div class="refine-header">
+                    <h3>🔄 知识去重与精炼</h3>
+                    <p class="refine-desc">扫描 artifacts 目录，识别重复内容，智能融合生成高质量知识</p>
+                </div>
+
+                <!-- 日期选择 -->
+                <div class="refine-options">
+                    <div class="option-group">
+                        <label>选择日期:</label>
+                        <select id="refineDateSelect">
+                            <option value="">全部日期</option>
+                            <!-- 动态填充 -->
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label>选择时间段:</label>
+                        <select id="refineTimeSelect">
+                            <option value="">全部时间</option>
+                            <!-- 动态填充 -->
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label>
+                            <input type="checkbox" id="dryRunCheck">
+                            试运行（不保存）
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="refine-actions">
+                    <button id="previewBtn" class="btn-secondary">
+                        <span>👁️ 预览分析</span>
+                    </button>
+                    <button id="refineBtn" class="btn-primary">
+                        <span>✨ 开始精炼</span>
+                    </button>
+                </div>
+
+                <!-- 预览结果 -->
+                <div class="preview-result" id="previewResult" style="display: none;">
+                    <h4>📊 预览结果</h4>
+                    <div class="preview-content" id="previewContent"></div>
+                </div>
+
+                <!-- 精炼进度 -->
+                <section class="progress-section" id="refineProgressSection" style="display: none;">
+                    <div class="progress-header">
+                        <span class="status-badge" id="refineStatusBadge">等待中</span>
+                        <span class="progress-text" id="refineProgressText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="refineProgressFill"></div>
+                    </div>
+                </section>
+
+                <!-- 精炼日志 -->
+                <section class="log-section">
+                    <div class="log-header">
+                        <h3>📋 精炼日志</h3>
+                        <button id="clearRefineLogBtn" class="btn-small">清空</button>
+                    </div>
+                    <div class="log-container" id="refineLogContainer">
+                        <div class="log-placeholder">
+                            选择日期后点击"预览分析"或"开始精炼"...
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 精炼统计 -->
+                <section class="stats-section" id="refineStatsSection" style="display: none;">
+                    <h3>📈 精炼统计</h3>
+                    <div class="stats-grid" id="refineStatsGrid">
+                        <!-- 动态填充 -->
+                    </div>
+                </section>
+            </section>
+        </div>
 
         <!-- 页脚 -->
         <footer class="footer">
@@ -100,5 +195,3 @@
     <script src="/static/script.js"></script>
 </body>
 </html>
-
-

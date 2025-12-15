@@ -102,8 +102,8 @@ def run(input_glob: str, targets_csv: str, auto: bool, min_score: float) -> dict
                 trace = {**(trace or {}), "llm": llm_trace}
                 
                 if artifact:
-                    artifact = normalizer(artifact, namer)
-                    ok, errors = validator(artifact, cfg["schema_path"])
+                artifact = normalizer(artifact, namer)
+                ok, errors = validator(artifact, cfg["schema_path"])
             
             # 计算最终得分
             final_score = score

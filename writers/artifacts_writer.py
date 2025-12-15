@@ -66,28 +66,38 @@ class ArtifactsWriter:
         
         return None
     
-    def _generate_artifact_filename(self, type_id: str, artifact: dict, domain: str = None) -> str:
-        """生成 artifact 文件名，格式：{type}_{domain}_{slug}.json"""
+    def _generate_artifact_filename(self, type_id: str, artifact: dict, domain: str = None, url: str = None) -> str:
+        """
+        生成 artifact 文件名，格式：{type}_{domain}_{slug}_{hash}.json
+        
+        确保每个文件名唯一，即使多个来源产生相同的 content_slug
+        """
         # 简化 type_id 用于文件名（diagrams.dfd.concepts -> dfd_concepts）
         type_short = type_id.replace('diagrams.', '').replace('.', '_')
         
         # 获取域名短名
         domain_short = self._get_domain_short(domain)
         
+        # 生成 URL hash（确保唯一性）
+        url_hash = hashlib.md5((url or "").encode('utf-8')).hexdigest()[:6]
+        
         # 尝试从 artifact 获取 content_slug
         content_slug = self._extract_content_slug(artifact, type_id)
         
         if content_slug:
-            return f"{type_short}_{domain_short}_{content_slug}.json"
+            return f"{type_short}_{domain_short}_{content_slug}_{url_hash}.json"
         else:
-            return f"{type_short}_{domain_short}.json"
+            return f"{type_short}_{domain_short}_{url_hash}.json"
 
     def _base_dir(self) -> Path:
         return Path("se_kb/artifacts")
 
     def write(self, domain: str, title: str, parsed: dict, document_text: str, t: str, artifact: dict, trace: dict, metadata: dict, metrics: dict, errors: list = None) -> dict:
         now = datetime.now()
-        base = self._base_dir() / now.strftime("%Y") / now.strftime("%m") / now.strftime("%d") / (domain or "unknown")
+        # 目录结构：artifacts/{YYYY}/{MM}/{DD}/{HH_MM}/{domain}/{slug}/
+        # 精确到分钟，方便批量爬取后按时间段审核
+        time_dir = now.strftime("%H_%M")  # 如 11_30, 14_05
+        base = self._base_dir() / now.strftime("%Y") / now.strftime("%m") / now.strftime("%d") / time_dir / (domain or "unknown")
         slug = self._slug(title, parsed.get("source_url") or parsed.get("url") or "")
         out = base / slug
         out.mkdir(parents=True, exist_ok=True)
@@ -101,7 +111,8 @@ class ArtifactsWriter:
         
         artifact_filename = None
         if artifact is not None:
-            # 使用新的文件名生成逻辑（包含域名前缀）
-            artifact_filename = self._generate_artifact_filename(t, artifact, domain)
+            # 使用新的文件名生成逻辑（包含域名前缀 + URL hash 确保唯一）
+            url = parsed.get("source_url") or parsed.get("url") or ""
+            artifact_filename = self._generate_artifact_filename(t, artifact, domain, url)
             (out / artifact_filename).write_text(json.dumps(artifact, ensure_ascii=False, indent=2), encoding="utf-8")
         return {"dir": str(out), "type": t, "artifact_file": artifact_filename}

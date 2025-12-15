@@ -1,0 +1,1 @@
+invalid type: string "DFD概念: 数据存储（Data Store）\n定义: 表示系统内部长期或持久保存的数据集合，如文件、数据库表。\n命名规范: 使用名词，如：账户文件、库存数据库、用户表。\n特征: 只能通过 Process 访问：读/写; 读 → 流向 Process；写 → 来自 Process; 与现实实体模型一致，可在 ERD 中进一步定义结构

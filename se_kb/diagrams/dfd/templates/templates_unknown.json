@@ -1,0 +1,870 @@
+{
+  "description": "DFD 通用模板库，用于在自动建模时快速选择合适的结构骨架。模板基于《第7章 结构化分析》中 ATM 及练习案例的典型 DFD 形态抽象而来。",
+  "version": "0.1",
+  "categories": [
+    {
+      "id": "top_level",
+      "name": "Level-0 顶层上下文模板",
+      "templates": [
+        {
+          "id": "top_level_single_io",
+          "name": "Level-0 单输入/单输出系统",
+          "dfd_level": 0,
+          "pattern_type": "context",
+          "placeholders": {
+            "external_entities": [
+              "E_PRIMARY_USER"
+            ],
+            "processes": [
+              "P0_SYSTEM"
+            ],
+            "data_stores": []
+          },
+          "structure": {
+            "nodes": {
+              "external_entities": [
+                {
+                  "id": "E_PRIMARY_USER",
+                  "role": "主要外部用户或角色"
+                }
+              ],
+              "processes": [
+                {
+                  "id": "P0_SYSTEM",
+                  "role": "整个目标系统"
+                }
+              ],
+              "data_stores": []
+            },
+            "data_flows": [
+              {
+                "from": "E_PRIMARY_USER",
+                "to": "P0_SYSTEM",
+                "name": "request_*"
+              },
+              {
+                "from": "P0_SYSTEM",
+                "to": "E_PRIMARY_USER",
+                "name": "response_*"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "简单查询系统：余额查询、成绩查询等",
+            "单一服务型 API 或工具"
+          ],
+          "notes": [
+            "用于 0 层 DFD，只刻画系统边界与主要交互。",
+            "内部功能在 1 层及以下展开。"
+          ]
+        },
+        {
+          "id": "top_level_multi_io",
+          "name": "Level-0 多输入/多输出系统",
+          "dfd_level": 0,
+          "pattern_type": "context",
+          "placeholders": {
+            "external_entities": [
+              "E_ACTOR_1",
+              "E_ACTOR_2"
+            ],
+            "processes": [
+              "P0_SYSTEM"
+            ],
+            "data_stores": []
+          },
+          "structure": {
+            "nodes": {
+              "external_entities": [
+                {
+                  "id": "E_ACTOR_1",
+                  "role": "主要业务参与方 1"
+                },
+                {
+                  "id": "E_ACTOR_2",
+                  "role": "主要业务参与方 2"
+                }
+              ],
+              "processes": [
+                {
+                  "id": "P0_SYSTEM",
+                  "role": "整个目标系统"
+                }
+              ],
+              "data_stores": []
+            },
+            "data_flows": [
+              {
+                "from": "E_ACTOR_1",
+                "to": "P0_SYSTEM",
+                "name": "request_from_actor1"
+              },
+              {
+                "from": "P0_SYSTEM",
+                "to": "E_ACTOR_1",
+                "name": "response_to_actor1"
+              },
+              {
+                "from": "E_ACTOR_2",
+                "to": "P0_SYSTEM",
+                "name": "request_from_actor2"
+              },
+              {
+                "from": "P0_SYSTEM",
+                "to": "E_ACTOR_2",
+                "name": "response_to_actor2"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "进销存系统（供应商 / 客户）",
+            "机票预定系统（旅客 / 票务人员）"
+          ],
+          "notes": [
+            "突出系统面向多个外部角色提供不同输入输出。",
+            "内部可在 1 层拆成输入处理 / 业务处理 / 输出处理等子过程。"
+          ]
+        },
+        {
+          "id": "top_level_multi_party",
+          "name": "Level-0 多外部实体交互系统",
+          "dfd_level": 0,
+          "pattern_type": "context",
+          "placeholders": {
+            "external_entities": [
+              "E_CLIENT",
+              "E_ADMIN",
+              "E_THIRD_PARTY?"
+            ],
+            "processes": [
+              "P0_SYSTEM"
+            ],
+            "data_stores": []
+          },
+          "structure": {
+            "nodes": {
+              "external_entities": [
+                {
+                  "id": "E_CLIENT",
+                  "role": "终端用户或客户"
+                },
+                {
+                  "id": "E_ADMIN",
+                  "role": "后台管理人员或内部系统"
+                },
+                {
+                  "id": "E_THIRD_PARTY?",
+                  "role": "可选的第三方服务（支付、风控等）"
+                }
+              ],
+              "processes": [
+                {
+                  "id": "P0_SYSTEM",
+                  "role": "整个业务系统"
+                }
+              ],
+              "data_stores": []
+            },
+            "data_flows": [
+              {
+                "from": "E_CLIENT",
+                "to": "P0_SYSTEM",
+                "name": "client_requests"
+              },
+              {
+                "from": "P0_SYSTEM",
+                "to": "E_CLIENT",
+                "name": "client_responses"
+              },
+              {
+                "from": "E_ADMIN",
+                "to": "P0_SYSTEM",
+                "name": "admin_commands"
+              },
+              {
+                "from": "P0_SYSTEM",
+                "to": "E_ADMIN",
+                "name": "management_reports"
+              },
+              {
+                "from": "P0_SYSTEM",
+                "to": "E_THIRD_PARTY?",
+                "name": "third_party_requests?"
+              },
+              {
+                "from": "E_THIRD_PARTY?",
+                "to": "P0_SYSTEM",
+                "name": "third_party_callbacks?"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "支付系统（用户 / 商户 / 第三方通道）",
+            "综合业务平台（前台 / 后台 / 外部接口）"
+          ],
+          "notes": [
+            "用于在 0 层清晰展示多角色交互与系统边界。",
+            "带 ? 的外部实体和数据流代表可选项，可按实际需求删减。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "decomposition",
+      "name": "分解结构模板（Level-1/2）",
+      "templates": [
+        {
+          "id": "three_stage_pipeline",
+          "name": "三段式主流程分解",
+          "dfd_level": 1,
+          "pattern_type": "functional_decomposition",
+          "placeholders": {
+            "processes": [
+              "P1_INPUT",
+              "P2_CORE",
+              "P3_OUTPUT"
+            ]
+          },
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_INPUT",
+                  "name": "输入/接收请求",
+                  "role": "规范化输入、初步校验"
+                },
+                {
+                  "id": "P2_CORE",
+                  "name": "核心业务处理",
+                  "role": "执行业务规则、与数据存储交互"
+                },
+                {
+                  "id": "P3_OUTPUT",
+                  "name": "输出/生成结果",
+                  "role": "封装结果、生成回执或界面"
+                }
+              ]
+            },
+            "data_flows": [
+              {
+                "from": "P1_INPUT",
+                "to": "P2_CORE",
+                "name": "normalized_request"
+              },
+              {
+                "from": "P2_CORE",
+                "to": "P3_OUTPUT",
+                "name": "business_result"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "ATM 1 层：客户请求 → 服务处理 → 输出结果",
+            "绝大多数“单事务”类业务流程"
+          ],
+          "notes": [
+            "适合作为 1 层的基线分解方式，在 P2_CORE 下继续细化各种子服务。",
+            "符合“由外及内”的画图顺序。"
+          ]
+        },
+        {
+          "id": "function_menu",
+          "name": "服务菜单式分解",
+          "dfd_level": 1,
+          "pattern_type": "functional_decomposition",
+          "placeholders": {
+            "processes": [
+              "P1_SELECT",
+              "P2_FEATURE_A",
+              "P3_FEATURE_B",
+              "P4_FEATURE_C"
+            ]
+          },
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_SELECT",
+                  "name": "选择服务功能",
+                  "role": "解析用户选择并路由"
+                },
+                {
+                  "id": "P2_FEATURE_A",
+                  "name": "功能 A 处理",
+                  "role": "具体业务功能 A"
+                },
+                {
+                  "id": "P3_FEATURE_B",
+                  "name": "功能 B 处理",
+                  "role": "具体业务功能 B"
+                },
+                {
+                  "id": "P4_FEATURE_C",
+                  "name": "功能 C 处理",
+                  "role": "具体业务功能 C"
+                }
+              ]
+            },
+            "data_flows": [
+              {
+                "from": "P1_SELECT",
+                "to": "P2_FEATURE_A",
+                "name": "option_A?"
+              },
+              {
+                "from": "P1_SELECT",
+                "to": "P3_FEATURE_B",
+                "name": "option_B?"
+              },
+              {
+                "from": "P1_SELECT",
+                "to": "P4_FEATURE_C",
+                "name": "option_C?"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "ATM 服务选择：取款 / 转账 / 查询 / 修改密码",
+            "任何通过菜单或操作码选择子业务的系统"
+          ],
+          "notes": [
+            "P1_SELECT 本身通常由一个状态图或结构化语言详细描述选择逻辑。",
+            "各子功能过程（如 P2_FEATURE_A）在下一层细化为完整事务流程。"
+          ]
+        },
+        {
+          "id": "crud_subsystem",
+          "name": "CRUD 子系统分解模板",
+          "dfd_level": 1,
+          "pattern_type": "functional_decomposition",
+          "placeholders": {
+            "data_store": "DS_MAIN"
+          },
+          "structure": {
+            "nodes": {
+              "data_stores": [
+                {
+                  "id": "DS_MAIN",
+                  "name": "主业务数据存储"
+                }
+              ],
+              "processes": [
+                {
+                  "id": "P1_QUERY",
+                  "name": "查询数据",
+                  "role": "读取 DS_MAIN 并返回结果"
+                },
+                {
+                  "id": "P2_CREATE",
+                  "name": "新增数据",
+                  "role": "写入 DS_MAIN"
+                },
+                {
+                  "id": "P3_UPDATE",
+                  "name": "更新数据",
+                  "role": "修改 DS_MAIN 记录"
+                },
+                {
+                  "id": "P4_DELETE",
+                  "name": "删除数据",
+                  "role": "删除或标记删除 DS_MAIN 记录"
+                }
+              ]
+            },
+            "data_flows": [
+              {
+                "from": "P1_QUERY",
+                "to": "DS_MAIN",
+                "direction": "read"
+              },
+              {
+                "from": "P2_CREATE",
+                "to": "DS_MAIN",
+                "direction": "write"
+              },
+              {
+                "from": "P3_UPDATE",
+                "to": "DS_MAIN",
+                "direction": "write"
+              },
+              {
+                "from": "P4_DELETE",
+                "to": "DS_MAIN",
+                "direction": "write"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "后台管理系统中的配置表、基础资料维护",
+            "教材库存、账户基本信息等典型数据维护模块"
+          ],
+          "notes": [
+            "在 DFD 中强调对同一数据存储的四类典型操作。",
+            "可与数据字典配合，细化 DS_MAIN 的结构。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data_store_interaction",
+      "name": "数据存储交互模板",
+      "templates": [
+        {
+          "id": "ds_read_validate_update",
+          "name": "读-校验-更新模式",
+          "dfd_level": 2,
+          "pattern_type": "data_store_interaction",
+          "placeholders": {
+            "data_store": "DS_ACCOUNT"
+          },
+          "structure": {
+            "nodes": {
+              "data_stores": [
+                {
+                  "id": "DS_ACCOUNT",
+                  "name": "账户/库存等主数据"
+                }
+              ],
+              "processes": [
+                {
+                  "id": "P1_READ",
+                  "name": "读取当前记录",
+                  "role": "根据主键读取 DS_ACCOUNT"
+                },
+                {
+                  "id": "P2_VALIDATE",
+                  "name": "校验业务规则",
+                  "role": "检查余额、状态、库存量等"
+                },
+                {
+                  "id": "P3_UPDATE",
+                  "name": "更新记录",
+                  "role": "写回新的余额或数量"
+                }
+              ]
+            },
+            "data_flows": [
+              {
+                "from": "P1_READ",
+                "to": "DS_ACCOUNT",
+                "direction": "read"
+              },
+              {
+                "from": "P3_UPDATE",
+                "to": "DS_ACCOUNT",
+                "direction": "write"
+              },
+              {
+                "from": "P1_READ",
+                "to": "P2_VALIDATE",
+                "name": "current_state"
+              },
+              {
+                "from": "P2_VALIDATE",
+                "to": "P3_UPDATE",
+                "name": "update_command?"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "ATM 取款：读账户 → 校验余额/限额 → 更新余额",
+            "库存扣减：读库存 → 校验数量 → 更新库存"
+          ],
+          "notes": [
+            "体现表 7-1 中关于合理使用数据存储的指导：写入后应有对应的读出使用。",
+            "若校验失败，可连接错误处理模板（error_branch）。"
+          ]
+        },
+        {
+          "id": "ds_read_only_query",
+          "name": "只读查询模式",
+          "dfd_level": 2,
+          "pattern_type": "data_store_interaction",
+          "placeholders": {
+            "data_store": "DS_MAIN"
+          },
+          "structure": {
+            "nodes": {
+              "data_stores": [
+                {
+                  "id": "DS_MAIN",
+                  "name": "只读数据源（如历史明细、教材库存）"
+                }
+              ],
+              "processes": [
+                {
+                  "id": "P1_PARAM_CHECK",
+                  "name": "查询参数校验",
+                  "role": "检查查询条件合法性"
+                },
+                {
+                  "id": "P2_QUERY",
+                  "name": "执行查询",
+                  "role": "从 DS_MAIN 按条件读取"
+                },
+                {
+                  "id": "P3_FORMAT_RESULT",
+                  "name": "整理输出",
+                  "role": "排序、分页、汇总结果"
+                }
+              ]
+            },
+            "data_flows": [
+              {
+                "from": "P2_QUERY",
+                "to": "DS_MAIN",
+                "direction": "read"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "ATM 明细查询（图 7-16）",
+            "教材购销系统中的缺书查询、库存查询"
+          ],
+          "notes": [
+            "典型的“读多写少”场景，可与查询型系统模板组合使用。",
+            "写入操作应另行建模，避免混淆读写逻辑。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "error_and_timeout",
+      "name": "异常与超时处理模板",
+      "templates": [
+        {
+          "id": "error_branch",
+          "name": "错误分支处理模板",
+          "dfd_level": 2,
+          "pattern_type": "error_handling",
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_VALIDATE",
+                  "name": "输入/状态校验",
+                  "role": "检查金额、账号、权限等"
+                },
+                {
+                  "id": "P2_NORMAL",
+                  "name": "正常处理",
+                  "role": "在校验通过时执行业务逻辑"
+                },
+                {
+                  "id": "P3_ERROR",
+                  "name": "错误处理",
+                  "role": "生成错误消息、回滚或记录日志"
+                }
+              ]
+            },
+            "data_flows": [
+              {
+                "from": "P1_VALIDATE",
+                "to": "P2_NORMAL",
+                "name": "valid_input?"
+              },
+              {
+                "from": "P1_VALIDATE",
+                "to": "P3_ERROR",
+                "name": "error_info?"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "ATM：密码错误、取款金额非法等异常处理",
+            "表 7-2 中建议的“简化过程间联系、突出主干流程”场景"
+          ],
+          "notes": [
+            "错误分支应在 DFD 中显式建模，而不是隐含在文字说明中。",
+            "可在 3 层进一步细化错误记录、重试计数、锁定等逻辑。"
+          ]
+        },
+        {
+          "id": "timeout_handling",
+          "name": "操作超时处理模板",
+          "dfd_level": 2,
+          "pattern_type": "error_handling",
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_WAIT_FOR_INPUT",
+                  "name": "等待输入",
+                  "role": "监听用户输入或外部事件"
+                },
+                {
+                  "id": "P2_HANDLE_INPUT",
+                  "name": "处理输入",
+                  "role": "正常处理到来的请求"
+                },
+                {
+                  "id": "P3_HANDLE_TIMEOUT",
+                  "name": "处理超时",
+                  "role": "超时提示、回到主菜单或取消交易"
+                }
+              ]
+            },
+            "data_flows": [
+              {
+                "from": "P1_WAIT_FOR_INPUT",
+                "to": "P2_HANDLE_INPUT",
+                "name": "user_input?"
+              },
+              {
+                "from": "P1_WAIT_FOR_INPUT",
+                "to": "P3_HANDLE_TIMEOUT",
+                "name": "timeout_event?"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "ATM：操作延时处理（需求中明确提出）",
+            "任何需要保护资源、避免长时间占用会话的交互系统"
+          ],
+          "notes": [
+            "可与状态图配合，状态图描述超时事件触发；DFD 描述数据流和处理。",
+            "超时处理往往与错误处理模板组合使用。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "basic_process",
+      "name": "底层基本加工模板",
+      "templates": [
+        {
+          "id": "input_normalization",
+          "name": "输入规范化模板",
+          "dfd_level": 3,
+          "pattern_type": "basic_process",
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_PARSE_RAW",
+                  "name": "解析原始输入",
+                  "role": "解析卡号/账号/文本等原始数据"
+                },
+                {
+                  "id": "P2_FORMAT",
+                  "name": "格式化与清洗",
+                  "role": "去除空白、统一大小写、补齐位数等"
+                }
+              ]
+            },
+            "data_flows": [
+              {
+                "from": "P1_PARSE_RAW",
+                "to": "P2_FORMAT",
+                "name": "parsed_input"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "ATM 卡号输入规范化",
+            "任何需要对用户输入做预处理的场景"
+          ],
+          "notes": [
+            "对应加工规约中常见的“格式化输入”段落。",
+            "有助于在更高层只处理规范化后的数据，简化逻辑。"
+          ]
+        },
+        {
+          "id": "data_validation",
+          "name": "数据校验模板",
+          "dfd_level": 3,
+          "pattern_type": "basic_process",
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_CHECK_RANGE",
+                  "name": "范围校验",
+                  "role": "检查金额上下限、日期范围等"
+                },
+                {
+                  "id": "P2_CHECK_FORMAT",
+                  "name": "格式校验",
+                  "role": "检查长度、必填项、校验位等"
+                }
+              ]
+            }
+          },
+          "applicable_scenarios": [
+            "ATM 取款金额、日期、账号的合法性检查",
+            "教材购销系统中购书单的有效性审查"
+          ],
+          "notes": [
+            "通常与 error_branch 模板组合，校验失败走错误分支。",
+            "可在数据字典中定义每个字段的取值约束，然后在此加工中集中检查。"
+          ]
+        },
+        {
+          "id": "conditional_dispatch",
+          "name": "条件分派模板",
+          "dfd_level": 3,
+          "pattern_type": "basic_process",
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_SELECT_PATH",
+                  "name": "根据条件分派",
+                  "role": "根据类型码/状态/金额区间路由到不同子过程"
+                }
+              ]
+            },
+            "data_flows": [
+              {
+                "from": "P1_SELECT_PATH",
+                "to": "P_TARGET_A",
+                "name": "route_A?"
+              },
+              {
+                "from": "P1_SELECT_PATH",
+                "to": "P_TARGET_B",
+                "name": "route_B?"
+              }
+            ]
+          },
+          "applicable_scenarios": [
+            "根据交易类型路由到不同处理过程",
+            "根据库存状态选择采购或缺书登记"
+          ],
+          "notes": [
+            "在结构化语言中对应 IF / CASE 选择结构。",
+            "P_TARGET_A / P_TARGET_B 为占位符，由上层具体过程实例化。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "composite_flows",
+      "name": "综合业务流程模板",
+      "templates": [
+        {
+          "id": "transaction_flow",
+          "name": "交易型系统模板",
+          "dfd_level": 2,
+          "pattern_type": "composite",
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_VALIDATE_INPUT",
+                  "name": "输入与身份校验",
+                  "role": "卡/账号/密码/基本规则检查"
+                },
+                {
+                  "id": "P2_BUSINESS_RULES",
+                  "name": "业务规则检查",
+                  "role": "额度、余额、限额、黑名单等"
+                },
+                {
+                  "id": "P3_DB_INTERACTION",
+                  "name": "数据库读写",
+                  "role": "读-校验-更新主数据"
+                },
+                {
+                  "id": "P4_GENERATE_RECEIPT",
+                  "name": "生成回执",
+                  "role": "生成小票、提示信息或凭证"
+                }
+              ]
+            }
+          },
+          "applicable_scenarios": [
+            "ATM：取款、转账、缴费等交易",
+            "储蓄所存取款业务",
+            "教材购销系统中的购书交易"
+          ],
+          "notes": [
+            "可视为三段式分解 + 数据存储交互 + 错误处理的组合。",
+            "适合作为典型“交易型用例”的 2 层 DFD 模板。"
+          ]
+        },
+        {
+          "id": "query_flow",
+          "name": "查询型系统模板",
+          "dfd_level": 2,
+          "pattern_type": "composite",
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_COLLECT_PARAMS",
+                  "name": "采集查询条件",
+                  "role": "从界面/外部系统获取查询条件"
+                },
+                {
+                  "id": "P2_VALIDATE_PARAMS",
+                  "name": "校验查询条件",
+                  "role": "检查必填项、范围等"
+                },
+                {
+                  "id": "P3_QUERY_STORE",
+                  "name": "执行查询",
+                  "role": "从一个或多个数据存储读取数据"
+                },
+                {
+                  "id": "P4_FORMAT_RESPONSE",
+                  "name": "整理与返回结果",
+                  "role": "排序、分页、聚合并输出"
+                }
+              ]
+            }
+          },
+          "applicable_scenarios": [
+            "ATM：余额查询、明细查询",
+            "教材库存查询、缺书查询",
+            "任何报表/列表查询型功能"
+          ],
+          "notes": [
+            "通常与 ds_read_only_query 模板组合使用。",
+            "若查询条件复杂，可在 3 层为 P2/P3 衍生更多子过程。"
+          ]
+        },
+        {
+          "id": "workflow_approval",
+          "name": "工作流审批模板",
+          "dfd_level": 2,
+          "pattern_type": "composite",
+          "structure": {
+            "nodes": {
+              "processes": [
+                {
+                  "id": "P1_RECEIVE_REQUEST",
+                  "name": "接收请求",
+                  "role": "接收申请或业务请求"
+                },
+                {
+                  "id": "P2_PRECHECK",
+                  "name": "初审",
+                  "role": "形式/完整性审查"
+                },
+                {
+                  "id": "P3_REVIEW",
+                  "name": "复审或业务审核",
+                  "role": "实质性业务审核"
+                },
+                {
+                  "id": "P4_DECIDE",
+                  "name": "批准/驳回",
+                  "role": "做出最终处理决定并通知"
+                }
+              ]
+            }
+          },
+          "applicable_scenarios": [
+            "教材购销系统中缺书申请、采购审批流程",
+            "贷款审批、报销审批等多环节业务"
+          ],
+          "notes": [
+            "可与状态图配合，状态图侧重状态迁移，DFD 侧重数据与处理。",
+            "适用于练习题中“教材购销系统”、“储蓄所业务”等需要多角色协同的场景。"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "content_slug": "data_mapping_and_etl_examples",
+  "examples": [
+    {
+      "example_id": "json_field_extraction",
+      "title": "从MySQL中提取JSON格式字段用于分析",
+      "input": "数据库中某个字段存储为JSON格式，如：{\"name\": \"张三\", \"age\": 30, \"city\": \"北京\"}，需用于统计分析和特征提取。",
+      "output": {
+        "target_format": "扁平化结构",
+        "transformed_fields": [
+          "name",
+          "age",
+          "city"
+        ],
+        "tool_used": "Python (pandas/json.loads)"
+      },
+      "annotations": [
+        "原始数据为嵌套JSON，需解析并展开为关系型字段以便分析",
+        "常见于用户行为日志或配置数据的迁移场景"
+      ]
+    },
+    {
+      "example_id": "pdm_erp_material_integration",
+      "title": "PDM与ERP系统物料编码映射集成",
+      "input": "PDM系统通过物料编码查询设计数据，ERP系统通过物料属性查询库存数据，需建立双向映射关系。",
+      "output": {
+        "mapping_directions": [
+          "PDM → ERP: 通过物料编码获取库存状态",
+          "ERP → PDM: 通过物料属性（如材质、尺寸）反查设计ID"
+        ],
+        "key_fields": [
+          "material_code",
+          "material_attributes"
+        ],
+        "integration_method": "接口查询 + 属性匹配"
+      },
+      "annotations": [
+        "数据源语义不一致，需建立属性映射表而非直接字段对应",
+        "典型跨系统数据集成挑战：同一实体在不同系统中使用不同标识逻辑"
+      ]
+    },
+    {
+      "example_id": "kettle_multi_source_merge",
+      "title": "使用Kettle合并多数据源至目标表",
+      "input": "从MySQL、Oracle和CSV文件中分别读取客户信息，需合并去重后写入统一的目标数据仓库表。",
+      "output": {
+        "steps": [
+          "创建三个数据库连接",
+          "使用表输入组件读取各源数据",
+          "使用合并记录组件按主键去重",
+          "输出至目标数据库表"
+        ],
+        "key_mapping": {
+          "source_mysql": "customer_id",
+          "source_oracle": "cust_id",
+          "source_csv": "id",
+          "target": "customer_id"
+        }
+      },
+      "annotations": [
+        "字段名称不一致需在转换阶段进行重命名映射",
+        "Kettle支持可视化ETL流程，适合非编程人员实施数据集成"
+      ]
+    },
+    {
+      "example_id": "database_field_discovery_without_dict",
+      "title": "无数据字典下通过SQL追踪字段来源",
+      "input": "作为用友系统二次开发者，需定位某个业务字段（如‘审批状态’）在数据库中的具体表和字段名，但无数据字典。",
+      "output": {
+        "approach": "逐表遍历 + SQL日志跟踪",
+        "tools_used": [
+          "SQL Profiler",
+          "数据库查询日志"
+        ],
+        "outcome": "定位到字段存在于表F_BILL_APPROVAL.STATUS中"
+      },
+      "annotations": [
+        "在缺乏元数据文档的遗留系统中，数据映射依赖运行时追踪",
+        "耗时但必要，常用于ERP系统对接或升级项目"
+      ]
+    },
+    {
+      "example_id": "hospital_interface_data_standardization",
+      "title": "遵循国家接口标准进行住院病案首页数据导入",
+      "input": "根据《全国三级公立医院绩效考核与医疗质量管理(住院病案首页采集系统对接接口标准)》导入字段，但源系统字段命名与标准不一致。",
+      "output": {
+        "standard_fields": [
+          "住院号",
+          "入院科室",
+          "主要诊断编码"
+        ],
+        "source_fields": [
+          "HOSPITAL_ID",
+          "DEPT_NAME",
+          "ICD_CODE"
+        ],
+        "mapping_rules": [
+          "HOSPITAL_ID → 住院号",
+          "DEPT_NAME → 入院科室",
+          "ICD_CODE → 主要诊断编码"
+        ]
+      },
+      "annotations": [
+        "政府标准接口要求强制字段映射，不允许自定义命名",
+        "需建立映射对照表并验证数据格式（如ICD-10编码规范）"
+      ]
+    }
+  ],
+  "_source_url": "",
+  "_added_at": "2025-12-14T10:45:50.684240"
+}

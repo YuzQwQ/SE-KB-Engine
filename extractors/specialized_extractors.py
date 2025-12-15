@@ -17,6 +17,12 @@ from .type_registry import get_type_registry, KnowledgeType
 # ============================================================
 # 模型分级配置
 # 简单类型用小模型（降本），复杂类型用大模型（保质量）
+# 
+# 可通过环境变量覆盖：
+#   KB_MODEL_ID       - 统一使用的模型（优先级最高，覆盖分级）
+#   KB_MODEL_SIMPLE   - 简单类型用的模型
+#   KB_MODEL_COMPLEX  - 复杂类型用的模型
+#   KB_MODEL_DEFAULT  - 默认模型
 # ============================================================
 
 # 简单类型：概念定义、层次说明等（结构固定，内容简单）
@@ -37,13 +43,6 @@ COMPLEX_TYPES = {
     "schema",
     "domain",
     "examples",
-}
-
-# 模型配置
-MODEL_CONFIG = {
-    "simple": "Qwen/Qwen2.5-14B-Instruct",      # 简单类型用 14B
-    "complex": "Qwen/Qwen2.5-72B-Instruct",     # 复杂类型用 72B
-    "default": "Qwen/Qwen2.5-32B-Instruct",     # 默认用 32B
 }
 
 
@@ -71,19 +70,31 @@ class BaseExtractor(ABC):
         self.knowledge_type = self.registry.get(type_id)
     
     def _select_model(self, type_id: str) -> str:
-        """根据知识类型选择合适的模型"""
-        # 优先使用环境变量覆盖
-        env_model = os.getenv('KB_MODEL_ID')
-        if env_model:
-            return env_model
+        """
+        根据知识类型选择合适的模型
+        
+        优先级：
+        1. KB_MODEL_ID - 统一模型（最高优先级，禁用分级）
+        2. KB_MODEL_SIMPLE / KB_MODEL_COMPLEX - 分级模型
+        3. KB_MODEL_DEFAULT - 默认模型
+        """
+        # 如果设置了统一模型，直接使用（禁用分级）
+        unified_model = os.getenv('KB_MODEL_ID')
+        if unified_model:
+            return unified_model
+        
+        # 获取分级模型配置
+        model_simple = os.getenv('KB_MODEL_SIMPLE')
+        model_complex = os.getenv('KB_MODEL_COMPLEX')
+        model_default = os.getenv('KB_MODEL_DEFAULT', 'Qwen/Qwen2.5-72B-Instruct')
         
         # 根据类型选择模型
-        if type_id in SIMPLE_TYPES:
-            return MODEL_CONFIG["simple"]
-        elif type_id in COMPLEX_TYPES:
-            return MODEL_CONFIG["complex"]
+        if type_id in SIMPLE_TYPES and model_simple:
+            return model_simple
+        elif type_id in COMPLEX_TYPES and model_complex:
+            return model_complex
         else:
-            return MODEL_CONFIG["default"]
+            return model_default
     
     def _load_env(self):
         """加载环境变量"""

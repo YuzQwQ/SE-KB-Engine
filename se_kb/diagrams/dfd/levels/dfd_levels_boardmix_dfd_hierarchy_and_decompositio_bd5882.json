@@ -1,0 +1,65 @@
+{
+  "content_slug": "dfd_hierarchy_and_decomposition",
+  "leveling_principles": [
+    {
+      "id": "l_001_balance",
+      "description": "父图与子图之间必须保持数据流的平衡，子图的输入输出数据流应与父图中对应处理过程的输入输出一致。",
+      "detection_hint": "检查父图中每个处理过程的输入输出数据流是否在子图中完整保留且方向一致"
+    },
+    {
+      "id": "l_002_depth_control",
+      "description": "DFD层次不宜过深，通常建议控制在3-5层以内，避免过度分解导致理解复杂化。",
+      "detection_hint": "统计从顶层图到最底层子图的层级数量，确保不超过5层"
+    },
+    {
+      "id": "l_003_granularity_uniformity",
+      "description": "同一层级中的处理过程应具有相近的复杂度和粒度，避免部分过程过于抽象而另一些过于详细。",
+      "detection_hint": "比较同层中各处理过程的子分解数量和数据流数量，判断是否分布均衡"
+    }
+  ],
+  "decomposition_rules": [
+    {
+      "id": "d_001_process_limit",
+      "description": "每个父图中的处理过程分解为子图时，子过程数量建议不超过8个，以保持可读性和管理性。",
+      "threshold": 8
+    },
+    {
+      "id": "d_002_decomposition_method",
+      "description": "分解应基于功能逻辑进行，按数据处理的自然分段（如输入、处理、输出、存储）划分子过程，而非随意拆分。",
+      "threshold": 8
+    }
+  ],
+  "level_definitions": [
+    {
+      "level": 0,
+      "name": "顶层图/上下文图",
+      "purpose": "定义系统边界，展示系统与外部实体之间的数据交互，不包含内部处理细节。",
+      "characteristics": [
+        "仅一个处理过程",
+        "外部实体用矩形表示",
+        "无数据存储",
+        "仅展示高层数据流"
+      ]
+    },
+    {
+      "level": 1,
+      "name": "一级分解图",
+      "purpose": "展示系统内部的主要处理过程和数据流，将顶层的单一处理过程分解为若干子过程。",
+      "characteristics": [
+        "包含2-8个处理过程",
+        "数据流连接处理与外部实体或数据存储",
+        "保持与顶层图的数据流平衡"
+      ]
+    },
+    {
+      "level": 2,
+      "name": "二级分解图",
+      "purpose": "进一步细化一级图中的复杂处理过程，揭示更细粒度的数据转换和处理逻辑。",
+      "characteristics": [
+        "每个子过程可继续分解",
+        "引入数据存储节点",
+        "数据流命名更具体"
+      ]
+    }
+  ]
+}

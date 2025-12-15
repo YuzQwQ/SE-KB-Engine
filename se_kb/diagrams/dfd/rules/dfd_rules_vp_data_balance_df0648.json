@@ -1,0 +1,62 @@
+{
+  "content_slug": "data_balance",
+  "description": "DFD 建模规则集",
+  "rules": [
+    {
+      "id": "r_001_data_flow_balance",
+      "name": "每个处理必须有输入和输出数据流",
+      "detail": "每个程序（处理）必须至少有一个输入数据流和一个输出数据流，禁止出现‘黑洞’（只有输入无输出）或‘奇迹’（只有输出无输入）现象。",
+      "level": "error",
+      "source": "https://www.visual-paradigm.com/cn/guide/data-flow-diagram/what-is-data-flow-diagram/",
+      "check": "auto"
+    },
+    {
+      "id": "r_002_data_store_access",
+      "name": "数据存储必须有读写数据流",
+      "detail": "每个数据存储必须至少有一个输入数据流（写入）和一个输出数据流（读取），即使输出仅为确认消息。",
+      "level": "error",
+      "source": "https://www.visual-paradigm.com/cn/guide/data-flow-diagram/what-is-data-flow-diagram/",
+      "check": "auto"
+    },
+    {
+      "id": "r_003_data_flow_consistency",
+      "name": "父子图数据流必须保持一致",
+      "detail": "在层次分解中，父图的输入/输出数据流必须与子图的外部数据流完全一致，确保数据流在不同抽象层级间平衡。",
+      "level": "error",
+      "source": "https://www.visual-paradigm.com/cn/guide/data-flow-diagram/what-is-data-flow-diagram/",
+      "check": "auto"
+    },
+    {
+      "id": "r_004_process_naming_pattern",
+      "name": "处理名称必须为动词+单数名词结构",
+      "detail": "程序（处理）的命名应采用动词后接单数名词的形式，如‘申请付款’、‘计算佣金’，以清晰表达功能动作。",
+      "level": "info",
+      "source": "https://www.visual-paradigm.com/cn/guide/data-flow-diagram/what-is-data-flow-diagram/",
+      "check": "manual"
+    },
+    {
+      "id": "r_005_external_entity_connection",
+      "name": "外部实体必须通过数据流连接到处理",
+      "detail": "外部实体（终止符）只能通过数据流与处理相连，不能直接连接到数据存储，且不执行任何数据处理功能。",
+      "level": "error",
+      "source": "https://www.visual-paradigm.com/cn/guide/data-flow-diagram/what-is-data-flow-diagram/",
+      "check": "auto"
+    },
+    {
+      "id": "r_006_data_flow_direction",
+      "name": "数据流方向必须明确标注",
+      "detail": "数据流必须使用带箭头的直线表示，箭头方向指示数据移动方向，输入流向处理，输出流从处理流出。",
+      "level": "info",
+      "source": "https://www.visual-paradigm.com/cn/guide/data-flow-diagram/what-is-data-flow-diagram/",
+      "check": "manual"
+    },
+    {
+      "id": "r_007_decomposition_granularity",
+      "name": "分解层级应至功能性处理为止",
+      "detail": "高至低分解应持续进行，直到所有处理均为不可再分的功能性单元，避免出现仅含数据传递而无实际处理的节点。",
+      "level": "warning",
+      "source": "https://www.visual-paradigm.com/cn/guide/data-flow-diagram/what-is-data-flow-diagram/",
+      "check": "manual"
+    }
+  ]
+}

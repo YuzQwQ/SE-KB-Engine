@@ -1,0 +1,88 @@
+{
+  "content_slug": "structured_analysis",
+  "description": "软件工程理论概念集",
+  "concepts": [
+    {
+      "id": "c_001",
+      "name": "数据流图",
+      "english_term": "Data Flow Diagram",
+      "definition": "一种图形化技术，用于展示系统中数据的流向和处理过程，帮助分析和设计系统的数据处理流程。",
+      "representation": "process",
+      "source": "数据流图模板 - 飞书官网",
+      "source_location": "什么是数据流图",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_002",
+      "name": "数据流",
+      "english_term": "Data Flow",
+      "definition": "表示数据在系统中从一个组件流向另一个组件的路径，是数据流图的基本组成元素之一。",
+      "representation": "concept",
+      "source": "数据流图模板 - 飞书官网",
+      "source_location": "数据流图的关键组成",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_003",
+      "name": "处理过程",
+      "english_term": "Process",
+      "definition": "对输入数据进行转换或处理的逻辑单元，是数据流图中表示功能的核心组件。",
+      "representation": "concept",
+      "source": "数据流图模板 - 飞书官网",
+      "source_location": "数据流图的关键组成",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_004",
+      "name": "数据存储",
+      "english_term": "Data Store",
+      "definition": "用于保存数据的静态存储单元，如数据库或文件，是数据流图中表示持久化数据的组件。",
+      "representation": "concept",
+      "source": "数据流图模板 - 飞书官网",
+      "source_location": "数据流图的关键组成",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_005",
+      "name": "外部实体",
+      "english_term": "External Entity",
+      "definition": "位于系统边界之外、与系统交互的人员、组织或其他系统，是数据流图中表示数据来源或去向的组件。",
+      "representation": "concept",
+      "source": "数据流图模板 - 飞书官网",
+      "source_location": "数据流图的关键组成",
+      "confidence": 0.95
+    },
+    {
+      "id": "c_006",
+      "name": "数据流图层级结构",
+      "english_term": "Data Flow Diagram Hierarchy",
+      "definition": "数据流图可划分为多个层级，从顶层上下文图到逐步细化的子图，用于从宏观到微观表达系统结构。",
+      "representation": "layered_view",
+      "source": "数据流图模板 - 飞书官网",
+      "source_location": "数据流图的层级结构",
+      "confidence": 0.95
+    }
+  ],
+  "principles": [
+    {
+      "id": "principle_001",
+      "detail": "数据流图应明确系统边界，清晰区分系统内部与外部实体，确保分析范围的完整性。"
+    },
+    {
+      "id": "principle_002",
+      "detail": "数据流图的绘制应遵循标准化符号和规范，确保图表的可读性、一致性和可交流性。"
+    },
+    {
+      "id": "principle_003",
+      "detail": "数据流图应通过分层细化方式逐步展开，从概览到细节，避免一次性表达过多复杂性。"
+    },
+    {
+      "id": "principle_004",
+      "detail": "每个处理过程必须有输入数据流和输出数据流，禁止出现‘无输入’或‘无输出’的处理节点。"
+    },
+    {
+      "id": "principle_005",
+      "detail": "数据存储必须通过处理过程访问，禁止外部实体直接读写数据存储，以保证数据控制的完整性。"
+    }
+  ]
+}

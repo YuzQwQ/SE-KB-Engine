@@ -428,6 +428,161 @@ def clear_url_index():
     return jsonify({"message": "URL 索引已清空", "total_urls": 0})
 
 
+# ============================================================
+# 知识精炼 API
+# ============================================================
+
+# 精炼任务管理器
+class RefineTaskManager:
+    def __init__(self):
+        self.logs = []
+        self.status = "idle"
+        self.progress = 0
+        self.stats = {}
+        self.lock = threading.Lock()
+    
+    def log(self, message: str):
+        with self.lock:
+            entry = {
+                "time": datetime.now().strftime("%H:%M:%S"),
+                "message": message
+            }
+            self.logs.append(entry)
+            print(f"[REFINE] [{entry['time']}] {message}")
+    
+    def set_status(self, status: str, progress: int = None):
+        with self.lock:
+            self.status = status
+            if progress is not None:
+                self.progress = progress
+    
+    def clear(self):
+        with self.lock:
+            self.logs = []
+            self.stats = {}
+            self.progress = 0
+            self.status = "idle"
+    
+    def get_state(self):
+        with self.lock:
+            return {
+                "status": self.status,
+                "progress": self.progress,
+                "logs": self.logs[-100:],
+                "stats": self.stats
+            }
+
+refine_manager = RefineTaskManager()
+
+
+def run_refine_task(date_filter: str = None, time_filter: str = None, dry_run: bool = False):
+    """执行精炼任务"""
+    refine_manager.clear()
+    refine_manager.set_status("running", 0)
+    
+    try:
+        from refiner import KnowledgeRefiner
+        
+        refiner = KnowledgeRefiner(log_callback=refine_manager.log)
+        stats = refiner.run(date_filter, time_filter, dry_run)
+        
+        refine_manager.stats = stats.to_dict()
+        refine_manager.set_status("completed", 100)
+        
+    except Exception as e:
+        refine_manager.log(f"❌ 精炼失败: {str(e)}")
+        refine_manager.set_status("error", 100)
+
+
+@app.route('/api/refine/start', methods=['POST'])
+def start_refine():
+    """启动精炼任务"""
+    data = request.json or {}
+    date_filter = data.get('date')
+    time_filter = data.get('time')
+    dry_run = data.get('dry_run', False)
+    
+    if refine_manager.status == "running":
+        return jsonify({"error": "精炼任务正在运行"}), 400
+    
+    thread = threading.Thread(
+        target=run_refine_task,
+        args=(date_filter, time_filter, dry_run)
+    )
+    thread.daemon = True
+    thread.start()
+    
+    return jsonify({"message": "精炼任务已启动"})
+
+
+@app.route('/api/refine/status')
+def get_refine_status():
+    """获取精炼任务状态"""
+    return jsonify(refine_manager.get_state())
+
+
+@app.route('/api/refine/preview', methods=['POST'])
+def preview_refine():
+    """预览精炼（不实际执行）"""
+    data = request.json or {}
+    date_filter = data.get('date')
+    time_filter = data.get('time')
+    
+    try:
+        from refiner import KnowledgeRefiner
+        
+        refiner = KnowledgeRefiner()
+        preview = refiner.preview(date_filter, time_filter)
+        
+        return jsonify(preview)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/artifacts/list')
+def list_artifacts():
+    """列出 artifacts 目录结构（用于选择日期/时间）"""
+    artifacts_dir = ROOT_DIR / "se_kb" / "artifacts"
+    
+    result = {"dates": []}
+    
+    if not artifacts_dir.exists():
+        return jsonify(result)
+    
+    # 遍历年/月/日/时分 结构
+    for year_dir in sorted(artifacts_dir.iterdir(), reverse=True):
+        if not year_dir.is_dir() or not year_dir.name.isdigit():
+            continue
+        for month_dir in sorted(year_dir.iterdir(), reverse=True):
+            if not month_dir.is_dir() or not month_dir.name.isdigit():
+                continue
+            for day_dir in sorted(month_dir.iterdir(), reverse=True):
+                if not day_dir.is_dir() or not day_dir.name.isdigit():
+                    continue
+                
+                date_str = f"{year_dir.name}/{month_dir.name}/{day_dir.name}"
+                times = []
+                
+                for time_dir in sorted(day_dir.iterdir(), reverse=True):
+                    if time_dir.is_dir() and "_" in time_dir.name:
+                        # 统计该时间段的文件数
+                        file_count = sum(1 for _ in time_dir.rglob("*.json") 
+                                        if _.name not in ["metadata.json", "parsed.json", 
+                                                         "trace.json", "metrics.json", "errors.json"])
+                        times.append({
+                            "time": time_dir.name,
+                            "file_count": file_count
+                        })
+                
+                if times:
+                    result["dates"].append({
+                        "date": date_str,
+                        "times": times
+                    })
+    
+    return jsonify(result)
+
+
 if __name__ == '__main__':
     print("=" * 50)
     print("🚀 知识库构建系统 Web 界面")
