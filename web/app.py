@@ -42,10 +42,29 @@ from utils.webpage_crawler import WebpageCrawler
 from extractors.pipeline import run_pipeline
 from writers.artifacts_writer import ArtifactsWriter
 import hashlib
+import logging
+
+# 初始化日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app)
 
+# ============================================================
+# 初始化知识检索器 (Semantic Search)
+# ============================================================
+knowledge_retriever = None
+try:
+    # 导入 vectorizer 模块 (确保 server.py 中使用的模块这里也能用)
+    from vectorizer import VectorConfig, KnowledgeRetriever, QueryIntent
+    
+    vector_config = VectorConfig()
+    knowledge_retriever = KnowledgeRetriever(vector_config)
+    logger.info("KnowledgeRetriever initialized successfully for Web App")
+except Exception as e:
+    logger.error(f"Failed to initialize KnowledgeRetriever: {e}")
+    # 不阻断应用启动，但在使用相关功能时需处理 None
 
 # ============================================================
 # URL 去重索引
@@ -539,48 +558,108 @@ def preview_refine():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/api/artifacts/list')
-def list_artifacts():
-    """列出 artifacts 目录结构（用于选择日期/时间）"""
+@app.route('/api/artifacts/dates')
+def list_artifact_dates():
+    """获取 artifacts 日期列表"""
     artifacts_dir = ROOT_DIR / "se_kb" / "artifacts"
+    dates = []
     
-    result = {"dates": []}
-    
-    if not artifacts_dir.exists():
-        return jsonify(result)
-    
-    # 遍历年/月/日/时分 结构
-    for year_dir in sorted(artifacts_dir.iterdir(), reverse=True):
-        if not year_dir.is_dir() or not year_dir.name.isdigit():
-            continue
-        for month_dir in sorted(year_dir.iterdir(), reverse=True):
-            if not month_dir.is_dir() or not month_dir.name.isdigit():
-                continue
-            for day_dir in sorted(month_dir.iterdir(), reverse=True):
-                if not day_dir.is_dir() or not day_dir.name.isdigit():
-                    continue
-                
-                date_str = f"{year_dir.name}/{month_dir.name}/{day_dir.name}"
-                times = []
-                
-                for time_dir in sorted(day_dir.iterdir(), reverse=True):
-                    if time_dir.is_dir() and "_" in time_dir.name:
-                        # 统计该时间段的文件数
-                        file_count = sum(1 for _ in time_dir.rglob("*.json") 
-                                        if _.name not in ["metadata.json", "parsed.json", 
-                                                         "trace.json", "metrics.json", "errors.json"])
-                        times.append({
-                            "time": time_dir.name,
-                            "file_count": file_count
-                        })
-                
-                if times:
-                    result["dates"].append({
-                        "date": date_str,
-                        "times": times
+    if artifacts_dir.exists():
+        for year_dir in sorted(artifacts_dir.iterdir(), reverse=True):
+            if not year_dir.is_dir() or not year_dir.name.isdigit(): continue
+            for month_dir in sorted(year_dir.iterdir(), reverse=True):
+                if not month_dir.is_dir() or not month_dir.name.isdigit(): continue
+                for day_dir in sorted(month_dir.iterdir(), reverse=True):
+                    if not day_dir.is_dir() or not day_dir.name.isdigit(): continue
+                    dates.append(f"{year_dir.name}/{month_dir.name}/{day_dir.name}")
+                    
+    return jsonify(dates)
+
+
+@app.route('/api/artifacts/times')
+def list_artifact_times():
+    """获取指定日期的 artifacts 时间列表"""
+    date_str = request.args.get('date')
+    if not date_str:
+        return jsonify([])
+        
+    try:
+        year, month, day = date_str.split('/')
+        day_dir = ROOT_DIR / "se_kb" / "artifacts" / year / month / day
+        times = []
+        
+        if day_dir.exists():
+            for time_dir in sorted(day_dir.iterdir(), reverse=True):
+                if time_dir.is_dir() and "_" in time_dir.name:
+                    # 统计文件数
+                    file_count = sum(1 for _ in time_dir.rglob("*.json") 
+                                   if _.name not in ["metadata.json", "parsed.json", 
+                                                    "trace.json", "metrics.json", "errors.json"])
+                    times.append({
+                        "time": time_dir.name,
+                        "count": file_count
                     })
-    
-    return jsonify(result)
+        
+        return jsonify(times)
+    except Exception:
+        return jsonify([])
+
+
+@app.route('/api/semantic-search', methods=['POST'])
+def semantic_search_endpoint():
+    """语义搜索接口"""
+    if not knowledge_retriever:
+        return jsonify({"error": "KnowledgeRetriever not initialized"}), 500
+        
+    try:
+        data = request.json or {}
+        query = data.get("query")
+        intent_str = data.get("intent")
+        top_k = int(data.get("top_k", 5))
+        
+        if not query:
+            return jsonify({"error": "缺少查询内容 (query)"}), 400
+
+        from vectorizer import QueryIntent
+        query_intent = QueryIntent(intent_str.lower()) if intent_str else None
+        
+        response = knowledge_retriever.retrieve(query, top_k, query_intent)
+        
+        results = []
+        for r in response.results:
+            results.append({
+                "content": r.text,
+                "score": round(r.score, 4),
+                "source": r.metadata.get("source"),
+                "type": r.metadata.get("type"),
+                "collection": r.collection
+            })
+            
+        return jsonify({
+            "query": response.query,
+            "intent": response.intent.value,
+            "total_found": response.total_found,
+            "results": results
+        })
+    except Exception as e:
+        logger.error(f"Semantic search failed: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/system/reload-kb', methods=['POST'])
+def reload_kb():
+    """重载知识库连接"""
+    global knowledge_retriever
+    try:
+        from vectorizer import VectorConfig, KnowledgeRetriever
+        vector_config = VectorConfig()
+        knowledge_retriever = KnowledgeRetriever(vector_config)
+        logger.info("KnowledgeRetriever reloaded successfully")
+        return jsonify({"message": "知识库连接已重置"})
+    except Exception as e:
+        logger.error(f"Failed to reload KnowledgeRetriever: {e}")
+        return jsonify({"error": str(e)}), 500
+
 
 
 if __name__ == '__main__':
@@ -590,5 +669,10 @@ if __name__ == '__main__':
     print("访问: http://localhost:5000")
     print("=" * 50)
     # 关闭自动重载，避免 Playwright/依赖文件改动导致任务中途重启
-    app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
+    # 端口 5000 被占用且无法释放，改用 8000
+    try:
+        app.run(host='0.0.0.0', port=8000, debug=False, use_reloader=False)
+    except OSError:
+        print("端口 8000 被占用，尝试使用 8001...")
+        app.run(host='0.0.0.0', port=8001, debug=False, use_reloader=False)
 

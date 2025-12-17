@@ -37,6 +37,19 @@ const refineStatsSection = document.getElementById('refineStatsSection');
 const refineStatsGrid = document.getElementById('refineStatsGrid');
 
 // ============================================================
+// 语义检索功能相关 DOM 元素
+// ============================================================
+const semanticSearchInput = document.getElementById('semanticSearchInput');
+const semanticIntentSelect = document.getElementById('semanticIntentSelect');
+const semanticTopKSelect = document.getElementById('semanticTopKSelect');
+const semanticSearchBtn = document.getElementById('semanticSearchBtn');
+const semanticProgressSection = document.getElementById('semanticProgressSection');
+const semanticStatusBadge = document.getElementById('semanticStatusBadge');
+const semanticLogContainer = document.getElementById('semanticLogContainer');
+const semanticResultSection = document.getElementById('semanticResultSection');
+const semanticResultList = document.getElementById('semanticResultList');
+
+// ============================================================
 // 状态
 // ============================================================
 let isRunning = false;
@@ -81,6 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 加载 artifacts 日期列表
     loadArtifactsDates();
+    
+    // 语义检索功能事件
+    semanticSearchBtn.addEventListener('click', startSemanticSearch);
+    semanticSearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') startSemanticSearch();
+    });
 });
 
 // ============================================================
@@ -99,219 +118,238 @@ function switchTab(tabName) {
 }
 
 // ============================================================
-// 爬取功能
+// 爬取功能逻辑
 // ============================================================
-
-// 开始任务
 async function startTask() {
+    if (isRunning) return;
+    
     const query = searchInput.value.trim();
     if (!query) {
-        alert('请输入搜索内容');
-        searchInput.focus();
+        alert('请输入搜索关键词');
         return;
     }
     
-    if (isRunning) {
-        alert('已有任务正在运行');
-        return;
-    }
-    
-    const limit = parseInt(limitSelect.value);
-    const type = typeSelect.value;
-    const types = type ? [type] : [];
+    isRunning = true;
+    updateUIState(true);
+    clearLogs();
     
     try {
+        const payload = {
+            query: query,
+            limit: parseInt(limitSelect.value)
+        };
+        
+        if (typeSelect.value) {
+            payload.types = [typeSelect.value];
+        }
+
         const response = await fetch('/api/start', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query, limit, types })
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
         });
         
         const data = await response.json();
         
-        if (!response.ok) {
-            alert(data.error || '启动失败');
-            return;
+        if (response.ok) {
+            appendLog('任务已启动...');
+            pollStatus();
+        } else {
+            const errorMsg = data.error || data.message || '未知错误';
+            appendLog(`启动失败: ${errorMsg}`, 'error');
+            isRunning = false;
+            updateUIState(false);
         }
-        
-        // 开始轮询状态
-        isRunning = true;
-        lastLogCount = 0;
-        searchBtn.disabled = true;
-        searchBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">运行中...</span>';
-        
-        // 清空旧日志
-        logContainer.innerHTML = '';
-        resultList.innerHTML = '';
-        resultSection.classList.remove('visible');
-        
-        startPolling();
-        
     } catch (error) {
-        console.error('Error:', error);
-        alert('请求失败: ' + error.message);
+        appendLog(`请求失败: ${error.message}`, 'error');
+        isRunning = false;
+        updateUIState(false);
     }
 }
 
-// 开始轮询
-function startPolling() {
-    if (pollInterval) clearInterval(pollInterval);
-    pollInterval = setInterval(checkStatus, 500);
-}
-
-// 停止轮询
-function stopPolling() {
-    if (pollInterval) {
-        clearInterval(pollInterval);
-        pollInterval = null;
-    }
-}
-
-// 检查状态
 async function checkStatus() {
     try {
         const response = await fetch('/api/status');
         const data = await response.json();
         
-        updateUI(data);
-        
-        // 任务结束
-        if (data.status === 'completed' || data.status === 'error') {
-            isRunning = false;
-            stopPolling();
-            searchBtn.disabled = false;
-            searchBtn.innerHTML = '<span class="btn-icon">🚀</span><span class="btn-text">开始构建</span>';
+        if (data.status === 'running') {
+            isRunning = true;
+            updateUIState(true);
+            pollStatus();
         }
-        
     } catch (error) {
-        console.error('Status check error:', error);
+        console.error('状态检查失败:', error);
     }
 }
 
-// 更新 UI
-function updateUI(data) {
-    // 更新状态徽章
-    const status = statusMap[data.status] || statusMap.idle;
-    statusBadge.textContent = status.text;
-    statusBadge.className = 'status-badge ' + status.class;
+function pollStatus() {
+    if (pollInterval) clearInterval(pollInterval);
     
-    // 更新进度
-    progressText.textContent = data.progress + '%';
-    progressFill.style.width = data.progress + '%';
+    pollInterval = setInterval(async () => {
+        try {
+            const response = await fetch('/api/status');
+            const data = await response.json();
+            
+            // 更新进度条
+            updateProgress(data.progress);
+            
+            // 更新日志
+            if (data.logs && data.logs.length > lastLogCount) {
+                const newLogs = data.logs.slice(lastLogCount);
+                newLogs.forEach(log => appendLog(log));
+                lastLogCount = data.logs.length;
+            }
+            
+            // 检查是否完成
+            if (data.status !== 'running') {
+                clearInterval(pollInterval);
+                isRunning = false;
+                updateUIState(false);
+                
+                if (data.status === 'completed') {
+                    appendLog('任务完成！', 'success');
+                    displayResults(data.results);
+                } else if (data.status === 'error') {
+                    appendLog(`任务出错: ${data.error}`, 'error');
+                }
+            }
+        } catch (error) {
+            console.error('轮询失败:', error);
+        }
+    }, 1000);
+}
+
+function updateUIState(running) {
+    searchBtn.disabled = running;
+    searchInput.disabled = running;
+    limitSelect.disabled = running;
+    typeSelect.disabled = running;
     
-    // 更新日志（只添加新的）
-    if (data.logs && data.logs.length > lastLogCount) {
-        const newLogs = data.logs.slice(lastLogCount);
-        newLogs.forEach(log => addLogEntry(log, logContainer));
-        lastLogCount = data.logs.length;
-        
-        // 滚动到底部
-        logContainer.scrollTop = logContainer.scrollHeight;
-    }
-    
-    // 更新结果
-    if (data.results && data.results.length > 0) {
-        updateResults(data.results);
+    if (running) {
+        searchBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">运行中...</span>';
+        statusBadge.className = 'status-badge running';
+        statusBadge.textContent = '运行中';
+    } else {
+        searchBtn.innerHTML = '<span class="btn-icon">🚀</span><span class="btn-text">开始构建</span>';
+        statusBadge.className = 'status-badge';
+        statusBadge.textContent = '等待中';
     }
 }
 
-// 添加日志条目
-function addLogEntry(log, container) {
-    // 移除占位符
-    const placeholder = container.querySelector('.log-placeholder');
-    if (placeholder) placeholder.remove();
-    
-    const entry = document.createElement('div');
-    entry.className = 'log-entry ' + (log.level || 'info');
-    
-    entry.innerHTML = `
-        <span class="log-time">[${log.time}]</span>
-        <span class="log-message">${escapeHtml(log.message)}</span>
-    `;
-    
-    container.appendChild(entry);
+function updateProgress(percent) {
+    progressText.textContent = `${percent}%`;
+    progressFill.style.width = `${percent}%`;
 }
 
-// 更新结果
-function updateResults(results) {
-    resultSection.classList.add('visible');
+function appendLog(logEntry, type = 'info') {
+    let message = logEntry;
+    let time = new Date().toLocaleTimeString();
+    let level = type;
+
+    if (typeof logEntry === 'object' && logEntry !== null) {
+        message = logEntry.message || JSON.stringify(logEntry);
+        if (logEntry.time) time = logEntry.time;
+        if (logEntry.level) level = logEntry.level;
+    }
+
+    const div = document.createElement('div');
+    div.className = `log-entry ${level}`;
+    
+    div.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+    
+    logContainer.appendChild(div);
+    logContainer.scrollTop = logContainer.scrollHeight;
+}
+
+function clearLogs() {
+    logContainer.innerHTML = '';
+    lastLogCount = 0;
+    resultSection.style.display = 'none';
+    resultList.innerHTML = '';
+}
+
+function displayResults(results) {
+    if (!results || results.length === 0) return;
+    
+    resultSection.style.display = 'block';
     resultList.innerHTML = '';
     
-    results.forEach(result => {
-        const item = document.createElement('div');
-        item.className = 'result-item';
-        
-        const types = result.types ? result.types.join(', ') : '未知';
-        const tokens = result.tokens || 0;
-        
-        item.innerHTML = `
-            <div>
-                <div class="result-title">${escapeHtml(result.title || '未命名')}</div>
-                <div class="result-types">📁 ${types}</div>
+    results.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'result-item';
+        div.innerHTML = `
+            <div class="result-header">
+                <span class="result-type">${item.type}</span>
+                <span class="result-source">${item.source || '未知来源'}</span>
             </div>
-            <div class="result-tokens">${tokens} tokens</div>
+            <div class="result-content">${formatContent(item.content)}</div>
         `;
-        
-        resultList.appendChild(item);
+        resultList.appendChild(div);
     });
 }
 
-// 清空日志
-function clearLogs() {
-    logContainer.innerHTML = '<div class="log-placeholder">等待任务开始...</div>';
-    lastLogCount = 0;
+function formatContent(content) {
+    // 简单的 Markdown 格式化或转义
+    return content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
 }
 
 // ============================================================
-// 精炼功能
+// 精炼功能逻辑
 // ============================================================
-
-// 加载 artifacts 日期列表
 async function loadArtifactsDates() {
     try {
-        const response = await fetch('/api/artifacts/list');
-        const data = await response.json();
+        const response = await fetch('/api/artifacts/dates');
+        const dates = await response.json();
         
         refineDateSelect.innerHTML = '<option value="">全部日期</option>';
-        
-        if (data.dates && data.dates.length > 0) {
-            data.dates.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.date;
-                const totalFiles = item.times.reduce((sum, t) => sum + t.file_count, 0);
-                option.textContent = `${item.date} (${totalFiles} 文件)`;
-                option.dataset.times = JSON.stringify(item.times);
-                refineDateSelect.appendChild(option);
-            });
-        }
+        dates.forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            option.textContent = date;
+            refineDateSelect.appendChild(option);
+        });
     } catch (error) {
-        console.error('加载日期列表失败:', error);
+        console.error('加载日期失败:', error);
     }
 }
 
-// 日期选择变化
-function onDateChange() {
-    const selected = refineDateSelect.selectedOptions[0];
-    refineTimeSelect.innerHTML = '<option value="">全部时间</option>';
+async function onDateChange() {
+    const date = refineDateSelect.value;
+    if (!date) {
+        refineTimeSelect.innerHTML = '<option value="">全部时间</option>';
+        return;
+    }
     
-    if (selected && selected.dataset.times) {
-        const times = JSON.parse(selected.dataset.times);
-        times.forEach(t => {
+    try {
+        const response = await fetch(`/api/artifacts/times?date=${date}`);
+        const times = await response.json();
+        
+        refineTimeSelect.innerHTML = '<option value="">全部时间</option>';
+        times.forEach(item => {
             const option = document.createElement('option');
-            option.value = t.time;
-            option.textContent = `${t.time.replace('_', ':')} (${t.file_count} 文件)`;
+            // 兼容旧接口（直接返回字符串）和新接口（返回对象）
+            if (typeof item === 'string') {
+                option.value = item;
+                option.textContent = item;
+            } else {
+                option.value = item.time;
+                option.textContent = `${item.time} (${item.count} 文件)`;
+            }
             refineTimeSelect.appendChild(option);
         });
+    } catch (error) {
+        console.error('加载时间失败:', error);
     }
 }
 
-// 预览精炼
 async function previewRefine() {
     const date = refineDateSelect.value;
     const time = refineTimeSelect.value;
     
-    previewBtn.disabled = true;
-    previewBtn.innerHTML = '⏳ 分析中...';
+    previewResult.style.display = 'block';
+    previewContent.innerHTML = '<div class="loading">正在分析...</div>';
     
     try {
         const response = await fetch('/api/refine/preview', {
@@ -321,71 +359,26 @@ async function previewRefine() {
         });
         
         const data = await response.json();
-        
-        if (!response.ok) {
-            alert(data.error || '预览失败');
-            return;
-        }
-        
-        // 显示预览结果
-        displayPreview(data);
-        
-    } catch (error) {
-        console.error('预览失败:', error);
-        alert('预览请求失败: ' + error.message);
-    } finally {
-        previewBtn.disabled = false;
-        previewBtn.innerHTML = '<span>👁️ 预览分析</span>';
-    }
-}
-
-// 显示预览结果
-function displayPreview(data) {
-    previewResult.style.display = 'block';
-    
-    let html = `<div><strong>总 artifact 数:</strong> ${data.total_artifacts}</div>`;
-    
-    // 按类型分布
-    if (data.by_type && Object.keys(data.by_type).length > 0) {
-        html += '<div style="margin-top: 12px;"><strong>按类型分布:</strong></div>';
-        for (const [type, info] of Object.entries(data.by_type)) {
-            html += `
-                <div class="preview-type-item">
-                    <span class="preview-type-name">${type}</span>
-                    <span class="preview-type-count">待处理: ${info.artifact_count}, 已有: ${info.existing_count}</span>
-                </div>
+        if (data.error) {
+            previewContent.innerHTML = `<div class="error">分析失败: ${data.error}</div>`;
+        } else {
+            previewContent.innerHTML = `
+                <p>找到 <strong>${data.total_files}</strong> 个文件</p>
+                <p>包含 <strong>${data.total_items}</strong> 条知识条目</p>
+                <p>预计生成 <strong>${data.estimated_clusters}</strong> 个知识簇</p>
             `;
         }
+    } catch (error) {
+        previewContent.innerHTML = `<div class="error">请求失败: ${error.message}</div>`;
     }
-    
-    // 潜在重复
-    if (data.potential_duplicates && Object.keys(data.potential_duplicates).length > 0) {
-        html += '<div class="preview-duplicate"><div class="preview-duplicate-title">⚠️ 潜在重复:</div>';
-        for (const [type, items] of Object.entries(data.potential_duplicates)) {
-            html += `<div style="margin-top: 8px;"><strong>${type}:</strong></div>`;
-            items.forEach(item => {
-                const status = item.has_increment ? '📝 有增量' : '🔄 纯重复';
-                html += `
-                    <div class="preview-duplicate-item">
-                        • ${item.file} (相似度: ${(item.similarity * 100).toFixed(0)}%) ${status}
-                    </div>
-                `;
-            });
-        }
-        html += '</div>';
-    } else {
-        html += '<div style="margin-top: 12px; color: var(--accent-green);">✅ 未发现明显重复</div>';
-    }
-    
-    previewContent.innerHTML = html;
 }
 
-// 开始精炼
 async function startRefine() {
-    if (isRefining) {
-        alert('精炼任务正在运行');
-        return;
-    }
+    if (isRefining) return;
+    
+    isRefining = true;
+    updateRefineUIState(true);
+    clearRefineLogs();
     
     const date = refineDateSelect.value;
     const time = refineTimeSelect.value;
@@ -399,140 +392,215 @@ async function startRefine() {
         });
         
         const data = await response.json();
-        
-        if (!response.ok) {
-            alert(data.error || '启动失败');
-            return;
-        }
-        
-        // 开始轮询
-        isRefining = true;
-        lastRefineLogCount = 0;
-        refineBtn.disabled = true;
-        refineBtn.innerHTML = '⏳ 精炼中...';
-        previewBtn.disabled = true;
-        
-        // 清空旧内容
-        refineLogContainer.innerHTML = '';
-        refineProgressSection.style.display = 'block';
-        refineStatsSection.style.display = 'none';
-        
-        startRefinePoll();
-        
-    } catch (error) {
-        console.error('启动精炼失败:', error);
-        alert('请求失败: ' + error.message);
-    }
-}
-
-// 开始精炼轮询
-function startRefinePoll() {
-    if (refinePollInterval) clearInterval(refinePollInterval);
-    refinePollInterval = setInterval(checkRefineStatus, 500);
-}
-
-// 停止精炼轮询
-function stopRefinePoll() {
-    if (refinePollInterval) {
-        clearInterval(refinePollInterval);
-        refinePollInterval = null;
-    }
-}
-
-// 检查精炼状态
-async function checkRefineStatus() {
-    try {
-        const response = await fetch('/api/refine/status');
-        const data = await response.json();
-        
-        updateRefineUI(data);
-        
-        // 任务结束
-        if (data.status === 'completed' || data.status === 'error') {
+        if (response.ok) {
+            appendRefineLog('精炼任务已启动...');
+            pollRefineStatus();
+        } else {
+            const errorMsg = data.error || data.message || '未知错误';
+            appendRefineLog(`启动失败: ${errorMsg}`, 'error');
             isRefining = false;
-            stopRefinePoll();
-            refineBtn.disabled = false;
-            refineBtn.innerHTML = '<span>✨ 开始精炼</span>';
-            previewBtn.disabled = false;
+            updateRefineUIState(false);
+        }
+    } catch (error) {
+        appendRefineLog(`请求失败: ${error.message}`, 'error');
+        isRefining = false;
+        updateRefineUIState(false);
+    }
+}
+
+function pollRefineStatus() {
+    if (refinePollInterval) clearInterval(refinePollInterval);
+    
+    refinePollInterval = setInterval(async () => {
+        try {
+            const response = await fetch('/api/refine/status');
+            const data = await response.json();
             
-            // 显示统计
-            if (data.stats && Object.keys(data.stats).length > 0) {
-                displayRefineStats(data.stats);
+            // 更新进度
+            updateRefineProgress(data.progress);
+            
+            // 更新日志
+            if (data.logs && data.logs.length > lastRefineLogCount) {
+                const newLogs = data.logs.slice(lastRefineLogCount);
+                newLogs.forEach(log => appendRefineLog(log));
+                lastRefineLogCount = data.logs.length;
             }
             
-            // 刷新日期列表
-            loadArtifactsDates();
+            // 检查是否完成
+            if (data.status !== 'running') {
+                clearInterval(refinePollInterval);
+                isRefining = false;
+                updateRefineUIState(false);
+                
+                if (data.status === 'completed') {
+                    appendRefineLog('精炼任务完成！', 'success');
+                    displayRefineStats(data.stats);
+                } else if (data.status === 'error') {
+                    appendRefineLog(`任务出错: ${data.error}`, 'error');
+                }
+            }
+        } catch (error) {
+            console.error('精炼轮询失败:', error);
         }
-        
-    } catch (error) {
-        console.error('检查精炼状态失败:', error);
+    }, 1000);
+}
+
+function updateRefineUIState(running) {
+    refineBtn.disabled = running;
+    previewBtn.disabled = running;
+    refineDateSelect.disabled = running;
+    refineTimeSelect.disabled = running;
+    
+    if (running) {
+        refineBtn.innerHTML = '<span>⏳ 处理中...</span>';
+        refineStatusBadge.className = 'status-badge running';
+        refineStatusBadge.textContent = '运行中';
+        refineProgressSection.style.display = 'block';
+    } else {
+        refineBtn.innerHTML = '<span>✨ 开始精炼</span>';
+        refineStatusBadge.className = 'status-badge';
+        refineStatusBadge.textContent = '等待中';
     }
 }
 
-// 更新精炼 UI
-function updateRefineUI(data) {
-    // 更新状态徽章
-    const status = statusMap[data.status] || statusMap.idle;
-    refineStatusBadge.textContent = status.text;
-    refineStatusBadge.className = 'status-badge ' + status.class;
-    
-    // 更新进度
-    refineProgressText.textContent = data.progress + '%';
-    refineProgressFill.style.width = data.progress + '%';
-    
-    // 更新日志
-    if (data.logs && data.logs.length > lastRefineLogCount) {
-        const newLogs = data.logs.slice(lastRefineLogCount);
-        newLogs.forEach(log => addLogEntry(log, refineLogContainer));
-        lastRefineLogCount = data.logs.length;
-        
-        refineLogContainer.scrollTop = refineLogContainer.scrollHeight;
-    }
+function updateRefineProgress(percent) {
+    refineProgressText.textContent = `${percent}%`;
+    refineProgressFill.style.width = `${percent}%`;
 }
 
-// 显示精炼统计
+function appendRefineLog(logEntry, type = 'info') {
+    let message = logEntry;
+    let time = new Date().toLocaleTimeString();
+    let level = type;
+
+    if (typeof logEntry === 'object' && logEntry !== null) {
+        message = logEntry.message || JSON.stringify(logEntry);
+        if (logEntry.time) time = logEntry.time;
+        if (logEntry.level) level = logEntry.level;
+    }
+
+    const div = document.createElement('div');
+    div.className = `log-entry ${level}`;
+    div.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+    refineLogContainer.appendChild(div);
+    refineLogContainer.scrollTop = refineLogContainer.scrollHeight;
+}
+
+function clearRefineLogs() {
+    refineLogContainer.innerHTML = '';
+    lastRefineLogCount = 0;
+    refineStatsSection.style.display = 'none';
+}
+
 function displayRefineStats(stats) {
-    refineStatsSection.style.display = 'block';
+    if (!stats) return;
     
+    refineStatsSection.style.display = 'block';
     refineStatsGrid.innerHTML = `
         <div class="stat-card">
-            <div class="stat-value">${stats.total_artifacts || 0}</div>
-            <div class="stat-label">总 artifact 数</div>
-        </div>
-        <div class="stat-card warning">
-            <div class="stat-value">${stats.duplicates_found || 0}</div>
-            <div class="stat-label">发现重复</div>
-        </div>
-        <div class="stat-card success">
-            <div class="stat-value">${stats.merged_count || 0}</div>
-            <div class="stat-label">执行融合</div>
+            <div class="stat-value">${stats.processed_files || 0}</div>
+            <div class="stat-label">处理文件</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value">${stats.skipped_count || 0}</div>
-            <div class="stat-label">纯重复跳过</div>
+            <div class="stat-value">${stats.generated_items || 0}</div>
+            <div class="stat-label">生成条目</div>
         </div>
-        <div class="stat-card success">
-            <div class="stat-value">${stats.new_count || 0}</div>
-            <div class="stat-label">新增内容</div>
+        <div class="stat-card">
+            <div class="stat-value">${stats.duplicates_removed || 0}</div>
+            <div class="stat-label">去重数量</div>
         </div>
     `;
 }
 
-// 清空精炼日志
-function clearRefineLogs() {
-    refineLogContainer.innerHTML = '<div class="log-placeholder">选择日期后点击"预览分析"或"开始精炼"...</div>';
-    lastRefineLogCount = 0;
-    refineStatsSection.style.display = 'none';
-    previewResult.style.display = 'none';
+// ============================================================
+// 语义检索功能逻辑
+// ============================================================
+async function startSemanticSearch() {
+    const query = semanticSearchInput.value.trim();
+    if (!query) {
+        alert('请输入检索关键词');
+        return;
+    }
+    
+    // 更新 UI 状态
+    semanticSearchBtn.disabled = true;
+    semanticSearchInput.disabled = true;
+    semanticSearchBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">检索中...</span>';
+    semanticProgressSection.style.display = 'block';
+    semanticResultSection.style.display = 'none';
+    semanticResultList.innerHTML = '';
+    semanticLogContainer.innerHTML = ''; // 清空旧日志
+    
+    appendSemanticLog(`开始检索: "${query}"`, 'info');
+    
+    try {
+        const response = await fetch('/api/semantic-search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query: query,
+                intent: semanticIntentSelect.value,
+                top_k: semanticTopKSelect.value
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            appendSemanticLog(`检索失败: ${data.error}`, 'error');
+        } else {
+            appendSemanticLog(`检索完成，找到 ${data.total_found || 0} 条相关结果`, 'success');
+            if (data.detected_intent) {
+                appendSemanticLog(`识别意图: ${data.detected_intent}`, 'info');
+            }
+            displaySemanticResults(data.results);
+        }
+    } catch (error) {
+        appendSemanticLog(`请求出错: ${error.message}`, 'error');
+    } finally {
+        // 恢复 UI 状态
+        semanticSearchBtn.disabled = false;
+        semanticSearchInput.disabled = false;
+        semanticSearchBtn.innerHTML = '<span class="btn-icon">🔍</span><span class="btn-text">开始检索</span>';
+        semanticProgressSection.style.display = 'none';
+    }
 }
 
-// ============================================================
-// 工具函数
-// ============================================================
-
-// HTML 转义
-function escapeHtml(text) {
+function appendSemanticLog(message, type = 'info') {
     const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+    div.className = `log-entry ${type}`;
+    div.innerHTML = `<span class="log-time">[${new Date().toLocaleTimeString()}]</span> ${message}`;
+    semanticLogContainer.appendChild(div);
+    semanticLogContainer.scrollTop = semanticLogContainer.scrollHeight;
+}
+
+function displaySemanticResults(results) {
+    if (!results || results.length === 0) {
+        appendSemanticLog('未找到匹配的结果', 'warning');
+        return;
+    }
+    
+    semanticResultSection.style.display = 'block';
+    
+    results.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'result-item';
+        
+        // 匹配度颜色
+        let scoreClass = 'score-low';
+        if (item.score < 0.3) scoreClass = 'score-high';
+        else if (item.score < 0.7) scoreClass = 'score-medium';
+        
+        div.innerHTML = `
+            <div class="result-header">
+                <span class="result-type">${item.type || '未知类型'}</span>
+                <span class="result-score ${scoreClass}">距离: ${item.score}</span>
+                <span class="result-source">${item.source || '未知来源'}</span>
+            </div>
+            <div class="result-content">${formatContent(item.content)}</div>
+        `;
+        semanticResultList.appendChild(div);
+    });
 }
