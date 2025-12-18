@@ -129,7 +129,7 @@ class KnowledgeRetriever:
                  intent: QueryIntent = None,
                  collections: List[str] = None,
                  metadata_filter: Dict = None,
-                 min_score: float = 0.3) -> RetrievalResponse:
+                 min_score: float = None) -> RetrievalResponse:
         """
         检索知识
         
@@ -144,6 +144,10 @@ class KnowledgeRetriever:
         Returns:
             RetrievalResponse
         """
+        # 使用配置的默认阈值
+        if min_score is None:
+            min_score = self.config.similarity_threshold
+
         # 检测意图
         detected_intent = intent or self._detect_intent(query)
         
@@ -158,30 +162,37 @@ class KnowledgeRetriever:
         # 执行检索
         all_results = []
         
+        print(f"[Retrieval] Query: {query}, Intent: {detected_intent}, Collections: {target_collections}")
+
         for collection_name in target_collections:
             if collection_name not in self.store.collections:
                 continue
             
-            results = self.store.query(
-                collection_name,
-                query,
-                n_results=top_k * 2,  # 多取一些用于过滤
-                where=metadata_filter
-            )
-            
-            if results.get("documents") and results["documents"][0]:
-                for i, doc in enumerate(results["documents"][0]):
-                    distance = results["distances"][0][i] if results.get("distances") else 0
-                    score = self._distance_to_score(distance)
-                    
-                    if score >= min_score:
-                        all_results.append(RetrievalResult(
-                            id=results["ids"][0][i] if results.get("ids") else f"{collection_name}_{i}",
-                            text=doc,
-                            score=score,
-                            collection=collection_name,
-                            metadata=results["metadatas"][0][i] if results.get("metadatas") else {}
-                        ))
+            try:
+                results = self.store.query(
+                    collection_name,
+                    query,
+                    n_results=top_k * 2,  # 多取一些用于过滤
+                    where=metadata_filter
+                )
+                
+                if results.get("documents") and results["documents"][0]:
+                    for i, doc in enumerate(results["documents"][0]):
+                        distance = results["distances"][0][i] if results.get("distances") else 0
+                        score = self._distance_to_score(distance)
+                        
+                        print(f"[Retrieval] Collection: {collection_name}, Distance: {distance:.4f}, Score: {score:.4f}, Min: {min_score}")
+
+                        if score >= min_score:
+                            all_results.append(RetrievalResult(
+                                id=results["ids"][0][i] if results.get("ids") else f"{collection_name}_{i}",
+                                text=doc,
+                                score=score,
+                                collection=collection_name,
+                                metadata=results["metadatas"][0][i] if results.get("metadatas") else {}
+                            ))
+            except Exception as e:
+                print(f"[Retrieval] Error querying {collection_name}: {e}")
         
         # 按分数排序
         all_results.sort(key=lambda x: x.score, reverse=True)

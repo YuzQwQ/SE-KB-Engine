@@ -64,7 +64,7 @@ class VectorConfig:
     
     # 检索配置
     default_top_k: int = 5
-    similarity_threshold: float = 0.7
+    similarity_threshold: float = 0.2
     
     def __post_init__(self):
         """确保路径存在"""
