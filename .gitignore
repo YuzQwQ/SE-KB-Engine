@@ -67,7 +67,7 @@ export/crawler_core/.env
 
 # ---- Knowledge base artifacts ----
 # only ignore generated artifacts, keep schemas/rules/templates versioned
-se_kb
+se_kb/
 
 
 # ---- Additional local outputs ----
@@ -86,4 +86,6 @@ test_*.py
 *_test.py
 *.test.*
 *.spec.*
- 
+debug*
+
+tor_data/

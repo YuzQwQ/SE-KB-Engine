@@ -113,7 +113,7 @@ class MCPWebClient:
         if not (is_python or is_js):
             raise ValueError("服务器脚本必须是 .py 或 .js 文件")
 
-        command = "python" if is_python else "node"
+        command = sys.executable if is_python else "node"
         server_params = StdioServerParameters(
             command=command,
             args=[server_script_path],
@@ -466,6 +466,43 @@ class MCPWebClient:
                 await self.send_log("error", f"爬取过程出错: {str(e)}")
                 print(f"❌ 处理爬取请求时出错: {str(e)}")
                 raise HTTPException(status_code=500, detail=f"处理请求时出错: {str(e)}")
+
+        @self.app.post("/api/semantic-search")
+        async def semantic_search_endpoint(request: Request):
+            """语义搜索接口"""
+            try:
+                if not self.session:
+                    raise HTTPException(status_code=500, detail="MCP服务器未连接")
+                
+                body = await request.json()
+                query = body.get("query")
+                intent = body.get("intent")  # Optional
+                top_k = int(body.get("top_k", 5))
+                
+                if not query:
+                    raise HTTPException(status_code=400, detail="缺少查询内容 (query)")
+                
+                # 调用 search_knowledge 工具
+                result = await self.session.call_tool(
+                    "search_knowledge", 
+                    arguments={
+                        "query": query,
+                        "intent": intent,
+                        "top_k": top_k
+                    }
+                )
+                
+                # 解析工具返回的 JSON 字符串
+                # result.content 是一个 list，通常第一个元素是 TextContent
+                if result.content and hasattr(result.content[0], "text"):
+                    search_result = json.loads(result.content[0].text)
+                    return search_result
+                else:
+                    return {"error": "No content returned from search tool"}
+                
+            except Exception as e:
+                print(f"❌ 语义搜索失败: {str(e)}")
+                raise HTTPException(status_code=500, detail=str(e))
 
         @self.app.post("/api/chat", response_model=ChatResponse)
         async def chat_endpoint(request: ChatRequest):
