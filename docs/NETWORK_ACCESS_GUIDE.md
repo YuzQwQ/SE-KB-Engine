@@ -1,194 +1,95 @@
-# 网络访问配置指南
+# 网络访问指南：如何让外部系统调用您的 API
 
-本指南说明如何配置MCP Web客户端以支持外部网络访问。
-
-## 🏠 本地访问模式（默认）
-
-默认情况下，服务器只能在本机访问：
-
-```bash
-python web_client.py
-```
-
-访问地址：`http://127.0.0.1:8000`
-
-## 🌍 公网访问模式
-
-### 方法1：使用专用启动脚本（推荐）
-
-```bash
-# 使用默认设置（监听所有IP，端口8000）
-python start_public_server.py
-
-# 自定义端口
-python start_public_server.py --port 9000
-
-# 指定特定IP地址
-python start_public_server.py --host 192.168.1.100 --port 8080
-```
-
-### 方法2：使用环境变量
-
-在`.env`文件中添加：
-```env
-WEB_HOST=0.0.0.0
-WEB_PORT=8000
-```
-
-然后正常启动：
-```bash
-python web_client.py
-```
-
-### 方法3：临时环境变量
-
-**Windows (PowerShell):**
-```powershell
-$env:WEB_HOST="0.0.0.0"
-$env:WEB_PORT="8000"
-python web_client.py
-```
-
-**Windows (CMD):**
-```cmd
-set WEB_HOST=0.0.0.0
-set WEB_PORT=8000
-python web_client.py
-```
-
-**Linux/Mac:**
-```bash
-WEB_HOST=0.0.0.0 WEB_PORT=8000 python web_client.py
-```
-
-## 📱 访问地址说明
-
-### 本地访问
-- `http://127.0.0.1:8000` - 本机访问
-- `http://localhost:8000` - 本机访问（同上）
-
-### 局域网访问
-- `http://[你的内网IP]:8000` - 同一局域网内的其他设备
-- 例如：`http://192.168.1.100:8000`
-
-### 公网访问
-- `http://[你的公网IP]:8000` - 互联网上的任何设备
-- 需要路由器端口转发配置
-
-## 🔧 网络配置要求
-
-### 防火墙设置
-
-**Windows防火墙：**
-1. 打开「Windows安全中心」→「防火墙和网络保护」
-2. 点击「允许应用通过防火墙」
-3. 添加Python或允许端口8000
-
-**Linux防火墙（ufw）：**
-```bash
-sudo ufw allow 8000
-```
-
-### 路由器配置（公网访问）
-
-如果需要从互联网访问，需要配置路由器端口转发：
-
-1. 登录路由器管理界面
-2. 找到「端口转发」或「虚拟服务器」设置
-3. 添加规则：
-   - 外部端口：8000
-   - 内部IP：你的电脑IP
-   - 内部端口：8000
-   - 协议：TCP
-
-## 🛡️ 安全注意事项
-
-### ⚠️ 重要安全提醒
-
-1. **公网暴露风险**：将服务暴露到公网可能带来安全风险
-2. **访问控制**：目前没有身份验证机制，任何人都可以访问
-3. **数据保护**：确保不要处理敏感信息
-4. **网络环境**：建议在受信任的网络环境中使用
-
-### 🔒 安全建议
-
-1. **使用强密码**：如果部署在公网，考虑添加认证
-2. **限制访问**：使用防火墙限制访问来源
-3. **定期更新**：保持软件版本最新
-4. **监控日志**：定期检查访问日志
-5. **备份数据**：定期备份重要数据
-
-## 🔍 故障排除
-
-### 常见问题
-
-**问题1：无法从其他设备访问**
-- 检查防火墙设置
-- 确认IP地址正确
-- 验证端口是否开放
-
-**问题2：端口被占用**
-```bash
-# Windows查看端口占用
-netstat -ano | findstr :8000
-
-# Linux/Mac查看端口占用
-lsof -i :8000
-```
-
-**问题3：权限不足**
-- 使用管理员权限运行
-- 检查文件权限
-
-### 测试连接
-
-**测试本地连接：**
-```bash
-curl http://127.0.0.1:8000
-```
-
-**测试局域网连接：**
-```bash
-curl http://[内网IP]:8000
-```
-
-## 📊 性能优化
-
-### 并发连接
-
-默认配置支持适中的并发连接。如需更高性能：
-
-1. 增加worker进程数
-2. 使用反向代理（如Nginx）
-3. 配置负载均衡
-
-### 资源监控
-
-监控服务器资源使用：
-- CPU使用率
-- 内存占用
-- 网络带宽
-- 磁盘I/O
-
-## 🚀 生产环境部署
-
-对于生产环境，建议：
-
-1. **使用专业Web服务器**（如Nginx + Gunicorn）
-2. **配置HTTPS**（SSL/TLS证书）
-3. **设置域名**（而不是直接使用IP）
-4. **添加身份验证**
-5. **配置日志记录**
-6. **设置监控告警**
-
-## 📞 技术支持
-
-如果遇到问题，请检查：
-1. 服务器日志
-2. 网络连接
-3. 防火墙设置
-4. 端口占用情况
+本文档介绍了三种将本地 SE-KB 知识库服务暴露给公网（外部网络）的方法。
 
 ---
 
-**注意**：本指南适用于开发和测试环境。生产环境部署需要额外的安全和性能考虑。
+## 方案一：Cloudflare Tunnel (推荐 - 免费/安全/HTTPS)
+
+这是目前最推荐的本地服务暴露方式，它不需要您拥有公网 IP，也不需要配置路由器，且自带 HTTPS 支持。
+
+### 方法 A：使用临时隧道 (无需账号，测试用)
+如果您只是想快速让别人测试一下，可以使用临时隧道。
+
+1. **下载 cloudflared**
+   - Windows 下载地址: [cloudflared-windows-amd64.exe](https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe)
+   - 将其重命名为 `cloudflared.exe` 并放在项目根目录。
+
+2. **启动隧道**
+   在终端运行（确保您的 API 服务已在 8000 端口启动）：
+   ```powershell
+   .\cloudflared.exe tunnel --url http://localhost:8000
+   ```
+
+3. **获取公网地址**
+   终端会输出类似如下的日志：
+   ```text
+   +--------------------------------------------------------------------------------------------+
+   |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+   |  https://random-name-1234.trycloudflare.com                                              |
+   +--------------------------------------------------------------------------------------------+
+   ```
+   **`https://random-name-1234.trycloudflare.com`** 就是您的公网 API 地址！
+   
+   外部调用示例：
+   ```bash
+   POST https://random-name-1234.trycloudflare.com/api/v1/search
+   Authorization: Bearer <your-key>
+   ```
+
+### 方法 B：使用持久化隧道 (Docker 集成)
+如果您有自己的域名并托管在 Cloudflare，可以在 `docker-compose.yml` 中配置持久化隧道。
+
+1. 在 [Cloudflare Zero Trust](https://one.dash.cloudflare.com/) 面板创建 Tunnel。
+2. 获取 `TUNNEL_TOKEN`。
+3. 在 `deploy/docker-compose.yml` 中取消 `tunnel` 服务的注释并填入 Token。
+
+---
+
+## 方案二：内网穿透工具 (cpolar / ngrok)
+
+适合没有域名且不想配置 Cloudflare 的用户。
+
+### 使用 cpolar (国内访问速度较快)
+1. 注册并下载 [cpolar](https://www.cpolar.com/)。
+2. 启动 API 服务。
+3. 运行映射命令：
+   ```powershell
+   cpolar http 8000
+   ```
+4. 复制生成的公网地址 (如 `http://xyz.cpolar.io`) 给调用方。
+
+---
+
+## 方案三：云服务器部署 (生产环境标准)
+
+如果您决定正式上线，建议购买一台云服务器 (VPS)。
+
+1. **购买服务器**: 推荐 Ubuntu 22.04 LTS。
+2. **安装 Docker**:
+   ```bash
+   curl -fsSL https://get.docker.com | bash
+   ```
+3. **上传代码**:
+   使用 `scp` 或 `git` 将项目代码同步到服务器。
+4. **启动服务**:
+   ```bash
+   # 在服务器上执行
+   cd mcp-client
+   docker compose -f deploy/docker-compose.yml up -d --build
+   ```
+5. **访问**: 直接使用 `http://<服务器公网IP>:80` 访问。
+
+---
+
+## 常见问题
+
+### Q: 外部访问 API 报错 403 Forbidden?
+**A:** 检查请求头是否包含了正确的 API Key。
+```http
+Authorization: Bearer sk-read-key...
+```
+并且确保 `docker-compose.yml` 或环境变量中配置了对应的 `KB_READ_KEYS`。
+
+### Q: 隧道连接不稳定？
+**A:** 临时隧道（Quick Tunnel）可能会在 24 小时后过期或因网络波动断开。长期使用建议使用 **方案三 (云服务器)** 或 **方案一的方法 B (持久化隧道)**。

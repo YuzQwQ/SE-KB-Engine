@@ -1,0 +1,15 @@
+# API 服务生产环境依赖 (轻量化)
+flask==3.0.0
+flask-cors==4.0.0
+flasgger==0.9.17
+gunicorn==21.2.0
+chromadb==0.4.22
+pydantic==2.5.3
+httpx==0.26.0
+python-dotenv==1.0.0
+numpy==1.26.3
+jsonschema==4.21.1
+
+# 兼容性依赖
+uvicorn[standard]  # 如果 vectorizer 内部有引用，但实际 Gunicorn + Flask 不需要
+fastapi            # vectorizer 中可能引用了，保留以防万一
