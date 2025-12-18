@@ -25,27 +25,27 @@ class VectorConfig:
     
     # Collection 配置
     collections: Dict[str, Dict] = field(default_factory=lambda: {
-        "se_kb_concepts": {
+        "se_kb_dfd_concepts": {
             "description": "DFD 概念定义（外部实体、处理、数据流、数据存储等）",
             "source_dirs": ["diagrams/dfd/concepts"],
             "chunk_type": "element"
         },
-        "se_kb_examples": {
+        "se_kb_dfd_examples": {
             "description": "DFD 完整案例及数据流模式",
             "source_dirs": ["diagrams/dfd/examples"],
             "chunk_type": "case"
         },
-        "se_kb_rules": {
+        "se_kb_dfd_rules": {
             "description": "DFD 建模规则和校验规则",
             "source_dirs": ["diagrams/dfd/rules", "diagrams/dfd/validation"],
             "chunk_type": "rule"
         },
-        "se_kb_templates": {
+        "se_kb_dfd_templates": {
             "description": "DFD 模板库",
             "source_dirs": ["diagrams/dfd/templates"],
             "chunk_type": "template"
         },
-        "se_kb_levels": {
+        "se_kb_dfd_levels": {
             "description": "DFD 层次分解原则",
             "source_dirs": ["diagrams/dfd/levels"],
             "chunk_type": "principle"
@@ -74,12 +74,12 @@ class VectorConfig:
 
 # 知识类型到 Collection 的映射
 TYPE_TO_COLLECTION = {
-    "diagrams.dfd.concepts": "se_kb_concepts",
-    "diagrams.dfd.examples": "se_kb_examples",
-    "diagrams.dfd.rules": "se_kb_rules",
-    "diagrams.dfd.validation": "se_kb_rules",
-    "diagrams.dfd.templates": "se_kb_templates",
-    "diagrams.dfd.levels": "se_kb_levels",
+    "diagrams.dfd.concepts": "se_kb_dfd_concepts",
+    "diagrams.dfd.examples": "se_kb_dfd_examples",
+    "diagrams.dfd.rules": "se_kb_dfd_rules",
+    "diagrams.dfd.validation": "se_kb_dfd_rules",
+    "diagrams.dfd.templates": "se_kb_dfd_templates",
+    "diagrams.dfd.levels": "se_kb_dfd_levels",
     "theory": "se_kb_theory",
     "domain": "se_kb_domain",
     "mappings": "se_kb_theory",

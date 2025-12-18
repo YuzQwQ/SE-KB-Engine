@@ -86,10 +86,10 @@ class KnowledgeRetriever:
     
     # Collection 到意图的映射
     INTENT_TO_COLLECTIONS = {
-        QueryIntent.CONCEPT: ["se_kb_concepts"],
-        QueryIntent.EXAMPLE: ["se_kb_examples"],
-        QueryIntent.RULE: ["se_kb_rules"],
-        QueryIntent.TEMPLATE: ["se_kb_templates"],
+        QueryIntent.CONCEPT: ["se_kb_dfd_concepts"],
+        QueryIntent.EXAMPLE: ["se_kb_dfd_examples"],
+        QueryIntent.RULE: ["se_kb_dfd_rules", "se_kb_dfd_levels"],
+        QueryIntent.TEMPLATE: ["se_kb_dfd_templates"],
         QueryIntent.THEORY: ["se_kb_theory", "se_kb_domain"],
         QueryIntent.GENERAL: None  # 搜索所有
     }
