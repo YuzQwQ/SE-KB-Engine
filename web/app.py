@@ -232,7 +232,7 @@ def search_urls(query: str, limit: int = 10) -> List[str]:
 
 def crawl_url(url: str, crawler: WebpageCrawler) -> Dict[str, Any]:
     """爬取单个 URL"""
-    task_manager.log(f"🌐 爬取: {url[:60]}...")
+    task_manager.log(f"🌐 采取: {url[:60]}...")
     
     try:
         result = crawler.crawl_and_parse(url, save_data=True)
@@ -241,10 +241,10 @@ def crawl_url(url: str, crawler: WebpageCrawler) -> Dict[str, Any]:
             task_manager.log(f"✅ 成功: {title[:40]}")
             return result
         else:
-            task_manager.log(f"⚠️ 爬取失败: {url[:40]}", "warning")
+            task_manager.log(f"⚠️ 采取失败: {url[:40]}", "warning")
             return None
     except Exception as e:
-        task_manager.log(f"❌ 爬取错误: {str(e)[:50]}", "error")
+        task_manager.log(f"❌ 采取错误: {str(e)[:50]}", "error")
         return None
 
 
@@ -322,10 +322,10 @@ def run_pipeline_task(query: str, limit: int, force_types: List[str]):
                 new_urls.append(url)
         
         if skipped_urls:
-            task_manager.log(f"⏭️ 跳过 {len(skipped_urls)} 个已爬取的 URL")
+            task_manager.log(f"⏭️ 跳过 {len(skipped_urls)} 个已采取的 URL")
         
         if not new_urls:
-            task_manager.log("✅ 所有 URL 已爬取过，无需重复处理")
+            task_manager.log("✅ 所有 URL 已采取过，无需重复处理")
             task_manager.set_status("completed", 100)
             return
         
@@ -333,7 +333,7 @@ def run_pipeline_task(query: str, limit: int, force_types: List[str]):
         
         # Step 2: 爬取
         task_manager.log("-" * 40)
-        task_manager.log(f"🌐 开始爬取 {len(new_urls)} 个新网页")
+        task_manager.log(f"🌐 开始采取 {len(new_urls)} 个新网页")
         task_manager.log("-" * 40)
         
         crawler = WebpageCrawler()
@@ -350,10 +350,10 @@ def run_pipeline_task(query: str, limit: int, force_types: List[str]):
                 title = result.get('parsed_data', {}).get('title', '')
                 url_index.add(url, title)
         
-        task_manager.log(f"✅ 成功爬取 {len(parsed_files)}/{len(new_urls)} 个网页")
+        task_manager.log(f"✅ 成功采取 {len(parsed_files)}/{len(new_urls)} 个网页")
         
         if not parsed_files:
-            task_manager.log("❌ 无可用的爬取结果", "error")
+            task_manager.log("❌ 无可用的采取结果", "error")
             task_manager.set_status("error", 100)
             return
         

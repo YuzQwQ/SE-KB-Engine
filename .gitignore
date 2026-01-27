@@ -89,3 +89,4 @@ test_*.py
 debug*
 
 tor_data/
+requirements cases
