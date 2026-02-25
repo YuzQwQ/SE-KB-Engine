@@ -9,8 +9,7 @@ import time
 import os
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Union
-from urllib.parse import urljoin
+from typing import Dict, List, Any, Optional
 from duckduckgo_search import DDGS
 import re
 import logging

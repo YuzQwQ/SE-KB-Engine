@@ -61,7 +61,7 @@ class SemanticEmbedder:
                 data = json.loads(cache_file.read_text(encoding='utf-8'))
                 self._cache[text_hash] = data["embedding"]
                 return data["embedding"]
-            except:
+            except Exception:
                 pass
         
         return None
@@ -76,7 +76,7 @@ class SemanticEmbedder:
                 json.dumps({"embedding": embedding}, ensure_ascii=False),
                 encoding='utf-8'
             )
-        except:
+        except Exception:
             pass
     
     def get_embedding(self, text: str) -> Optional[List[float]]:
@@ -144,6 +144,7 @@ class SemanticEmbedder:
                     continue
                 print(f"[SemanticEmbedder] 获取嵌入向量失败: {e}")
                 return None
+        return None
     
     def get_embeddings_batch(self, texts: List[str]) -> List[Optional[List[float]]]:
         """
@@ -158,7 +159,7 @@ class SemanticEmbedder:
         if not self.is_available():
             return [None] * len(texts)
         
-        results = []
+        results: List[Optional[List[float]]] = []
         uncached_indices = []
         uncached_texts = []
         
@@ -333,8 +334,10 @@ class SemanticDeduplicator:
         
         for i in range(n):
             for j in range(i + 1, n):
-                if embeddings[i] and embeddings[j]:
-                    sim = self.embedder.cosine_similarity(embeddings[i], embeddings[j])
+                emb_i = embeddings[i]
+                emb_j = embeddings[j]
+                if emb_i is not None and emb_j is not None:
+                    sim = self.embedder.cosine_similarity(emb_i, emb_j)
                     if sim >= self.similarity_threshold:
                         duplicates.append((i, j, sim))
         
@@ -372,7 +375,7 @@ class SemanticDeduplicator:
         best_idx = None
         
         for i, emb in enumerate(existing_embeddings):
-            if emb:
+            if emb is not None:
                 sim = self.embedder.cosine_similarity(new_embedding, emb)
                 if sim > best_sim:
                     best_sim = sim

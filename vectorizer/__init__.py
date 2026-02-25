@@ -8,6 +8,7 @@ from .store import VectorStore
 from .chunker import KnowledgeChunker
 from .indexer import KnowledgeIndexer
 from .retriever import KnowledgeRetriever, QueryIntent, RetrievalResult, RetrievalResponse
+from .query_planner import QueryPlanner, PlannerResult
 
 __all__ = [
     "VectorConfig", 
@@ -17,6 +18,8 @@ __all__ = [
     "KnowledgeRetriever",
     "QueryIntent",
     "RetrievalResult",
-    "RetrievalResponse"
+    "RetrievalResponse",
+    "QueryPlanner",
+    "PlannerResult"
 ]
 

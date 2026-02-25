@@ -3,7 +3,7 @@ import re
 import os
 import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List
 from datetime import datetime
 import uuid
 import string
@@ -62,7 +62,7 @@ class UniversalKnowledgeProcessor:
             with open(prompts_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
-            logger.warning(f"系统提示词配置文件未找到，使用默认配置")
+            logger.warning("系统提示词配置文件未找到，使用默认配置")
             return {"default_prompt_type": "universal_knowledge"}
         except json.JSONDecodeError as e:
             logger.error(f"系统提示词配置文件格式错误: {e}")

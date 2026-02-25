@@ -29,7 +29,7 @@ SE_KB_TYPES = [
 - naming: 命名规范
 - properties: 属性列表
 - examples: 示例''',
-        schema_path="se_kb/diagrams/dfd/concepts/elements.json",
+        schema_path="se_kb/schema/dfd_concepts_schema.json",
         prompt_path=None,
         examples=["外部实体", "处理过程", "数据流", "数据存储", "命名规范", "层次结构", "顶层图", "0层图"],
         min_confidence=0.65,
@@ -51,7 +51,7 @@ SE_KB_TYPES = [
   - processes: [{id, name}]
   - data_stores: [{id, name}]
   - data_flows: [{from, to, data}]''',
-        schema_path="se_kb/diagrams/dfd/examples/library_management.json",
+        schema_path="se_kb/schema/dfd_examples_schema.json",
         prompt_path=None,
         examples=["ATM", "图书馆", "订单系统", "支付", "电商", "医院系统", "选课系统", "案例"],
         min_confidence=0.7,
@@ -71,7 +71,7 @@ SE_KB_TYPES = [
 - level: error | warning | info
 - source: 来源
 - check: manual | auto''',
-        schema_path="se_kb/diagrams/dfd/rules/dfd_modeling_rules.json",
+        schema_path="se_kb/schema/dfd_rules_schema.json",
         prompt_path=None,
         examples=["规则", "约束", "必须", "不得", "平衡", "分解", "命名规则", "校验"],
         min_confidence=0.65,
@@ -94,7 +94,7 @@ SE_KB_TYPES = [
     - structure: 结构定义 (nodes, data_flows)
     - applicable_scenarios: 适用场景
     - notes: 说明''',
-        schema_path="se_kb/diagrams/dfd/templates/dfd_templates.json",
+        schema_path="se_kb/schema/dfd_templates_schema.json",
         prompt_path=None,
         examples=["模板", "三段式", "CRUD", "工作流", "顶层图模板", "分解模板", "交互模板"],
         min_confidence=0.65,
@@ -116,7 +116,7 @@ SE_KB_TYPES = [
   - severity: error | warning | info
   - pattern_hint: 正则模式
   - error_message: 错误提示''',
-        schema_path="se_kb/diagrams/dfd/validation/dfd_balance_checks.json",
+        schema_path="se_kb/schema/dfd_validation_schema.json",
         prompt_path=None,
         examples=["校验", "检查", "验证", "错误", "警告", "平衡检查", "命名检查"],
         min_confidence=0.6,
@@ -134,7 +134,7 @@ SE_KB_TYPES = [
   - id, description, detection_hint
 - decomposition_rules: 分解规则
   - id, description, threshold''',
-        schema_path="se_kb/diagrams/dfd/levels/levels.json",
+        schema_path="se_kb/schema/dfd_levels_schema.json",
         prompt_path=None,
         examples=["层次", "分解", "分层", "深度", "粒度", "子图", "父图", "平衡"],
         min_confidence=0.6,
@@ -156,7 +156,7 @@ SE_KB_TYPES = [
   - source, source_location, confidence
 - principles: 原则列表
   - id, detail''',
-        schema_path="se_kb/theory/structured_analysis.json",
+        schema_path="se_kb/schema/theory_schema.json",
         prompt_path=None,
         examples=["系统工程", "需求分析", "结构化分析", "结构图", "模块", "耦合", "内聚"],
         min_confidence=0.65,
@@ -175,7 +175,7 @@ SE_KB_TYPES = [
 - semantic_cues: 语义线索词（按元素类型分组）
 - linguistic_patterns: 语言模式（条件、迭代、数据交换等）
 - extraction_guidelines: 抽取策略和规则''',
-        schema_path="se_kb/mappings/semantic_cues.json",
+        schema_path="se_kb/schema/mappings_schema.json",
         prompt_path=None,
         examples=["语义", "映射", "模式", "线索", "抽取", "识别", "信号"],
         min_confidence=0.6,

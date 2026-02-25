@@ -11,7 +11,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List
 
-from extractors.pipeline import ExtractionPipeline, run_pipeline
+from extractors.pipeline import run_pipeline
 from extractors.type_registry import get_type_registry
 from validators.jsonschema_validator import make_validator
 from writers.artifacts_writer import ArtifactsWriter
@@ -68,7 +68,7 @@ def run(input_glob: str,
     results = []
     total_tokens = 0
     
-    print(f"[Exporter V2] Two-Stage Architecture")
+    print("[Exporter V2] Two-Stage Architecture")
     print(f"[Exporter V2] Files: {len(files)}")
     if force_types:
         print(f"[Exporter V2] Force Types: {force_types}")

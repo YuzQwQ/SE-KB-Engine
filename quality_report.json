@@ -1,0 +1,1020 @@
+{
+  "summary": {
+    "total_files": 31,
+    "total_items": 328,
+    "types": 7
+  },
+  "types": {
+    "diagrams.dfd.concepts": {
+      "files": 6,
+      "items": 24,
+      "missing_fields": 0,
+      "required_fields_total": 72,
+      "low_info_fields": 0,
+      "text_fields_total": 48,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.0,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    "diagrams.dfd.levels": {
+      "files": 5,
+      "items": 44,
+      "missing_fields": 0,
+      "required_fields_total": 107,
+      "low_info_fields": 19,
+      "text_fields_total": 63,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.3016,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0455
+    },
+    "diagrams.dfd.rules": {
+      "files": 3,
+      "items": 20,
+      "missing_fields": 0,
+      "required_fields_total": 80,
+      "low_info_fields": 6,
+      "text_fields_total": 40,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.15,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    "theory": {
+      "files": 6,
+      "items": 76,
+      "missing_fields": 0,
+      "required_fields_total": 196,
+      "low_info_fields": 50,
+      "text_fields_total": 120,
+      "indexable_failures": 2,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.4167,
+      "indexable_fail_rate": 0.0263,
+      "duplicate_rate": 0.0
+    },
+    "diagrams.dfd.examples": {
+      "files": 4,
+      "items": 95,
+      "missing_fields": 0,
+      "required_fields_total": 249,
+      "low_info_fields": 364,
+      "text_fields_total": 372,
+      "indexable_failures": 91,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.9785,
+      "indexable_fail_rate": 0.9579,
+      "duplicate_rate": 0.0682
+    },
+    "diagrams.dfd.templates": {
+      "files": 6,
+      "items": 50,
+      "missing_fields": 0,
+      "required_fields_total": 202,
+      "low_info_fields": 53,
+      "text_fields_total": 76,
+      "indexable_failures": 36,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.6974,
+      "indexable_fail_rate": 0.72,
+      "duplicate_rate": 0.4
+    },
+    "domain": {
+      "files": 1,
+      "items": 19,
+      "missing_fields": 0,
+      "required_fields_total": 44,
+      "low_info_fields": 11,
+      "text_fields_total": 26,
+      "indexable_failures": 6,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.4231,
+      "indexable_fail_rate": 0.3158,
+      "duplicate_rate": 0.0
+    }
+  },
+  "schema_validation": {
+    "available": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 1
+  },
+  "files": [
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.visual-paradigm.com\\什么是数据流图？-df06485e\\dfd_concepts_elements_basics.json",
+      "type_id": "diagrams.dfd.concepts",
+      "items": 4,
+      "missing_fields": 0,
+      "required_fields_total": 12,
+      "low_info_fields": 0,
+      "text_fields_total": 8,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.0,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.visual-paradigm.com\\什么是数据流图？-df06485e\\dfd_levels_dfd_hierarchy_decomposition.json",
+      "type_id": "diagrams.dfd.levels",
+      "items": 9,
+      "missing_fields": 0,
+      "required_fields_total": 22,
+      "low_info_fields": 4,
+      "text_fields_total": 13,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.3077,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.visual-paradigm.com\\什么是数据流图？-df06485e\\dfd_rules_data_balance_rules.json",
+      "type_id": "diagrams.dfd.rules",
+      "items": 7,
+      "missing_fields": 0,
+      "required_fields_total": 28,
+      "low_info_fields": 1,
+      "text_fields_total": 14,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.0714,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.visual-paradigm.com\\什么是数据流图？-df06485e\\theory_structured_analysis.json",
+      "type_id": "theory",
+      "items": 14,
+      "missing_fields": 0,
+      "required_fields_total": 36,
+      "low_info_fields": 10,
+      "text_fields_total": 22,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.4545,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.processon.com\\数据流图（DFD）入门指南：概念，绘制教程，实例详解-ProcessOn知识社区-42506f08\\dfd_concepts_elements_basics.json",
+      "type_id": "diagrams.dfd.concepts",
+      "items": 4,
+      "missing_fields": 0,
+      "required_fields_total": 12,
+      "low_info_fields": 0,
+      "text_fields_total": 8,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.0,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.processon.com\\数据流图（DFD）入门指南：概念，绘制教程，实例详解-ProcessOn知识社区-42506f08\\dfd_examples_library_management.json",
+      "type_id": "diagrams.dfd.examples",
+      "items": 26,
+      "missing_fields": 0,
+      "required_fields_total": 69,
+      "low_info_fields": 100,
+      "text_fields_total": 102,
+      "indexable_failures": 25,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.9804,
+      "indexable_fail_rate": 0.9615,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.processon.com\\数据流图（DFD）入门指南：概念，绘制教程，实例详解-ProcessOn知识社区-42506f08\\dfd_levels_dfd_hierarchy_decomposition.json",
+      "type_id": "diagrams.dfd.levels",
+      "items": 9,
+      "missing_fields": 0,
+      "required_fields_total": 22,
+      "low_info_fields": 4,
+      "text_fields_total": 13,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.3077,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.processon.com\\数据流图（DFD）入门指南：概念，绘制教程，实例详解-ProcessOn知识社区-42506f08\\dfd_templates_dfd_template_library.json",
+      "type_id": "diagrams.dfd.templates",
+      "items": 9,
+      "missing_fields": 0,
+      "required_fields_total": 37,
+      "low_info_fields": 9,
+      "text_fields_total": 14,
+      "indexable_failures": 6,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.6429,
+      "indexable_fail_rate": 0.6667,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.feishu.cn\\数据流图模板-飞书官网-3a901d31\\dfd_templates_context_diagram_and_decomposition.json",
+      "type_id": "diagrams.dfd.templates",
+      "items": 8,
+      "missing_fields": 0,
+      "required_fields_total": 32,
+      "low_info_fields": 9,
+      "text_fields_total": 12,
+      "indexable_failures": 6,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.75,
+      "indexable_fail_rate": 0.75,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.feishu.cn\\数据流图模板-飞书官网-3a901d31\\domain_data_flow_diagram.json",
+      "type_id": "domain",
+      "items": 19,
+      "missing_fields": 0,
+      "required_fields_total": 44,
+      "low_info_fields": 11,
+      "text_fields_total": 26,
+      "indexable_failures": 6,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.4231,
+      "indexable_fail_rate": 0.3158,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.feishu.cn\\数据流图模板-飞书官网-3a901d31\\theory_structured_analysis.json",
+      "type_id": "theory",
+      "items": 11,
+      "missing_fields": 0,
+      "required_fields_total": 28,
+      "low_info_fields": 6,
+      "text_fields_total": 17,
+      "indexable_failures": 2,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.3529,
+      "indexable_fail_rate": 0.1818,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.cnblogs.com\\untitled-ddcc71b9\\dfd_concepts_elements_basics.json",
+      "type_id": "diagrams.dfd.concepts",
+      "items": 4,
+      "missing_fields": 0,
+      "required_fields_total": 12,
+      "low_info_fields": 0,
+      "text_fields_total": 8,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.0,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.cnblogs.com\\untitled-ddcc71b9\\dfd_examples_online_book_library.json",
+      "type_id": "diagrams.dfd.examples",
+      "items": 27,
+      "missing_fields": 0,
+      "required_fields_total": 71,
+      "low_info_fields": 104,
+      "text_fields_total": 106,
+      "indexable_failures": 26,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.9811,
+      "indexable_fail_rate": 0.963,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.cnblogs.com\\untitled-ddcc71b9\\dfd_levels_dfd_hierarchy_basics.json",
+      "type_id": "diagrams.dfd.levels",
+      "items": 9,
+      "missing_fields": 0,
+      "required_fields_total": 22,
+      "low_info_fields": 4,
+      "text_fields_total": 13,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.3077,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.cnblogs.com\\untitled-ddcc71b9\\dfd_rules_data_balance.json",
+      "type_id": "diagrams.dfd.rules",
+      "items": 5,
+      "missing_fields": 0,
+      "required_fields_total": 20,
+      "low_info_fields": 2,
+      "text_fields_total": 10,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.2,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.cnblogs.com\\untitled-ddcc71b9\\dfd_templates_context_diagram_and_functional_decomposi.json",
+      "type_id": "diagrams.dfd.templates",
+      "items": 8,
+      "missing_fields": 0,
+      "required_fields_total": 32,
+      "low_info_fields": 8,
+      "text_fields_total": 12,
+      "indexable_failures": 6,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.6667,
+      "indexable_fail_rate": 0.75,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\www.cnblogs.com\\untitled-ddcc71b9\\theory_structured_analysis.json",
+      "type_id": "theory",
+      "items": 4,
+      "missing_fields": 0,
+      "required_fields_total": 9,
+      "low_info_fields": 2,
+      "text_fields_total": 5,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.4,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\jingyan.baidu.com\\软件工程数据流图的画法-b40b0ae8\\dfd_concepts_elements_basics.json",
+      "type_id": "diagrams.dfd.concepts",
+      "items": 4,
+      "missing_fields": 0,
+      "required_fields_total": 12,
+      "low_info_fields": 0,
+      "text_fields_total": 8,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.0,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\jingyan.baidu.com\\软件工程数据流图的画法-b40b0ae8\\theory_structured_analysis.json",
+      "type_id": "theory",
+      "items": 15,
+      "missing_fields": 0,
+      "required_fields_total": 38,
+      "low_info_fields": 10,
+      "text_fields_total": 23,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.4348,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\boardmix.cn\\7个步骤快速学会数据流图怎么画-_-详解数据流图画法与绘制方法-bd58823e\\dfd_concepts_elements_basics.json",
+      "type_id": "diagrams.dfd.concepts",
+      "items": 4,
+      "missing_fields": 0,
+      "required_fields_total": 12,
+      "low_info_fields": 0,
+      "text_fields_total": 8,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.0,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\boardmix.cn\\7个步骤快速学会数据流图怎么画-_-详解数据流图画法与绘制方法-bd58823e\\dfd_levels_dfd_hierarchy_and_decomposition.json",
+      "type_id": "diagrams.dfd.levels",
+      "items": 8,
+      "missing_fields": 0,
+      "required_fields_total": 19,
+      "low_info_fields": 3,
+      "text_fields_total": 11,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.2727,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\boardmix.cn\\7个步骤快速学会数据流图怎么画-_-详解数据流图画法与绘制方法-bd58823e\\dfd_templates_dfd_basic_template_library.json",
+      "type_id": "diagrams.dfd.templates",
+      "items": 8,
+      "missing_fields": 0,
+      "required_fields_total": 32,
+      "low_info_fields": 9,
+      "text_fields_total": 12,
+      "indexable_failures": 6,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.75,
+      "indexable_fail_rate": 0.75,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\blog.csdn.net\\软件工程-分层数据流图的画法_0层图-CSDN博客-46ecea31\\dfd_examples_exam_management.json",
+      "type_id": "diagrams.dfd.examples",
+      "items": 25,
+      "missing_fields": 0,
+      "required_fields_total": 65,
+      "low_info_fields": 96,
+      "text_fields_total": 98,
+      "indexable_failures": 24,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.9796,
+      "indexable_fail_rate": 0.96,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\blog.csdn.net\\软件工程-分层数据流图的画法_0层图-CSDN博客-46ecea31\\dfd_levels_dfd_hierarchy_decomposition.json",
+      "type_id": "diagrams.dfd.levels",
+      "items": 9,
+      "missing_fields": 0,
+      "required_fields_total": 22,
+      "low_info_fields": 4,
+      "text_fields_total": 13,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.3077,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\blog.csdn.net\\软件工程-分层数据流图的画法_0层图-CSDN博客-46ecea31\\dfd_templates_context_diagram_and_decomposition.json",
+      "type_id": "diagrams.dfd.templates",
+      "items": 8,
+      "missing_fields": 0,
+      "required_fields_total": 32,
+      "low_info_fields": 8,
+      "text_fields_total": 12,
+      "indexable_failures": 6,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.6667,
+      "indexable_fail_rate": 0.75,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\blog.csdn.net\\软件工程-分层数据流图的画法_0层图-CSDN博客-46ecea31\\theory_structured_analysis_dfd.json",
+      "type_id": "theory",
+      "items": 17,
+      "missing_fields": 0,
+      "required_fields_total": 45,
+      "low_info_fields": 14,
+      "text_fields_total": 28,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.5,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\blog.csdn.net\\软件工程-数据流图的画法_数据流图怎么画-CSDN博客-bd3c2384\\dfd_concepts_elements_basics.json",
+      "type_id": "diagrams.dfd.concepts",
+      "items": 4,
+      "missing_fields": 0,
+      "required_fields_total": 12,
+      "low_info_fields": 0,
+      "text_fields_total": 8,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.0,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\blog.csdn.net\\软件工程-数据流图的画法_数据流图怎么画-CSDN博客-bd3c2384\\dfd_examples_factory_order_system.json",
+      "type_id": "diagrams.dfd.examples",
+      "items": 17,
+      "missing_fields": 0,
+      "required_fields_total": 44,
+      "low_info_fields": 64,
+      "text_fields_total": 66,
+      "indexable_failures": 16,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.9697,
+      "indexable_fail_rate": 0.9412,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\blog.csdn.net\\软件工程-数据流图的画法_数据流图怎么画-CSDN博客-bd3c2384\\dfd_rules_data_balance_rules.json",
+      "type_id": "diagrams.dfd.rules",
+      "items": 8,
+      "missing_fields": 0,
+      "required_fields_total": 32,
+      "low_info_fields": 3,
+      "text_fields_total": 16,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.1875,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\blog.csdn.net\\软件工程-数据流图的画法_数据流图怎么画-CSDN博客-bd3c2384\\dfd_templates_context_diagram_and_decomposition.json",
+      "type_id": "diagrams.dfd.templates",
+      "items": 9,
+      "missing_fields": 0,
+      "required_fields_total": 37,
+      "low_info_fields": 10,
+      "text_fields_total": 14,
+      "indexable_failures": 6,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.7143,
+      "indexable_fail_rate": 0.6667,
+      "duplicate_rate": 0.0
+    },
+    {
+      "file": "D:\\develop\\MCP-develop\\mcp-client\\se_kb\\artifacts\\2025\\12\\10\\blog.csdn.net\\软件工程-数据流图的画法_数据流图怎么画-CSDN博客-bd3c2384\\theory_structured_analysis.json",
+      "type_id": "theory",
+      "items": 15,
+      "missing_fields": 0,
+      "required_fields_total": 40,
+      "low_info_fields": 8,
+      "text_fields_total": 25,
+      "indexable_failures": 0,
+      "missing_rate": 0.0,
+      "low_info_rate": 0.32,
+      "indexable_fail_rate": 0.0,
+      "duplicate_rate": 0.0
+    }
+  ],
+  "retrieval_recall": {
+    "top_k": 5,
+    "total_queries": 18,
+    "hit_rates": {
+      "hit@1": 1.0,
+      "hit@3": 1.0,
+      "hit@5": 1.0
+    },
+    "groups": {
+      "concept": {
+        "total": 3,
+        "hit_rates": {
+          "hit@1": 1.0,
+          "hit@3": 1.0,
+          "hit@5": 1.0
+        }
+      },
+      "example": {
+        "total": 3,
+        "hit_rates": {
+          "hit@1": 1.0,
+          "hit@3": 1.0,
+          "hit@5": 1.0
+        }
+      },
+      "rule": {
+        "total": 3,
+        "hit_rates": {
+          "hit@1": 1.0,
+          "hit@3": 1.0,
+          "hit@5": 1.0
+        }
+      },
+      "template": {
+        "total": 3,
+        "hit_rates": {
+          "hit@1": 1.0,
+          "hit@3": 1.0,
+          "hit@5": 1.0
+        }
+      },
+      "level": {
+        "total": 3,
+        "hit_rates": {
+          "hit@1": 1.0,
+          "hit@3": 1.0,
+          "hit@5": 1.0
+        }
+      },
+      "theory": {
+        "total": 3,
+        "hit_rates": {
+          "hit@1": 1.0,
+          "hit@3": 1.0,
+          "hit@5": 1.0
+        }
+      }
+    },
+    "details": [
+      {
+        "query": "外部实体是什么",
+        "group": "concept",
+        "expected_collections": [
+          "se_kb_dfd_concepts"
+        ],
+        "intent": "concept",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts"
+        ]
+      },
+      {
+        "query": "处理过程的定义",
+        "group": "concept",
+        "expected_collections": [
+          "se_kb_dfd_concepts"
+        ],
+        "intent": "concept",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts"
+        ]
+      },
+      {
+        "query": "数据流含义",
+        "group": "concept",
+        "expected_collections": [
+          "se_kb_dfd_concepts"
+        ],
+        "intent": "concept",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts",
+          "se_kb_dfd_concepts"
+        ]
+      },
+      {
+        "query": "图书馆管理系统数据流图案例",
+        "group": "example",
+        "expected_collections": [
+          "se_kb_dfd_examples"
+        ],
+        "intent": "example",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples"
+        ]
+      },
+      {
+        "query": "ATM 余额查询 DFD 示例",
+        "group": "example",
+        "expected_collections": [
+          "se_kb_dfd_examples"
+        ],
+        "intent": "example",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples"
+        ]
+      },
+      {
+        "query": "电商下单流程数据流图案例",
+        "group": "example",
+        "expected_collections": [
+          "se_kb_dfd_examples"
+        ],
+        "intent": "example",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples",
+          "se_kb_dfd_examples"
+        ]
+      },
+      {
+        "query": "数据平衡规则",
+        "group": "rule",
+        "expected_collections": [
+          "se_kb_dfd_rules"
+        ],
+        "intent": "rule",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules"
+        ]
+      },
+      {
+        "query": "父子图平衡规则",
+        "group": "rule",
+        "expected_collections": [
+          "se_kb_dfd_rules"
+        ],
+        "intent": "rule",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules"
+        ]
+      },
+      {
+        "query": "命名规则约束",
+        "group": "rule",
+        "expected_collections": [
+          "se_kb_dfd_rules"
+        ],
+        "intent": "rule",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules",
+          "se_kb_dfd_rules"
+        ]
+      },
+      {
+        "query": "顶层图模板",
+        "group": "template",
+        "expected_collections": [
+          "se_kb_dfd_templates"
+        ],
+        "intent": "template",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates"
+        ]
+      },
+      {
+        "query": "分解模板",
+        "group": "template",
+        "expected_collections": [
+          "se_kb_dfd_templates"
+        ],
+        "intent": "template",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates"
+        ]
+      },
+      {
+        "query": "数据存储交互模板",
+        "group": "template",
+        "expected_collections": [
+          "se_kb_dfd_templates"
+        ],
+        "intent": "template",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates",
+          "se_kb_dfd_templates"
+        ]
+      },
+      {
+        "query": "分层原则",
+        "group": "level",
+        "expected_collections": [
+          "se_kb_dfd_levels"
+        ],
+        "intent": "level",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels"
+        ]
+      },
+      {
+        "query": "分解规则",
+        "group": "level",
+        "expected_collections": [
+          "se_kb_dfd_levels"
+        ],
+        "intent": "level",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels"
+        ]
+      },
+      {
+        "query": "层次分解深度",
+        "group": "level",
+        "expected_collections": [
+          "se_kb_dfd_levels"
+        ],
+        "intent": "level",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels",
+          "se_kb_dfd_levels"
+        ]
+      },
+      {
+        "query": "结构化分析是什么",
+        "group": "theory",
+        "expected_collections": [
+          "se_kb_theory"
+        ],
+        "intent": "theory",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_theory",
+          "se_kb_theory",
+          "se_kb_theory",
+          "se_kb_domain",
+          "se_kb_domain"
+        ]
+      },
+      {
+        "query": "内聚和耦合的定义",
+        "group": "theory",
+        "expected_collections": [
+          "se_kb_theory"
+        ],
+        "intent": "theory",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_theory",
+          "se_kb_theory",
+          "se_kb_theory",
+          "se_kb_theory",
+          "se_kb_theory"
+        ]
+      },
+      {
+        "query": "软件工程理论原则",
+        "group": "theory",
+        "expected_collections": [
+          "se_kb_theory"
+        ],
+        "intent": "theory",
+        "hit_at": {
+          "hit@1": true,
+          "hit@3": true,
+          "hit@5": true
+        },
+        "top_collections": [
+          "se_kb_theory",
+          "se_kb_theory",
+          "se_kb_theory",
+          "se_kb_theory",
+          "se_kb_theory"
+        ]
+      }
+    ]
+  },
+  "trend": {
+    "schema_validation": {
+      "available_delta": 0,
+      "passed_delta": 0,
+      "failed_delta": 0,
+      "skipped_delta": 0
+    },
+    "types": {
+      "diagrams.dfd.concepts": {
+        "missing_rate_delta": 0.0,
+        "low_info_rate_delta": 0.0,
+        "indexable_fail_rate_delta": 0.0,
+        "duplicate_rate_delta": 0.0
+      },
+      "diagrams.dfd.levels": {
+        "missing_rate_delta": 0.0,
+        "low_info_rate_delta": 0.0,
+        "indexable_fail_rate_delta": 0.0,
+        "duplicate_rate_delta": 0.0
+      },
+      "diagrams.dfd.rules": {
+        "missing_rate_delta": 0.0,
+        "low_info_rate_delta": 0.0,
+        "indexable_fail_rate_delta": 0.0,
+        "duplicate_rate_delta": 0.0
+      },
+      "theory": {
+        "missing_rate_delta": 0.0,
+        "low_info_rate_delta": 0.0,
+        "indexable_fail_rate_delta": 0.0,
+        "duplicate_rate_delta": 0.0
+      },
+      "diagrams.dfd.examples": {
+        "missing_rate_delta": 0.0,
+        "low_info_rate_delta": 0.0,
+        "indexable_fail_rate_delta": 0.0,
+        "duplicate_rate_delta": 0.0
+      },
+      "diagrams.dfd.templates": {
+        "missing_rate_delta": 0.0,
+        "low_info_rate_delta": 0.0,
+        "indexable_fail_rate_delta": 0.0,
+        "duplicate_rate_delta": 0.0
+      },
+      "domain": {
+        "missing_rate_delta": 0.0,
+        "low_info_rate_delta": 0.0,
+        "indexable_fail_rate_delta": 0.0,
+        "duplicate_rate_delta": 0.0
+      }
+    },
+    "retrieval_recall": {
+      "hit@1_delta": 0.0,
+      "hit@3_delta": 0.0,
+      "hit@5_delta": 0.0
+    }
+  }
+}

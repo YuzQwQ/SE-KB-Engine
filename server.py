@@ -34,7 +34,7 @@ for name in logging.Logger.manager.loggerDict:
 logger = logging.getLogger(__name__)
 
 # 现在可以安全地导入自定义模块
-from vectorizer import VectorConfig, KnowledgeRetriever, QueryIntent
+from vectorizer import VectorConfig, KnowledgeRetriever, QueryIntent, QueryPlanner
 from scripts.format_processor import FormatProcessor
 from scripts.universal_knowledge_processor import UniversalKnowledgeProcessor
 from utils.web_deduplication import get_deduplication_instance, check_and_cache, clean_cache, get_stats
@@ -75,14 +75,16 @@ mcp = FastMCP("WebScrapingServer")
 format_processor = FormatProcessor()
 universal_processor = UniversalKnowledgeProcessor()
 
-# 初始化知识检索器
+# 初始化知识检索器和查询规划器
 try:
     vector_config = VectorConfig()
     knowledge_retriever = KnowledgeRetriever(vector_config)
-    logger.info("KnowledgeRetriever initialized successfully")
+    query_planner = QueryPlanner(knowledge_retriever)
+    logger.info("KnowledgeRetriever and QueryPlanner initialized successfully")
 except Exception as e:
     logger.error(f"Failed to initialize KnowledgeRetriever: {e}")
     knowledge_retriever = None
+    query_planner = None
 
 # 加载系统提示词配置
 def load_system_prompts():
@@ -923,7 +925,7 @@ async def test_tor_connection() -> str:
 
 
 @mcp.tool()
-def search_knowledge(query: str, intent: str = None, top_k: int = 5) -> str:
+def search_knowledge(query: str, intent: str = None, top_k: int = 5, smart_search: bool = None) -> str:
     """
     Search the Software Engineering Knowledge Base (SE-KB) for relevant information.
     
@@ -937,6 +939,8 @@ def search_knowledge(query: str, intent: str = None, top_k: int = 5) -> str:
             - "theory": Theoretical background
             If not provided, the system will automatically detect the intent.
         top_k: Number of results to return (default: 5)
+        smart_search: Whether to use advanced query decomposition for complex queries.
+                      If None (default), it automatically enables for long queries (>20 chars) without explicit intent.
         
     Returns:
         JSON string containing the search results with scores and metadata.
@@ -947,6 +951,36 @@ def search_knowledge(query: str, intent: str = None, top_k: int = 5) -> str:
         }, ensure_ascii=False)
         
     try:
+        # Determine whether to use smart search
+        use_smart_search = smart_search
+        if use_smart_search is None:
+            use_smart_search = (not intent) and (len(query) > 20)
+
+        if use_smart_search and query_planner:
+            logger.info(f"Using QueryPlanner for query: {query[:50]}...")
+            plan_result = query_planner.search(query, top_k)
+            
+            results = []
+            for r in plan_result.merged_results:
+                results.append({
+                    "content": r["content"],
+                    "score": r["score"],
+                    "source": r.get("source", "unknown"),
+                    "type": r.get("type", "unknown"),
+                    "collection": r["collection"],
+                    "matched_queries": r.get("matched_queries", [])
+                })
+                
+            return json.dumps({
+                "query": plan_result.original_query,
+                "intent": "decomposed_search",
+                "sub_queries": [
+                    {"query": sq.query, "intent": sq.intent} for sq in plan_result.sub_queries
+                ],
+                "total_found": len(results),
+                "results": results
+            }, ensure_ascii=False, indent=2)
+
         # Map string intent to Enum
         query_intent = None
         if intent:
@@ -991,12 +1025,74 @@ def get_dfd_generation_context(requirement: str) -> str:
     """
     Get a complete context package for generating DFDs based on requirements.
     This tool is designed for the "Requirement-to-DFD" generation system.
+    It automatically decomposes the requirement into sub-queries to retrieve
+    comprehensive knowledge about concepts, rules, and patterns relevant to the specific domain.
     
     Args:
         requirement: The text description of the system requirements.
         
     Returns:
         A JSON string containing:
+        - decomposed_queries: List of sub-queries generated
+        - concepts: Relevant DFD concepts found
+        - rules: Relevant validation rules found
+        - patterns: Similar design patterns found
+        - examples: Relevant examples found
+    """
+    if not query_planner:
+        return json.dumps({
+            "error": "QueryPlanner is not initialized."
+        }, ensure_ascii=False)
+
+    try:
+        # 使用 QueryPlanner 进行全量搜索
+        # 这里我们希望获得比较全面的结果，所以 top_k 稍微大一点
+        plan_result = query_planner.search(requirement, top_k=8)
+        
+        # 将结果按类型分类整理
+        categorized_results = {
+            "concepts": [],
+            "rules": [],
+            "patterns": [],
+            "examples": [],
+            "others": []
+        }
+        
+        for r in plan_result.merged_results:
+            # 简化结果对象
+            item = {
+                "content": r["content"],
+                "score": r["score"],
+                "source": r.get("source"),
+                "matched_queries": r.get("matched_queries", [])
+            }
+            
+            # 根据 collection 或 type 分类
+            coll = r["collection"]
+            if "concept" in coll:
+                categorized_results["concepts"].append(item)
+            elif "rule" in coll or "level" in coll:
+                categorized_results["rules"].append(item)
+            elif "template" in coll or "pattern" in coll:
+                categorized_results["patterns"].append(item)
+            elif "example" in coll:
+                categorized_results["examples"].append(item)
+            else:
+                categorized_results["others"].append(item)
+                
+        return json.dumps({
+            "original_requirement": requirement,
+            "sub_queries": [
+                {"query": sq.query, "intent": sq.intent} for sq in plan_result.sub_queries
+            ],
+            "knowledge_context": categorized_results
+        }, ensure_ascii=False, indent=2)
+        
+    except Exception as e:
+        logger.error(f"Context generation failed: {e}")
+        return json.dumps({
+            "error": f"Failed to generate context: {str(e)}"
+        }, ensure_ascii=False)
         - related_concepts: Definitions of relevant DFD elements
         - rules: Mandatory validation rules (naming, balance, etc.)
         - examples: Similar system examples found in the knowledge base
@@ -1325,7 +1421,7 @@ def get_tor_circuit_info() -> str:
 @mcp.tool()
 async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str = None) -> str:
     """
-    抓取网页文本 + 图片分析（通过视觉模型）+ 使用主模型总结。
+    Scrape webpage text + image analysis via vision model + summarize with main model.
     """
     # 检查URL去重
     dedup_instance = get_deduplication_instance()

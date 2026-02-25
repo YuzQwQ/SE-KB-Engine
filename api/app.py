@@ -15,14 +15,15 @@ def load_env():
     if env_path.exists():
         for line in env_path.read_text(encoding='utf-8').splitlines():
             line = line.strip()
-            if not line or line.startswith('#'): continue
+            if not line or line.startswith('#'):
+                continue
             if '=' in line:
                 k, v = line.split('=', 1)
                 os.environ[k.strip()] = v.strip()
 
 load_env()
 
-from vectorizer import VectorConfig, KnowledgeRetriever
+from vectorizer import VectorConfig, KnowledgeRetriever, QueryPlanner
 
 # 配置日志
 logging.basicConfig(
@@ -52,16 +53,19 @@ def create_app():
     }
     Swagger(app)
     
-    # 初始化知识检索器
+    # 初始化知识检索器和查询规划器
     try:
-        logger.info("Initializing KnowledgeRetriever...")
+        logger.info("Initializing KnowledgeRetriever and QueryPlanner...")
         vector_config = VectorConfig()
-        app.config['RETRIEVER'] = KnowledgeRetriever(vector_config)
-        logger.info("KnowledgeRetriever initialized successfully")
+        retriever = KnowledgeRetriever(vector_config)
+        app.config['RETRIEVER'] = retriever
+        app.config['PLANNER'] = QueryPlanner(retriever)
+        logger.info("Knowledge services initialized successfully")
     except Exception as e:
-        logger.error(f"Failed to initialize KnowledgeRetriever: {e}")
+        logger.error(f"Failed to initialize knowledge services: {e}")
         # 不阻断启动，允许 /health 检查
         app.config['RETRIEVER'] = None
+        app.config['PLANNER'] = None
 
     # 注册蓝图
     from api.v1.search import search_bp

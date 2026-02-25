@@ -37,7 +37,7 @@ class ArtifactsWriter:
         h = hashlib.md5((url or "").encode("utf-8")).hexdigest()[:8]
         return f"{t[:60]}-{h}"
     
-    def _get_domain_short(self, domain: str) -> str:
+    def _get_domain_short(self, domain: str | None) -> str:
         """获取域名的短名"""
         if not domain:
             return "web"
@@ -48,7 +48,7 @@ class ArtifactsWriter:
         parts = domain.replace("www.", "").split(".")
         return parts[0][:10] if parts else "web"
     
-    def _extract_content_slug(self, artifact: dict, type_id: str) -> str:
+    def _extract_content_slug(self, artifact: dict, type_id: str) -> str | None:
         """从 artifact 中提取 content_slug，生成文件名友好的格式"""
         if not artifact or not isinstance(artifact, dict):
             return None
@@ -92,7 +92,7 @@ class ArtifactsWriter:
     def _base_dir(self) -> Path:
         return Path("se_kb/artifacts")
 
-    def write(self, domain: str, title: str, parsed: dict, document_text: str, t: str, artifact: dict, trace: dict, metadata: dict, metrics: dict, errors: list = None) -> dict:
+    def write(self, domain: str, title: str, parsed: dict, document_text: str, t: str, artifact: dict | None, trace: dict, metadata: dict, metrics: dict, errors: list = None) -> dict:
         now = datetime.now()
         # 目录结构：artifacts/{YYYY}/{MM}/{DD}/{HH_MM}/{domain}/{slug}/
         # 精确到分钟，方便批量爬取后按时间段审核

@@ -1,11 +1,10 @@
 
 from config.path_config import KNOWLEDGE_BASE_DIR
 import json
-import re
 import os
 import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any
 from datetime import datetime
 
 # 配置日志
@@ -310,9 +309,10 @@ class FormatProcessor:
         categories = self.template["json_structure"]["knowledge_categories"]
         
         # 构建JSON结构
-        json_obj = {
+        stats: Dict[str, int] = {}
+        json_obj: Dict[str, Any] = {
             "metadata": metadata,
-            "statistics": {}
+            "statistics": stats
         }
         
         # 根据配置添加各个知识类别
@@ -320,10 +320,10 @@ class FormatProcessor:
             key = category["key"]
             if key in extracted_data:  # 直接匹配完整的key
                 json_obj[key] = extracted_data[key]
-                json_obj["statistics"][f"{key.split('_')[-1]}_count"] = len(extracted_data[key])
+                stats[f"{key.split('_')[-1]}_count"] = len(extracted_data[key])
             else:
                 json_obj[key] = []
-                json_obj["statistics"][f"{key.split('_')[-1]}_count"] = 0
+                stats[f"{key.split('_')[-1]}_count"] = 0
         
         return json_obj
     
@@ -406,7 +406,7 @@ class FormatProcessor:
         """格式化模板字符串"""
         try:
             return template.format(**data)
-        except KeyError as e:
+        except KeyError:
             # 如果缺少某个键，返回原始模板
             return template
     
@@ -439,7 +439,7 @@ class FormatProcessor:
         with open(self.config_file, 'w', encoding='utf-8') as f:
             json.dump(templates, f, ensure_ascii=False, indent=2)
     
-    def save_knowledge_base(self, data: Dict, base_filename: str = None, output_dir: str = KNOWLEDGE_BASE_DIR) -> Dict:
+    def save_knowledge_base(self, data: Dict, base_filename: str = None, output_dir: str | Path = KNOWLEDGE_BASE_DIR) -> Dict:
         """根据格式配置保存知识库数据到独立文件"""
         try:
             from datetime import datetime as _dt
@@ -461,7 +461,6 @@ class FormatProcessor:
             # 根据配置保存每个分类的数据
             for category in knowledge_categories:
                 category_key = category["key"]
-                category_name = category["name"]
                 category_desc = category["description"]
                 category_fields = category.get("fields", {})
                 

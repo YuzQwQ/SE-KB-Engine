@@ -3,12 +3,10 @@
 基于 ChromaDB 实现
 """
 
-import os
 import json
 import hashlib
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
-from datetime import datetime
+from typing import Dict, List, Optional, Any, cast
 
 import chromadb
 from chromadb.config import Settings
@@ -41,7 +39,7 @@ class CustomEmbeddingFunction(EmbeddingFunction):
                 data = json.loads(cache_path.read_text(encoding='utf-8'))
                 self._cache[text_hash] = data["embedding"]
                 return data["embedding"]
-            except:
+            except Exception:
                 pass
         return None
     
@@ -56,7 +54,7 @@ class CustomEmbeddingFunction(EmbeddingFunction):
                 json.dumps({"embedding": embedding}),
                 encoding='utf-8'
             )
-        except:
+        except Exception:
             pass
     
     def __call__(self, input: Documents) -> Embeddings:
@@ -114,7 +112,7 @@ class CustomEmbeddingFunction(EmbeddingFunction):
                         results[idx] = [0.0] * self.config.embedding_dimension
         
         # 确保没有 None
-        return [r if r else [0.0] * self.config.embedding_dimension for r in results]
+        return cast(Embeddings, [r if r else [0.0] * self.config.embedding_dimension for r in results])
 
 
 class VectorStore:
@@ -163,7 +161,7 @@ class VectorStore:
     def add_documents(self, 
                       collection_name: str,
                       documents: List[str],
-                      metadatas: List[Dict],
+                      metadatas: List[Dict[str, Any]],
                       ids: List[str]) -> bool:
         """添加文档到 Collection"""
         collection = self.collections.get(collection_name)
@@ -174,7 +172,7 @@ class VectorStore:
         try:
             collection.add(
                 documents=documents,
-                metadatas=metadatas,
+                metadatas=cast(Any, metadatas),
                 ids=ids
             )
             print(f"[VectorStore] 添加 {len(documents)} 个文档到 '{collection_name}'")
@@ -188,7 +186,7 @@ class VectorStore:
               query_text: str,
               n_results: int = 5,
               where: Dict = None,
-              where_document: Dict = None) -> Dict:
+              where_document: Dict = None) -> Dict[str, Any]:
         """查询相似文档"""
         collection = self.collections.get(collection_name)
         if not collection:
@@ -201,7 +199,7 @@ class VectorStore:
                 where=where,
                 where_document=where_document
             )
-            return results
+            return cast(Dict[str, Any], results)
         except Exception as e:
             print(f"[VectorStore] 查询失败: {e}")
             return {"documents": [], "metadatas": [], "distances": []}
@@ -238,7 +236,7 @@ class VectorStore:
     
     def get_stats(self) -> Dict:
         """获取统计信息"""
-        stats = {
+        stats: Dict[str, Any] = {
             "total_documents": 0,
             "collections": {}
         }
@@ -281,4 +279,3 @@ class VectorStore:
         except Exception as e:
             print(f"[VectorStore] 重置失败: {e}")
             return False
-

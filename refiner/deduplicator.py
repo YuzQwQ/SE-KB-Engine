@@ -3,11 +3,8 @@
 基于关键字段匹配识别重复内容
 """
 
-import json
-import re
-from typing import Dict, List, Tuple, Any, Optional
-from pathlib import Path
-from dataclasses import dataclass
+from typing import Dict, List, Any, Optional
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -17,11 +14,7 @@ class DeduplicationResult:
     similar_item: Optional[Dict] = None
     similarity_score: float = 0.0
     has_increment: bool = False
-    new_fields: List[str] = None
-    
-    def __post_init__(self):
-        if self.new_fields is None:
-            self.new_fields = []
+    new_fields: List[str] = field(default_factory=list)
 
 
 # 各知识类型的关键字段定义
@@ -156,7 +149,7 @@ class StructuralDeduplicator:
         if not primary_paths:
             return 0.0
         
-        total_matches = 0
+        total_matches = 0.0
         total_fields = 0
         
         for path in primary_paths:

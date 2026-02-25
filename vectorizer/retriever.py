@@ -3,11 +3,11 @@
 支持语义检索、元数据过滤、结果重排序
 """
 
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, field
+from typing import Dict, List, Any
+from dataclasses import dataclass
 from enum import Enum
 
-from .config import VectorConfig, TYPE_TO_COLLECTION
+from .config import VectorConfig
 from .store import VectorStore
 
 
@@ -18,6 +18,7 @@ class QueryIntent(Enum):
     RULE = "rule"              # 查询规则
     TEMPLATE = "template"      # 查询模板
     THEORY = "theory"          # 查询理论
+    LEVEL = "level"            # 查询层次分解
     GENERAL = "general"        # 通用查询
 
 
@@ -76,21 +77,25 @@ class KnowledgeRetriever:
         ],
         QueryIntent.TEMPLATE: [
             "模板", "模式", "结构", "template", "pattern", "框架",
-            "分解", "流程"
         ],
         QueryIntent.THEORY: [
             "理论", "原理", "方法", "思想", "theory", "原则",
-            "结构化", "软件工程"
-        ]
+            "结构化", "软件工程", "结构化分析", "内聚", "耦合", "理论原则"
+        ],
+        QueryIntent.LEVEL: [
+            "层次", "层级", "分层", "父子图", "深度", "level",
+            "层次分解", "分解规则", "分层原则"
+        ],
     }
     
     # Collection 到意图的映射
     INTENT_TO_COLLECTIONS = {
         QueryIntent.CONCEPT: ["se_kb_dfd_concepts"],
         QueryIntent.EXAMPLE: ["se_kb_dfd_examples"],
-        QueryIntent.RULE: ["se_kb_dfd_rules", "se_kb_dfd_levels"],
+        QueryIntent.RULE: ["se_kb_dfd_rules"],
         QueryIntent.TEMPLATE: ["se_kb_dfd_templates"],
         QueryIntent.THEORY: ["se_kb_theory", "se_kb_domain"],
+        QueryIntent.LEVEL: ["se_kb_dfd_levels"],
         QueryIntent.GENERAL: None  # 搜索所有
     }
     
@@ -109,13 +114,27 @@ class KnowledgeRetriever:
                 if keyword.lower() in query_lower:
                     intent_scores[intent] += 1
         
-        # 找最高分
-        max_intent = max(intent_scores, key=intent_scores.get)
-        
-        if intent_scores[max_intent] > 0:
-            return max_intent
-        else:
+        max_score = max(intent_scores.values())
+        if max_score <= 0:
             return QueryIntent.GENERAL
+        
+        candidates = [intent for intent, score in intent_scores.items() if score == max_score]
+        if len(candidates) == 1:
+            return candidates[0]
+        
+        priority = [
+            QueryIntent.LEVEL,
+            QueryIntent.TEMPLATE,
+            QueryIntent.RULE,
+            QueryIntent.THEORY,
+            QueryIntent.EXAMPLE,
+            QueryIntent.CONCEPT,
+            QueryIntent.GENERAL,
+        ]
+        for intent in priority:
+            if intent in candidates:
+                return intent
+        return candidates[0]
     
     def _distance_to_score(self, distance: float) -> float:
         """将距离转换为相似度分数 (0-1)"""
@@ -152,12 +171,10 @@ class KnowledgeRetriever:
         detected_intent = intent or self._detect_intent(query)
         
         # 确定搜索范围
-        if collections:
+        if collections is not None:
             target_collections = collections
         else:
-            target_collections = self.INTENT_TO_COLLECTIONS.get(detected_intent)
-            if target_collections is None:
-                target_collections = list(self.store.collections.keys())
+            target_collections = self.INTENT_TO_COLLECTIONS.get(detected_intent) or list(self.store.collections.keys())
         
         # 执行检索
         all_results = []
@@ -305,4 +322,3 @@ class KnowledgeRetriever:
     def get_stats(self) -> Dict:
         """获取检索器统计"""
         return self.store.get_stats()
-

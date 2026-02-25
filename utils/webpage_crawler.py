@@ -16,11 +16,11 @@ import json
 import re
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any, Optional
-from urllib.parse import urljoin, urlparse
+from typing import Dict, Any, Optional
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 import logging
-from .html_cleaner import clean_html_content, is_html_content, html_cleaner, clean_and_structure
+from .html_cleaner import clean_html_content, clean_and_structure
 from .image_analyzer import analyze_images as analyze_images_fn
 from .playwright_fetcher import fetch_rendered_html_sync
 
@@ -41,7 +41,8 @@ class WebpageCrawler:
         self.parsed_data_dir.mkdir(parents=True, exist_ok=True)
         
         # 默认请求头，模拟真实浏览器（可选：随机化 UA 与语言）
-        import os as _os, random as _rnd
+        import os as _os
+        import random as _rnd
         use_random = _os.getenv('HTTPX_RANDOM_UA', '1').strip() not in ('0', 'false', 'False')
         ua_pool = [
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -140,6 +141,17 @@ class WebpageCrawler:
                         'error': str(e),
                         'source': 'httpx'
                     }
+        return {
+            'url': url,
+            'status_code': None,
+            'headers': {},
+            'content': '',
+            'encoding': None,
+            'timestamp': datetime.now().isoformat(),
+            'success': False,
+            'error': 'retry_exhausted',
+            'source': 'httpx'
+        }
 
     @staticmethod
     def _looks_dynamic(html: str) -> bool:
@@ -297,7 +309,7 @@ class WebpageCrawler:
             'parsed_at': datetime.now().isoformat()
         }
         
-    def save_data(self, data: Dict[str, Any], filename_prefix: str) -> Dict[str, str]:
+    def save_data(self, data: Dict[str, Any], filename_prefix: str) -> Dict[str, str | None]:
         """保存数据到文件
         
         Args:
@@ -393,7 +405,6 @@ class WebpageCrawler:
         soup_static = BeautifulSoup(raw_data['content'], 'html.parser')
         structured_static = clean_and_structure(raw_data['content'], url)
         metrics_static = self._compute_metrics(raw_data['content'], structured_static.get('clean_text', ''), soup_static)
-        fallback_used = False
         fallback_reason = None
 
         # 选择站点解析器
@@ -422,7 +433,6 @@ class WebpageCrawler:
             proxy_server = os.getenv('PROXY_URL') or None
             rendered_html = fetch_rendered_html_sync(url, human_simulation=human_sim, proxy_server=proxy_server)
             if rendered_html:
-                fallback_used = True
                 raw_data['content'] = rendered_html
                 raw_data['source'] = 'playwright'
                 # 重新解析

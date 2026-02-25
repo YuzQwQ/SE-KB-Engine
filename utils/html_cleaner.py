@@ -246,7 +246,7 @@ class HTMLCleaner:
             # 清理空白字符
             content = re.sub(r'\s+', ' ', content)
             return content.strip()
-        except:
+        except Exception:
             return content
     
     def is_html_content(self, content: str) -> bool:
@@ -362,12 +362,6 @@ class HTMLCleaner:
 
     def _internal_cleanup(self, node: 'BeautifulSoup', rules: Dict[str, Any]) -> None:
         # 域名覆盖的移除选择器
-        domain = None
-        try:
-            # base_url 在更高层级使用，此处不强依赖
-            pass
-        except Exception:
-            pass
         # 再次移除黑名单标签与关键词
         self._basic_tag_cleanup(node, rules)
         self._remove_blacklist_nodes(node, rules)
@@ -513,8 +507,8 @@ class HTMLCleaner:
             elif name == 'blockquote':
                 txt = el.get_text('\n', strip=True)
                 if txt:
-                    for l in txt.splitlines():
-                        lines.append('> ' + l)
+                    for line_text in txt.splitlines():
+                        lines.append('> ' + line_text)
             elif name in ['ul', 'ol']:
                 for i, li in enumerate(el.find_all('li', recursive=False)):
                     txt = li.get_text(' ', strip=True)

@@ -6,7 +6,7 @@ LLM 知识融合模块
 import json
 import os
 import re
-from typing import Dict, Any, Optional
+from typing import Dict, Optional
 from datetime import datetime
 
 
@@ -90,7 +90,7 @@ class LLMMerger:
             "max_tokens": 8000
         }
         
-        last_error = None
+        last_error: Exception | None = None
         for attempt in range(max_retries):
             try:
                 # 增加 http2=False 以提高稳定性，timeout 增加到 180s
@@ -136,7 +136,7 @@ class LLMMerger:
         # 尝试直接解析
         try:
             return json.loads(text)
-        except:
+        except Exception:
             pass
         
         # 尝试提取 ```json ... ``` 块
@@ -144,7 +144,7 @@ class LLMMerger:
         if match:
             try:
                 return json.loads(match.group(1))
-            except:
+            except Exception:
                 pass
         
         # 尝试找到 { ... } 块
@@ -152,7 +152,7 @@ class LLMMerger:
         if match:
             try:
                 return json.loads(match.group(0))
-            except:
+            except Exception:
                 pass
         
         return None
@@ -280,6 +280,4 @@ def test_merger():
 
 if __name__ == "__main__":
     test_merger()
-
-
 

@@ -9,10 +9,8 @@ import sqlite3
 import hashlib
 import re
 import logging
-from datetime import datetime, timedelta
-from typing import Optional, Dict, List, Tuple
+from typing import Optional, Dict, Tuple, Any
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
-from pathlib import Path
 import difflib
 import os
 
@@ -372,7 +370,7 @@ class WebDeduplication:
     
     def check_and_add(self, url: str, content: str = "", title: str = "") -> Dict:
         """检查去重并添加缓存的综合方法"""
-        result = {
+        result: Dict[str, Any] = {
             'url_duplicate': False,
             'content_duplicate': False,
             'should_skip': False,

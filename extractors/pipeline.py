@@ -7,12 +7,13 @@ Stage 2: Specialized Extractors (专用模型结构化抽取)
 import json
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, List, Tuple, Optional
-from dataclasses import dataclass, field
+from typing import Dict, Any, List
+from dataclasses import dataclass
 
-from .type_router import TypeRouter, RoutingResult
-from .specialized_extractors import get_extractor, ExtractionResult
+from .type_router import TypeRouter
+from .specialized_extractors import get_extractor
 from .type_registry import get_type_registry
+from validators.semantic_stage3 import Stage3Validator
 
 
 @dataclass
@@ -24,6 +25,7 @@ class PipelineResult:
     extraction_results: Dict[str, Any]   # Stage 2 各类型抽取结果
     artifacts: Dict[str, Dict]           # 成功的 artifact
     errors: Dict[str, str]               # 失败的错误信息
+    stage3_results: Dict[str, Any]       # Stage 3 校验结果
     trace: Dict[str, Any]                # 完整追踪信息
     total_tokens: int                    # 总 token 消耗
     
@@ -50,6 +52,7 @@ class ExtractionPipeline:
         """
         self.router = TypeRouter()
         self.registry = get_type_registry()
+        self.stage3 = Stage3Validator()
         self.skip_routing = skip_routing
         self.force_types = force_types or []
     
@@ -126,6 +129,7 @@ class ExtractionPipeline:
                 extraction_results={},
                 artifacts={},
                 errors={"routing": "未识别到任何知识类型"},
+                stage3_results={},
                 trace=trace,
                 total_tokens=total_tokens,
             )
@@ -138,6 +142,7 @@ class ExtractionPipeline:
         artifacts = {}
         errors = {}
         stage2_trace = {}
+        stage3_results = {}
         
         for type_id in routed_types:
             extractor = get_extractor(type_id)
@@ -161,6 +166,16 @@ class ExtractionPipeline:
                 errors[type_id] = result.error
         
         trace["stage2"] = stage2_trace
+        for type_id in list(artifacts.keys()):
+            artifact = artifacts[type_id]
+            validation = self.stage3.validate(artifact, content, type_id, title, url)
+            stage3_results[type_id] = validation
+            extraction_results[type_id]["stage3_passed"] = validation["passed"]
+            if not validation["passed"]:
+                errors[type_id] = validation.get("error", "stage3_failed")
+                artifacts.pop(type_id, None)
+        
+        trace["stage3"] = stage3_results
         trace["pipeline_end"] = datetime.now().isoformat()
         trace["total_tokens"] = total_tokens
         
@@ -171,6 +186,7 @@ class ExtractionPipeline:
             extraction_results=extraction_results,
             artifacts=artifacts,
             errors=errors,
+            stage3_results=stage3_results,
             trace=trace,
             total_tokens=total_tokens,
         )

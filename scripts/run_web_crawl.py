@@ -1,7 +1,6 @@
 import argparse
 import os
 from pathlib import Path
-import json
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from utils.webpage_crawler import WebpageCrawler

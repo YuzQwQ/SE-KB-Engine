@@ -115,7 +115,7 @@ class TypeRouter:
                 if text:
                     parts.append(text[:300])
                 if lists:
-                    parts.append("- " + "\n- ".join(str(l)[:100] for l in lists[:3]))
+                    parts.append("- " + "\n- ".join(str(item)[:100] for item in lists[:3]))
                 
                 total_len += len(parts[-1]) if parts else 0
                 if total_len > self.max_content_chars:

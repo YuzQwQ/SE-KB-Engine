@@ -8,7 +8,7 @@ import hashlib
 import asyncio
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional
 from urllib.parse import urlparse, urljoin
 import re
 import logging

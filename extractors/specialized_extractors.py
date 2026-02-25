@@ -8,10 +8,10 @@ import json
 import re
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Dict, Any, Tuple, Optional, List
+from typing import Dict, Any, Tuple, Optional, cast
 from dataclasses import dataclass
 
-from .type_registry import get_type_registry, KnowledgeType
+from .type_registry import get_type_registry
 
 
 # ============================================================
@@ -532,7 +532,7 @@ def get_extractor(type_id: str) -> Optional[BaseExtractor]:
     # 2. 回退到旧版抽取器
     extractor_class = LEGACY_EXTRACTORS.get(type_id)
     if extractor_class:
-        return extractor_class()
+        return cast(Any, extractor_class)()
     
     return None
 
@@ -554,4 +554,3 @@ def extract_by_type(type_id: str, content: str, ctx: Dict[str, Any]) -> Tuple[Ex
         return ExtractionResult(None, False, f"未知类型: {type_id}", 0), {"error": "unknown_type"}
     
     return extractor.extract(content, ctx)
-

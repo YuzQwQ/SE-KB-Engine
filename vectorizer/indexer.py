@@ -3,7 +3,6 @@
 将 JSON 知识库批量向量化并存入 ChromaDB
 """
 
-import json
 from pathlib import Path
 from typing import Dict, List, Optional, Callable
 from dataclasses import dataclass, field
@@ -11,7 +10,7 @@ from datetime import datetime
 
 from .config import VectorConfig, TYPE_TO_COLLECTION
 from .store import VectorStore
-from .chunker import KnowledgeChunker, Chunk
+from .chunker import KnowledgeChunker
 
 
 @dataclass

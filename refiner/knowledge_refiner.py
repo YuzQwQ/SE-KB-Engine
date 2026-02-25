@@ -9,15 +9,13 @@
 """
 
 import json
-import os
-import shutil
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple, Callable
+from typing import Dict, List, Optional, Callable, Any
 from dataclasses import dataclass, field
 
-from .deduplicator import StructuralDeduplicator, DeduplicationResult
-from .embedder import SemanticEmbedder, SemanticDeduplicator
+from .deduplicator import StructuralDeduplicator
+from .embedder import SemanticDeduplicator
 from .merger import LLMMerger
 
 
@@ -124,7 +122,7 @@ class KnowledgeRefiner:
         Returns:
             ArtifactInfo 列表
         """
-        artifacts = []
+        artifacts: List[ArtifactInfo] = []
         
         if not self.artifacts_dir.exists():
             self.log(f"目录不存在: {self.artifacts_dir}")
@@ -220,7 +218,7 @@ class KnowledgeRefiner:
             try:
                 metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
                 return metadata.get("url", "")
-            except:
+            except Exception:
                 pass
         
         # 尝试从 parsed.json 读取
@@ -229,14 +227,14 @@ class KnowledgeRefiner:
             try:
                 parsed = json.loads(parsed_path.read_text(encoding="utf-8"))
                 return parsed.get("source_url", parsed.get("url", ""))
-            except:
+            except Exception:
                 pass
         
         return ""
     
     def group_by_type(self, artifacts: List[ArtifactInfo]) -> Dict[str, List[ArtifactInfo]]:
         """按知识类型分组"""
-        groups = {}
+        groups: Dict[str, List[ArtifactInfo]] = {}
         for artifact in artifacts:
             if artifact.type_id not in groups:
                 groups[artifact.type_id] = []
@@ -340,15 +338,15 @@ class KnowledgeRefiner:
                     similar_item = refined_knowledge[semantic_similar_idx]
                     # 语义重复默认认为有增量（需要进一步检查）
                     has_increment = True
-                    self.log(f"  → [综合] 语义重复，结构不同，可能需要融合")
+                    self.log("  → [综合] 语义重复，结构不同，可能需要融合")
                 
                 # ========== 第三层：增量检测与处理 ==========
                 if is_duplicate:
                     stats.duplicates_found += 1
                     
-                    if has_increment:
+                    if has_increment and similar_item is not None:
                         # 有增量，执行 LLM 融合
-                        self.log(f"  → [融合] 检测到增量内容，调用 LLM 融合...")
+                        self.log("  → [融合] 检测到增量内容，调用 LLM 融合...")
                         
                         merged = self.merger.merge(
                             similar_item,
@@ -365,18 +363,18 @@ class KnowledgeRefiner:
                                 break
                         
                         stats.merged_count += 1
-                        self.log(f"  → ✅ 融合完成")
+                        self.log("  → ✅ 融合完成")
                     else:
                         # 纯重复，跳过
                         stats.skipped_count += 1
-                        self.log(f"  → ⏭️ 纯重复，跳过")
+                        self.log("  → ⏭️ 纯重复，跳过")
                 else:
                     # 全新内容，直接添加
                     artifact.content["_source_url"] = artifact.source_url
                     artifact.content["_added_at"] = datetime.now().isoformat()
                     refined_knowledge.append(artifact.content)
                     stats.new_count += 1
-                    self.log(f"  → ➕ 全新内容，添加")
+                    self.log("  → ➕ 全新内容，添加")
                     
             except Exception as e:
                 error_msg = f"处理失败 {artifact.path}: {e}"
@@ -445,7 +443,7 @@ class KnowledgeRefiner:
         groups = self.group_by_type(artifacts)
         stats.by_type = {k: len(v) for k, v in groups.items()}
         
-        self.log(f"\n类型分布:")
+        self.log("\n类型分布:")
         for type_id, count in stats.by_type.items():
             self.log(f"  {type_id}: {count}")
         
@@ -482,7 +480,7 @@ class KnowledgeRefiner:
         artifacts = self.scan_artifacts(date_filter, time_filter)
         groups = self.group_by_type(artifacts)
         
-        preview_info = {
+        preview_info: Dict[str, Any] = {
             "total_artifacts": len(artifacts),
             "by_type": {},
             "potential_duplicates": {}
@@ -490,12 +488,11 @@ class KnowledgeRefiner:
         
         for type_id, type_artifacts in groups.items():
             existing = self.load_existing_knowledge(type_id)
-            all_items = existing + [a.content for a in type_artifacts]
             
             # 检测潜在重复
             duplicates = []
             for i, artifact in enumerate(type_artifacts):
-                result = self.deduplicator.check_duplicate(
+                result = self.structural_dedup.check_duplicate(
                     artifact.content,
                     existing + [a.content for a in type_artifacts[:i]],
                     type_id

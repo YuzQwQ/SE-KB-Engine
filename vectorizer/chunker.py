@@ -5,7 +5,7 @@
 
 import json
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any
 from dataclasses import dataclass
 
 
@@ -360,7 +360,6 @@ class KnowledgeChunker:
         domain_name = data.get("name", file_stem)
         description = data.get("description", "")
         terms = data.get("terms", [])
-        rules = data.get("rules", [])
         
         # 领域概述
         overview_text = f"领域: {domain_name}\n描述: {description}"

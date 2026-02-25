@@ -3,9 +3,12 @@
 """
 
 import os
+from dotenv import load_dotenv
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict
+
+load_dotenv()
 
 
 @dataclass
@@ -85,4 +88,3 @@ TYPE_TO_COLLECTION = {
     "mappings": "se_kb_theory",
     "schema": "se_kb_theory",
 }
-

@@ -3,8 +3,8 @@ SE-KB 专业抽取器
 严格对应 se_kb/ 目录结构
 """
 
-from typing import Dict, Any, Tuple, Optional
-from .specialized_extractors import BaseExtractor, ExtractionResult
+from typing import Optional, cast, Any
+from .specialized_extractors import BaseExtractor
 
 
 # ============================================================
@@ -619,12 +619,12 @@ def get_se_kb_extractor(type_id: str) -> Optional[BaseExtractor]:
     """获取 SE-KB 抽取器"""
     extractor_class = SE_KB_EXTRACTORS.get(type_id)
     if extractor_class:
-        return extractor_class()
+        return cast(Any, extractor_class)()
     return None
 
 
 def get_all_se_kb_extractors():
     """获取所有 SE-KB 抽取器实例"""
-    return {k: v() for k, v in SE_KB_EXTRACTORS.items()}
+    return {k: cast(Any, v)() for k, v in SE_KB_EXTRACTORS.items()}
 
 

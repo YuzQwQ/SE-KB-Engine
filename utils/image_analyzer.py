@@ -30,7 +30,7 @@ from typing import Any, Dict, List, Optional
 import httpx
 
 
-DEFAULT_RESULT = {
+DEFAULT_RESULT: Dict[str, Any] = {
     "ocr": [],
     "description": "",
     "dfd": None,
@@ -62,9 +62,10 @@ class VisionModelHTTP(VisionModel):
         self.timeout: int = int(options.get("timeout", 30))
         self.req: Dict[str, str] = options.get("request_schema", {})
         self.resp: Dict[str, str] = options.get("response_schema", {})
-        self.default_tasks: List[str] = options.get("default_tasks", ["ocr", "description", "dfd"])  # type: ignore
+        default_tasks = options.get("default_tasks", ["ocr", "description", "dfd"])
+        self.default_tasks = list(default_tasks) if isinstance(default_tasks, list) else ["ocr", "description", "dfd"]
 
-    def infer(self, image_input: str) -> Dict[str, Any]:  # type: ignore[override]
+    def infer(self, image_input: str) -> Dict[str, Any]:
         if not self.endpoint:
             return DEFAULT_RESULT.copy()
 
@@ -142,7 +143,7 @@ class VisionModelSiliconFlow(VisionModel):
         base = self.base_url.rstrip("/")
         return f"{base}/chat/completions"
 
-    def infer(self, image_input: str) -> Dict[str, Any]:  # type: ignore[override]
+    def infer(self, image_input: str) -> Dict[str, Any]:
         if not (self.base_url and self.api_key and self.model and image_input):
             return DEFAULT_RESULT.copy()
 
@@ -215,8 +216,9 @@ class VisionModelSiliconFlow(VisionModel):
                                 if seg.get("type") in ("text", "output_text") and isinstance(seg.get("text"), str):
                                     text = seg["text"]
                                     break
-                                if isinstance(seg.get("content"), str):
-                                    text = seg.get("content")
+                                content_text = seg.get("content")
+                                if isinstance(content_text, str):
+                                    text = content_text
                                     break
                 if text:
                     break

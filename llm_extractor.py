@@ -1,7 +1,6 @@
 from typing import List, Dict, Any, Tuple
 from llm_client import extract_structured
 from pathlib import Path
-import json
 
 def _schema_path_for(type_id: str) -> str:
     if type_id == 'dfd':

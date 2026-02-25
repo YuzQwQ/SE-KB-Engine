@@ -30,7 +30,7 @@ def load_env():
                     if os.getenv(k) is None:
                         os.environ[k] = v
     else:
-        print(f"❌ 未找到 .env 文件")
+        print("❌ 未找到 .env 文件")
     return loaded
 
 

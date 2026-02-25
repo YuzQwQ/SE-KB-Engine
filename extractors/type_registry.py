@@ -5,7 +5,7 @@ Type Registry - 知识类型注册表
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 
 
@@ -24,7 +24,7 @@ class KnowledgeType:
 
 
 # 默认知识类型定义（空，SE-KB 类型由 _load_se_kb_types 加载）
-DEFAULT_KNOWLEDGE_TYPES = []
+DEFAULT_KNOWLEDGE_TYPES: List[KnowledgeType] = []
 
 
 class TypeRegistry:
@@ -103,4 +103,3 @@ def get_type_registry() -> TypeRegistry:
     if _registry_instance is None:
         _registry_instance = TypeRegistry()
     return _registry_instance
-

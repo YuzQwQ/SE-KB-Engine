@@ -1,9 +1,8 @@
 import asyncio
-import datetime
 import os
 import json
 import sys
-from typing import Optional
+from typing import Optional, Any
 from contextlib import AsyncExitStack
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -52,6 +51,9 @@ class MCPClient:
         print("\n已连接到服务器，支持以下工具:", [tool.name for tool in tools])
 
     async def process_query(self, query: str) -> str:
+        if self.session is None:
+            return "未连接到服务器，请先建立连接。"
+        session = self.session
         if not self.history:
             self.history.append({
                 "role": "system",
@@ -117,7 +119,7 @@ class MCPClient:
         messages = self.history.copy()  # ✅ 复制一份，防止污染self.history
 
         # 获取当前支持的工具列表
-        tool_response = await self.session.list_tools()
+        tool_response = await session.list_tools()
         available_tools = [{
             "type": "function",
             "function": {
@@ -152,8 +154,11 @@ class MCPClient:
 
                 print(f"\n[调用工具 {tool_name} 参数: {tool_args}]\n")
 
-                result = await self.session.call_tool(tool_name, tool_args)
-                tool_content = result.content[0].text if result.content else "服务暂时不可用喵~"
+                result = await session.call_tool(tool_name, tool_args)
+                content_item = result.content[0] if result.content else None
+                tool_content = getattr(content_item, "text", None) if content_item is not None else None
+                if not tool_content:
+                    tool_content = "服务暂时不可用喵~" if content_item is None else str(content_item)
                 
                 # 显示工具调用结果
                 print(f"[工具 {tool_name} 执行结果]:\n{tool_content}\n")

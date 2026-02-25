@@ -90,14 +90,8 @@ KB_MODEL_ID=Qwen/Qwen2.5-72B-Instruct""")
         'KB_MODEL_ID': '主模型 ID',
     }
     
-    preselector_ready = True
     for var, desc in required_vars.items():
         value = env_vars.get(var, '')
-        env_value = os.getenv(var, '')
-        
-        if var.startswith('FILTER_'):
-            if not value:
-                preselector_ready = False
         
         if value:
             display = f"{value[:20]}..." if len(value) > 20 else value

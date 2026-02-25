@@ -136,34 +136,34 @@ def get_registry() -> dict:
         }
     else:
         # 使用 Legacy adapter（基于关键词规则）
-    return {
-        "dfd": {
-            "schema_path": str(base / "dfd_schema.json"),
-            "builder": DFDAdapter,
-            "validator": make_validator(),
-            "namer": _namer_default,
-            "normalizer": _normalize_default,
-            "llm_extractor": extract_dfd_structure,
+        return {
+            "dfd": {
+                "schema_path": str(base / "dfd_schema.json"),
+                "builder": DFDAdapter,
+                "validator": make_validator(),
+                "namer": _namer_default,
+                "normalizer": _normalize_default,
+                "llm_extractor": extract_dfd_structure,
                 "mode": "legacy",
-        },
-        "concepts": {
-            "schema_path": str(Path("config/universal_knowledge_template.json")),
-            "builder": ConceptsAdapter,
-            "validator": make_validator(),
-            "namer": _namer_default,
-            "normalizer": _normalize_default,
-            "llm_extractor": extract_concepts,
+            },
+            "concepts": {
+                "schema_path": str(Path("config/universal_knowledge_template.json")),
+                "builder": ConceptsAdapter,
+                "validator": make_validator(),
+                "namer": _namer_default,
+                "normalizer": _normalize_default,
+                "llm_extractor": extract_concepts,
                 "mode": "legacy",
-        },
-        "rules": {
-            "schema_path": str(Path("config/universal_knowledge_template.json")),
-            "builder": RulesAdapter,
-            "validator": make_validator(),
-            "namer": _namer_default,
-            "normalizer": _normalize_default,
-            "llm_extractor": extract_rules,
+            },
+            "rules": {
+                "schema_path": str(Path("config/universal_knowledge_template.json")),
+                "builder": RulesAdapter,
+                "validator": make_validator(),
+                "namer": _namer_default,
+                "normalizer": _normalize_default,
+                "llm_extractor": extract_rules,
                 "mode": "legacy",
-        },
+            },
         }
 
 
