@@ -1,165 +1,185 @@
-# SE-KB: 软件工程领域知识库系统
+# SE-KB-Engine
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/flask-2.0%2B-green)](https://flask.palletsprojects.com/)
-[![ChromaDB](https://img.shields.io/badge/vector--db-ChromaDB-orange)](https://www.trychroma.com/)
+一个用于 **知识库构建的智能爬取与信息抽取引擎**。
 
-SE-KB (Software Engineering Knowledge Base) 是一个专注于软件工程领域（特别是数据流图 DFD）的智能化知识库系统。它集成了**知识爬取**、**LLM 精炼**、**向量化存储**和**语义检索 (RAG)** 功能，旨在为下游应用（如 AI 助手、IDE 插件）提供精准的领域知识支持。
+SE-KB-Engine 提供从 **搜索 → 抓取 → 清洗 → 知识抽取 → 数据落盘** 的完整流水线，
+用于自动化收集技术资料并构建结构化知识库。
 
-## ✨ 核心特性
+项目最初用于个人知识库构建实验，目前仍在持续开发中。
 
-*   **📚 专业的 DFD 知识体系**：内置 DFD 概念、规则、模板、案例、分层原则等结构化知识。
-*   **🔍 语义检索 (RAG)**：基于 SiliconFlow Embedding 和 ChromaDB，支持意图识别（概念/规则/案例）和混合检索。
-*   **🧠 智能精炼**：利用 LLM 对原始网页数据进行清洗、去重和结构化提取。
-*   **🌐 灵活的 API 服务**：提供 RESTful API，支持语义搜索、系统状态监控和热重载。
-*   **🚀 易于部署**：支持本地运行、Docker 部署以及 Cloudflare Tunnel 远程访问。
-*   **🔌 MCP 协议支持**：兼容 Model Context Protocol，可作为 MCP Server 运行。
+---
 
-## 🛠️ 技术栈
+## ✨ Features
 
-*   **后端框架**: Flask
-*   **向量数据库**: ChromaDB
-*   **LLM 服务**: SiliconFlow API (Embedding & Chat)
-*   **爬虫框架**: Playwright / SerpAPI
-*   **部署**: Cloudflare Tunnel, Gunicorn
+- 🔍 **搜索驱动抓取**
+  - 通过搜索接口获取候选网页
+  - 自动批量抓取相关内容
 
-## 📂 目录结构
+- ⚡ **混合抓取策略**
+  - HTTPX 静态抓取，高性能处理普通网页
+  - Playwright 动态回退，兼容依赖 JavaScript 渲染的页面
 
+- 🧹 **内容清洗**
+  - 使用 BeautifulSoup 提取正文
+  - 去除广告、导航栏等无关内容
+
+- 🧠 **LLM 知识抽取**
+  - 基于 MCP + LLM API 进行结构化信息抽取
+  - 输出 JSON / Markdown 等知识产物
+
+- 📊 **任务管理 Web 控制台**
+  - 基于 Flask + JavaScript
+  - 支持 URL 抓取、批量任务、进度监控与结果管理
+
+- 🗂 **数据管理**
+  - 基于 SQLite 实现 URL 去重
+  - 支持历史记录管理
+
+- 🐳 **部署友好**
+  - 支持 Docker 部署
+  - 支持 Nginx + Gunicorn
+  - 可选代理 / Tor / SOCKS5 增强网络鲁棒性
+
+---
+
+## 🏗 Architecture
+
+整体流程：
+
+```text
+Search
+  ↓
+URL Queue
+  ↓
+Crawler
+  ↓
+Content Cleaner
+  ↓
+LLM Extractor
+  ↓
+Knowledge Artifacts
 ```
-mcp-client/
-├── api/                 # REST API 服务实现
-│   ├── v1/              # API 版本控制
-│   └── app.py           # API 入口
-├── se_kb/               # 知识库数据根目录
-│   ├── diagrams/        # DFD 等图表知识 (JSON)
-│   ├── theory/          # 理论知识
-│   ├── domain/          # 领域知识
-│   └── vector_store/    # ChromaDB 向量索引文件
-├── vectorizer/          # 向量化核心模块
-│   ├── config.py        # 向量库配置 (Collection 定义)
-│   ├── indexer.py       # 索引构建器
-│   └── retriever.py     # 检索器实现
-├── refiner/             # 知识精炼模块
-├── scripts/             # 工具脚本
-│   └── build_vector_index.py # 索引构建脚本
-├── web/                 # Web 前端界面
-└── requirements.txt     # 项目依赖
+
+核心模块示意：
+
+```text
+se-kb-engine/
+│
+├─ crawler/        # 抓取模块
+├─ extractor/      # LLM 抽取模块
+├─ pipeline/       # 数据处理流水线
+├─ web/            # Flask 控制台
+├─ database/       # SQLite 管理
+└─ scripts/        # 工具脚本
 ```
 
-## 🚀 快速开始
+---
 
-### 1. 环境准备
+## 🚀 Quick Start
 
-确保已安装 Python 3.10+。
+### 1. 安装依赖
 
 ```bash
-# 克隆仓库
-git clone https://github.com/your-repo/se-kb.git
-cd se-kb
-
-# 安装依赖
 pip install -r requirements.txt
 ```
 
-### 2. 配置环境变量
-
-复制 `.env.example` (如果存在) 或新建 `.env` 文件，填入以下关键配置：
-
-```ini
-# .env
-OPENAI_API_KEY=sk-xxxx              # 用于知识精炼的 LLM Key
-EMBEDDING_API_KEY=sk-xxxx           # SiliconFlow Embedding Key
-SERPAPI_API_KEY=xxxx                # SerpAPI Key (爬虫用)
-KB_ADMIN_KEYS=your_admin_key_here   # API 管理员密钥
-```
-
-### 3. 构建向量索引
-
-在启动服务前，需要先将 JSON 知识文件向量化：
+### 2. 启动服务
 
 ```bash
-python scripts/build_vector_index.py
-```
-*构建完成后，索引文件将存储在 `se_kb/vector_store`。*
-
-### 4. 启动服务
-
-**启动 API 服务 (推荐)**
-```bash
-python api/app.py
-```
-服务默认监听 `http://localhost:8000`。
-
-**启动 Web 界面**
-```bash
-python start_web.py
+python app.py
 ```
 
-## 📖 API 使用指南
+### 3. 打开 Web 控制台
 
-服务启动后，访问 `http://localhost:8000/apidocs/` 查看完整的 Swagger 文档。
+```text
+http://localhost:5000
+```
 
-### 核心接口：语义检索
+---
 
-**POST** `/api/v1/search`
+## ⚙ Tech Stack
+
+- Python 3
+- Flask
+- SQLite
+- HTTPX
+- BeautifulSoup
+- Playwright
+- MCP (Model Context Protocol)
+- OpenAI / OpenRouter / DeepSeek
+- Docker
+- Nginx
+- Gunicorn
+
+---
+
+## 📌 Use Cases
+
+- 构建技术知识库
+- 自动整理技术博客与文档
+- 为 AI Agent 提供知识数据源
+- 生成 RAG 所需的数据集
+
+---
+
+## 🖼 Screenshot
+
+你可以在这里放项目界面截图：
+
+```markdown
+![Web Console](docs/images/web-ui.png)
+```
+
+---
+
+## 📄 Example Output
+
+结构化抽取结果示例：
 
 ```json
-// Request
 {
-    "query": "数据流图的绘制规则是什么？",
-    "intent": "rule",  // 可选: concept, rule, example, template
-    "top_k": 3
+  "title": "Transformer Attention Explained",
+  "summary": "本文介绍了注意力机制的基本原理及其在 Transformer 中的作用。",
+  "concepts": ["attention", "softmax", "transformer"],
+  "source": "https://example.com/article"
 }
 ```
 
-```json
-// Response
-{
-    "query": "数据流图的绘制规则是什么？",
-    "intent": "rule",
-    "total_found": 3,
-    "results": [
-        {
-            "content": "父图与子图的输入输出数据流必须保持一致（平衡原则）...",
-            "score": 0.85,
-            "source": "dfd_modeling_rules.json",
-            "collection": "se_kb_dfd_rules"
-        },
-        ...
-    ]
-}
-```
+---
 
-### 管理接口
+## 📈 Roadmap
 
-*   `GET /api/v1/admin/stats`: 获取知识库统计信息 (需 Bearer Token)
-*   `POST /api/v1/admin/reload`: 热重载向量索引 (需 Bearer Token)
+- [ ] 自动质量评分
+- [ ] 更稳定的反爬策略
+- [ ] 向量数据库集成
+- [ ] RAG Pipeline 支持
+- [ ] 更完善的任务调度与可观测性
 
-## 🌐 远程访问 (Cloudflare Tunnel)
+**Backend**
 
-本项目内置 `cloudflared`，可快速建立安全的内网穿透，供远程调试。
+- Python 3
+- Flask
+- SQLite
 
-```bash
-# 启动 API 服务后，在从终端运行：
-.\cloudflared.exe tunnel --url http://localhost:8000
-```
-终端将输出一个公网 HTTPS 地址（如 `https://xxxx.trycloudflare.com`），外部用户可直接通过该地址调用 API。
+**Web Crawling**
 
-## 📝 开发指南
+- HTTPX
+- BeautifulSoup
+- Playwright
 
-### 添加新知识
-1.  将知识整理为符合 Schema 的 JSON 文件。
-2.  放入 `se_kb/diagrams/dfd/` 下的对应目录（如 `concepts`, `rules`）。
-3.  运行 `python scripts/build_vector_index.py` 重建索引。
-4.  (可选) 调用 `/api/v1/admin/reload` 热加载。
+**LLM Integration**
 
-### 扩展图表类型
-如需支持 UML 或 ER 图：
-1.  在 `se_kb/diagrams/` 下新建目录（如 `uml`）。
-2.  修改 `vectorizer/config.py`，添加新的 Collection 定义（如 `se_kb_uml_concepts`）。
-3.  重建索引。
+- MCP (Model Context Protocol)
+- OpenAI / OpenRouter / DeepSeek APIs
 
-## 📄 License
+**Deployment**
+
+- Docker
+- Nginx
+- Gunicorn
+
+---
+
+## 📜 License
 
 MIT License
