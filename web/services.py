@@ -233,6 +233,54 @@ def extract_knowledge(parsed_path: str, force_types: List[str] = None) -> Dict[s
         return {"success": False, "error": str(e)}
 
 
+def run_manual_crawl_task(url: str, force_types: Optional[List[str]] = None, extract: bool = True):
+    task_manager.clear()
+    task_manager.set_status("running", 0)
+    
+    try:
+        task_manager.log("=" * 40)
+        task_manager.log(f"📋 手动采取: {url}")
+        task_manager.log(f"📊 URL 索引: 已有 {len(url_index.urls)} 个 URL")
+        task_manager.log("=" * 40)
+        task_manager.set_status("running", 15)
+        
+        if url_index.exists(url):
+            task_manager.log("⚠️ 该 URL 已采取过，仍将重新爬取", "warning")
+        
+        crawler = WebpageCrawler()
+        result = crawl_url(url, crawler)
+        
+        if not result or not result.get('file_paths', {}).get('parsed_file'):
+            task_manager.log("❌ 无可用的采取结果", "error")
+            task_manager.set_status("error", 100)
+            return
+        
+        parsed_path = result['file_paths']['parsed_file']
+        title = result.get('parsed_data', {}).get('title', '')
+        url_index.add(url, title)
+        
+        if not extract:
+            task_manager.log("✅ 采取完成，已跳过抽取")
+            task_manager.set_status("completed", 100)
+            return
+        
+        task_manager.log("🧠 开始知识抽取")
+        task_manager.set_status("running", 70)
+        
+        extract_result = extract_knowledge(parsed_path, force_types)
+        if extract_result.get('success'):
+            task_manager.results.append(extract_result)
+            task_manager.log("🎉 任务完成！")
+            task_manager.set_status("completed", 100)
+        else:
+            task_manager.log("⚠️ 抽取未产生结果", "warning")
+            task_manager.set_status("completed", 100)
+    
+    except Exception as e:
+        task_manager.log(f"❌ 任务失败: {str(e)}", "error")
+        task_manager.set_status("error", 100)
+
+
 def run_pipeline_task(query: str, limit: int, force_types: List[str]):
     task_manager.clear()
     task_manager.set_status("running", 0)

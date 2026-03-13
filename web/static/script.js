@@ -9,6 +9,8 @@ const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
 const limitSelect = document.getElementById('limitSelect');
 const typeSelect = document.getElementById('typeSelect');
+const manualUrlInput = document.getElementById('manualUrlInput');
+const manualCrawlBtn = document.getElementById('manualCrawlBtn');
 const statusBadge = document.getElementById('statusBadge');
 const progressText = document.getElementById('progressText');
 const progressFill = document.getElementById('progressFill');
@@ -80,6 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
     searchBtn.addEventListener('click', startTask);
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') startTask();
+    });
+    manualCrawlBtn.addEventListener('click', startManualCrawl);
+    manualUrlInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') startManualCrawl();
     });
     clearBtn.addEventListener('click', clearLogs);
     
@@ -169,6 +175,65 @@ async function startTask() {
     }
 }
 
+async function startManualCrawl() {
+    if (isRunning) return;
+    
+    let url = manualUrlInput.value.trim();
+    if (!url) {
+        alert('请输入要爬取的 URL');
+        return;
+    }
+    
+    if (!/^https?:\/\//i.test(url)) {
+        url = `https://${url}`;
+    }
+    
+    try {
+        new URL(url);
+    } catch (error) {
+        alert('URL 格式不正确');
+        return;
+    }
+    
+    isRunning = true;
+    updateUIState(true);
+    clearLogs();
+    
+    try {
+        const payload = {
+            url: url
+        };
+        
+        if (typeSelect.value) {
+            payload.types = [typeSelect.value];
+        }
+        
+        const response = await fetch('/api/crawl-url', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            appendLog('手动爬取任务已启动...');
+            pollStatus();
+        } else {
+            const errorMsg = data.error || data.message || '未知错误';
+            appendLog(`启动失败: ${errorMsg}`, 'error');
+            isRunning = false;
+            updateUIState(false);
+        }
+    } catch (error) {
+        appendLog(`请求失败: ${error.message}`, 'error');
+        isRunning = false;
+        updateUIState(false);
+    }
+}
+
 async function checkStatus() {
     try {
         const response = await fetch('/api/status');
@@ -226,6 +291,8 @@ function updateUIState(running) {
     searchInput.disabled = running;
     limitSelect.disabled = running;
     typeSelect.disabled = running;
+    manualUrlInput.disabled = running;
+    manualCrawlBtn.disabled = running;
     
     if (running) {
         searchBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">运行中...</span>';

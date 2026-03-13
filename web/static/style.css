@@ -123,6 +123,26 @@ body::before {
     margin-bottom: 24px;
 }
 
+.manual-crawl {
+    margin-bottom: 24px;
+}
+
+.manual-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.manual-title {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.manual-box {
+    margin-bottom: 0;
+}
+
 input[type="text"] {
     flex: 1;
     background: var(--bg-primary);

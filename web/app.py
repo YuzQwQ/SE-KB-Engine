@@ -76,6 +76,29 @@ def start_task():
     return jsonify({"message": "任务已启动"})
 
 
+@app.route('/api/crawl-url', methods=['POST'])
+def start_manual_crawl():
+    data = request.json or {}
+    url = data.get('url', '').strip()
+    extract = bool(data.get('extract', True))
+    force_types = data.get('types', [])
+    
+    if not url:
+        return jsonify({"error": "请输入 URL"}), 400
+    
+    if services.task_manager.status == "running":
+        return jsonify({"error": "已有任务正在运行"}), 400
+    
+    thread = threading.Thread(
+        target=services.run_manual_crawl_task,
+        args=(url, force_types if force_types else None, extract)
+    )
+    thread.daemon = True
+    thread.start()
+    
+    return jsonify({"message": "手动爬取任务已启动"})
+
+
 @app.route('/api/status')
 def get_status():
     """获取任务状态"""

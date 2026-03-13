@@ -11,6 +11,23 @@ from pathlib import Path
 import numpy as np
 
 
+def load_env():
+    env_path = Path(".env")
+    if env_path.exists():
+        for line in env_path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" in line:
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip()
+                if k and v and os.getenv(k) is None:
+                    os.environ[k] = v
+
+
+load_env()
+
+
 class SemanticEmbedder:
     """语义嵌入器"""
     
@@ -124,7 +141,7 @@ class SemanticEmbedder:
             try:
                 with httpx.Client(timeout=30) as client:
                     response = client.post(
-                        f"{self.api_base}/embeddings",
+                        self.api_base,
                         headers=headers,
                         json=payload
                     )
@@ -196,7 +213,7 @@ class SemanticEmbedder:
                 
                 with httpx.Client(timeout=60) as client:
                     response = client.post(
-                        f"{self.api_base}/embeddings",
+                        self.api_base,
                         headers=headers,
                         json=payload
                     )

@@ -91,7 +91,7 @@ class CustomEmbeddingFunction(EmbeddingFunction):
                 
                 with httpx.Client(timeout=60) as client:
                     response = client.post(
-                        f"{self.config.embedding_api_base}/embeddings",
+                        self.config.embedding_api_base,
                         headers=headers,
                         json=payload
                     )
