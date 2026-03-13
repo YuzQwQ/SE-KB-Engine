@@ -90,6 +90,18 @@ class WebpageCrawler:
             包含网页内容和元数据的字典
         """
         logger.info(f"开始爬取网页: {url}")
+        if not self._is_supported_url(url):
+            return {
+                'url': url,
+                'status_code': None,
+                'headers': {},
+                'content': '',
+                'encoding': None,
+                'timestamp': datetime.now().isoformat(),
+                'success': False,
+                'error': 'unsupported_url_scheme_or_host',
+                'source': 'httpx'
+            }
         
         for attempt in range(retry_times):
             try:
@@ -152,6 +164,15 @@ class WebpageCrawler:
             'error': 'retry_exhausted',
             'source': 'httpx'
         }
+
+    @staticmethod
+    def _is_supported_url(url: str) -> bool:
+        """仅允许 HTTP(S) URL，且需要有效主机名。"""
+        try:
+            parsed = urlparse(url)
+            return parsed.scheme in ('http', 'https') and bool(parsed.netloc)
+        except Exception:
+            return False
 
     @staticmethod
     def _looks_dynamic(html: str) -> bool:
