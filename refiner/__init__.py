@@ -13,12 +13,10 @@ from .embedder import SemanticEmbedder, SemanticDeduplicator
 from .merger import LLMMerger
 
 __all__ = [
-    "KnowledgeRefiner", 
+    "KnowledgeRefiner",
     "RefineStats",
-    "StructuralDeduplicator", 
+    "StructuralDeduplicator",
     "SemanticEmbedder",
     "SemanticDeduplicator",
-    "LLMMerger"
+    "LLMMerger",
 ]
-
-

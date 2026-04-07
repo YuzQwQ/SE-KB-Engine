@@ -11,14 +11,15 @@ from .specialized_extractors import BaseExtractor
 # diagrams/dfd/ 抽取器
 # ============================================================
 
+
 class DFDConceptsExtractor(BaseExtractor):
     """diagrams/dfd/concepts/ 抽取器"""
-    
+
     def __init__(self):
-        super().__init__('diagrams.dfd.concepts')
-    
+        super().__init__("diagrams.dfd.concepts")
+
     def get_system_prompt(self) -> str:
-        return '''你是 DFD 概念知识抽取专家。请从内容中提取数据流图的核心概念定义。
+        return """你是 DFD 概念知识抽取专家。请从内容中提取数据流图的核心概念定义。
 
 ## 目标概念
 
@@ -49,17 +50,17 @@ class DFDConceptsExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，简洁描述内容主题
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 class DFDExamplesExtractor(BaseExtractor):
     """diagrams/dfd/examples/ 抽取器"""
-    
+
     def __init__(self):
-        super().__init__('diagrams.dfd.examples')
-    
+        super().__init__("diagrams.dfd.examples")
+
     def get_system_prompt(self) -> str:
-        return '''你是 DFD 案例抽取专家。请从内容中提取完整的数据流图示例案例。
+        return """你是 DFD 案例抽取专家。请从内容中提取完整的数据流图示例案例。
 
 ## 目标内容
 
@@ -100,17 +101,17 @@ class DFDExamplesExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，用业务场景命名如 smart_community, online_shopping
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 class DFDRulesExtractor(BaseExtractor):
     """diagrams/dfd/rules/ 抽取器"""
-    
+
     def __init__(self):
-        super().__init__('diagrams.dfd.rules')
-    
+        super().__init__("diagrams.dfd.rules")
+
     def get_system_prompt(self) -> str:
-        return '''你是 DFD 建模规则抽取专家。请从内容中提取数据流图建模的规则和约束。
+        return """你是 DFD 建模规则抽取专家。请从内容中提取数据流图建模的规则和约束。
 
 ## 目标规则类型
 
@@ -146,17 +147,17 @@ class DFDRulesExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，描述规则主题
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 class DFDTemplatesExtractor(BaseExtractor):
     """diagrams/dfd/templates/ 抽取器"""
-    
+
     def __init__(self):
-        super().__init__('diagrams.dfd.templates')
-    
+        super().__init__("diagrams.dfd.templates")
+
     def get_system_prompt(self) -> str:
-        return '''你是 DFD 模板抽取专家。请从内容中提取可重用的 DFD 结构模板。
+        return """你是 DFD 模板抽取专家。请从内容中提取可重用的 DFD 结构模板。
 
 ## 目标模板类型
 
@@ -200,17 +201,17 @@ class DFDTemplatesExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，描述模板类型
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 class DFDValidationExtractor(BaseExtractor):
     """diagrams/dfd/validation/ 抽取器"""
-    
+
     def __init__(self):
-        super().__init__('diagrams.dfd.validation')
-    
+        super().__init__("diagrams.dfd.validation")
+
     def get_system_prompt(self) -> str:
-        return '''你是 DFD 校验规则抽取专家。请从内容中提取 DFD 校验和验证规则。
+        return """你是 DFD 校验规则抽取专家。请从内容中提取 DFD 校验和验证规则。
 
 ## 目标校验类型
 
@@ -245,17 +246,17 @@ class DFDValidationExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，描述校验类型
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 class DFDLevelsExtractor(BaseExtractor):
     """diagrams/dfd/levels/ 抽取器"""
-    
+
     def __init__(self):
-        super().__init__('diagrams.dfd.levels')
-    
+        super().__init__("diagrams.dfd.levels")
+
     def get_system_prompt(self) -> str:
-        return '''你是 DFD 层次分解知识抽取专家。请从内容中提取 DFD 分层和分解相关知识。
+        return """你是 DFD 层次分解知识抽取专家。请从内容中提取 DFD 分层和分解相关知识。
 
 ## 目标内容
 
@@ -295,21 +296,22 @@ class DFDLevelsExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，描述层次知识主题
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 # ============================================================
 # theory/ 抽取器
 # ============================================================
 
+
 class TheoryExtractor(BaseExtractor):
     """theory/ 抽取器 - 软件工程理论"""
-    
+
     def __init__(self):
-        super().__init__('theory')
-    
+        super().__init__("theory")
+
     def get_system_prompt(self) -> str:
-        return '''你是软件工程理论知识抽取专家。请从内容中提取软件工程核心理论概念。
+        return """你是软件工程理论知识抽取专家。请从内容中提取软件工程核心理论概念。
 
 ## 目标内容
 
@@ -347,21 +349,22 @@ class TheoryExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，描述理论主题
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 # ============================================================
 # mappings/ 抽取器
 # ============================================================
 
+
 class MappingsExtractor(BaseExtractor):
     """mappings/ 抽取器 - 语义映射"""
-    
+
     def __init__(self):
-        super().__init__('mappings')
-    
+        super().__init__("mappings")
+
     def get_system_prompt(self) -> str:
-        return '''你是语义映射知识抽取专家。请从内容中提取用于知识抽取的语义线索和语言模式。
+        return """你是语义映射知识抽取专家。请从内容中提取用于知识抽取的语义线索和语言模式。
 
 ## 目标内容
 
@@ -398,21 +401,22 @@ class MappingsExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，描述映射类型
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 # ============================================================
 # schema/ 抽取器
 # ============================================================
 
+
 class SchemaExtractor(BaseExtractor):
     """schema/ 抽取器 - Schema 定义"""
-    
+
     def __init__(self):
-        super().__init__('schema')
-    
+        super().__init__("schema")
+
     def get_system_prompt(self) -> str:
-        return '''你是 Schema 定义抽取专家。请从内容中提取结构化知识的 Schema 定义。
+        return """你是 Schema 定义抽取专家。请从内容中提取结构化知识的 Schema 定义。
 
 ## 目标内容
 
@@ -448,21 +452,22 @@ class SchemaExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，描述 Schema 主题
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 # ============================================================
 # domain/ 抽取器
 # ============================================================
 
+
 class DomainExtractor(BaseExtractor):
     """domain/ 抽取器 - 领域知识"""
-    
+
     def __init__(self):
-        super().__init__('domain')
-    
+        super().__init__("domain")
+
     def get_system_prompt(self) -> str:
-        return '''你是领域知识抽取专家。请从内容中提取特定业务领域的专业知识。
+        return """你是领域知识抽取专家。请从内容中提取特定业务领域的专业知识。
 
 ## 目标内容
 
@@ -503,21 +508,22 @@ class DomainExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，用业务领域命名
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 # ============================================================
 # examples/ 抽取器
 # ============================================================
 
+
 class ExamplesExtractor(BaseExtractor):
     """examples/ 抽取器 - 通用示例"""
-    
+
     def __init__(self):
-        super().__init__('examples')
-    
+        super().__init__("examples")
+
     def get_system_prompt(self) -> str:
-        return '''你是示例抽取专家。请从内容中提取可作为参考的示例案例。
+        return """你是示例抽取专家。请从内容中提取可作为参考的示例案例。
 
 ## 目标内容
 
@@ -544,21 +550,22 @@ class ExamplesExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，描述示例场景
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 # ============================================================
 # rules/ 抽取器
 # ============================================================
 
+
 class RulesExtractor(BaseExtractor):
     """rules/ 抽取器 - 通用规则"""
-    
+
     def __init__(self):
-        super().__init__('rules')
-    
+        super().__init__("rules")
+
     def get_system_prompt(self) -> str:
-        return '''你是规则抽取专家。请从内容中提取业务规则和约束条件。
+        return """你是规则抽取专家。请从内容中提取业务规则和约束条件。
 
 ## 目标内容
 
@@ -585,7 +592,7 @@ class RulesExtractor(BaseExtractor):
 
 **content_slug 要求**: 英文小写+下划线，10-30字符，描述规则类型
 
-只输出 JSON。'''
+只输出 JSON。"""
 
 
 # ============================================================
@@ -594,24 +601,24 @@ class RulesExtractor(BaseExtractor):
 
 SE_KB_EXTRACTORS = {
     # diagrams/dfd/
-    'diagrams.dfd.concepts': DFDConceptsExtractor,
-    'diagrams.dfd.examples': DFDExamplesExtractor,
-    'diagrams.dfd.rules': DFDRulesExtractor,
-    'diagrams.dfd.templates': DFDTemplatesExtractor,
-    'diagrams.dfd.validation': DFDValidationExtractor,
-    'diagrams.dfd.levels': DFDLevelsExtractor,
+    "diagrams.dfd.concepts": DFDConceptsExtractor,
+    "diagrams.dfd.examples": DFDExamplesExtractor,
+    "diagrams.dfd.rules": DFDRulesExtractor,
+    "diagrams.dfd.templates": DFDTemplatesExtractor,
+    "diagrams.dfd.validation": DFDValidationExtractor,
+    "diagrams.dfd.levels": DFDLevelsExtractor,
     # theory/
-    'theory': TheoryExtractor,
+    "theory": TheoryExtractor,
     # mappings/
-    'mappings': MappingsExtractor,
+    "mappings": MappingsExtractor,
     # schema/
-    'schema': SchemaExtractor,
+    "schema": SchemaExtractor,
     # domain/
-    'domain': DomainExtractor,
+    "domain": DomainExtractor,
     # examples/
-    'examples': ExamplesExtractor,
+    "examples": ExamplesExtractor,
     # rules/
-    'rules': RulesExtractor,
+    "rules": RulesExtractor,
 }
 
 
@@ -626,5 +633,3 @@ def get_se_kb_extractor(type_id: str) -> Optional[BaseExtractor]:
 def get_all_se_kb_extractors():
     """获取所有 SE-KB 抽取器实例"""
     return {k: cast(Any, v)() for k, v in SE_KB_EXTRACTORS.items()}
-
-

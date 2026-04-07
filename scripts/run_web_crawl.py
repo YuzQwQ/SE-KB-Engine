@@ -2,10 +2,12 @@ import argparse
 import os
 from pathlib import Path
 import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from utils.webpage_crawler import WebpageCrawler
 import httpx
 from llm_client import _load_env_file
+
 
 def _read_url_file(path: str):
     urls = []
@@ -17,6 +19,7 @@ def _read_url_file(path: str):
                 continue
             urls.append(s)
     return urls
+
 
 def _fetch_urls(api: str, query: str = "", limit: int = 20):
     try:
@@ -34,6 +37,7 @@ def _fetch_urls(api: str, query: str = "", limit: int = 20):
             return [str(u) for u in urls]
     except Exception:
         return []
+
 
 def _fetch_serp_urls(query: str, limit: int = 20, engine: str = "google"):
     _load_env_file()
@@ -56,6 +60,7 @@ def _fetch_serp_urls(query: str, limit: int = 20, engine: str = "google"):
             return urls
     except Exception:
         return []
+
 
 def main():
     p = argparse.ArgumentParser()
@@ -89,6 +94,7 @@ def main():
             print({"url": u, "files": res.get("file_paths")})
         except Exception as e:
             print({"url": u, "error": str(e)})
+
 
 if __name__ == "__main__":
     main()

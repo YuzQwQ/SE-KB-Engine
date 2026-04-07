@@ -6,19 +6,21 @@ LLM Preselector - 使用小模型进行候选片段筛选
 import os
 import json
 import re
-from pathlib import Path
 from typing import List, Dict, Any, Tuple, Optional
 from dataclasses import dataclass
+from utils.env_loader import load_env_file
+
 
 @dataclass
 class CandidateChunk:
     """候选片段"""
+
     text: str
     type: str  # dfd, concept, rule, unknown
     confidence: float = 0.0
     source_section: str = ""  # 来源章节标题
     context_before: str = ""  # 上文摘要
-    context_after: str = ""   # 下文摘要
+    context_after: str = ""  # 下文摘要
 
 
 PRESELECTOR_SYSTEM_PROMPT = """你是一个专业的软件工程知识筛选器，专门从网页内容中识别和提取与"数据流图(DFD)"、"概念定义"、"规则约束"相关的段落。
@@ -99,32 +101,15 @@ PRESELECTOR_USER_PROMPT_TEMPLATE = """请从以下网页内容中筛选候选段
 
 class LLMPreselector:
     """基于 LLM 的候选片段预筛选器"""
-    
+
     def __init__(self):
-        self._load_env()
-        self.base_url = os.getenv('FILTER_BASE_URL', '').rstrip('/')
-        self.api_key = os.getenv('FILTER_API_KEY', '')
-        self.model_id = os.getenv('FILTER_MODEL_ID', 'Qwen/Qwen2.5-7B-Instruct')
+        load_env_file()
+        self.base_url = os.getenv("FILTER_BASE_URL", "").rstrip("/")
+        self.api_key = os.getenv("FILTER_API_KEY", "")
+        self.model_id = os.getenv("FILTER_MODEL_ID", "Qwen/Qwen2.5-7B-Instruct")
         self.max_input_chars = 12000  # 小模型上下文限制，预留输出空间
         self.timeout = 60.0
-    
-    def _load_env(self):
-        """加载 .env 文件"""
-        env_path = Path('.env')
-        if env_path.exists():
-            try:
-                for line in env_path.read_text(encoding='utf-8').splitlines():
-                    line = line.strip()
-                    if not line or line.startswith('#'):
-                        continue
-                    if '=' in line:
-                        k, v = line.split('=', 1)
-                        k, v = k.strip(), v.strip()
-                        if k and v and os.getenv(k) is None:
-                            os.environ[k] = v
-            except Exception:
-                pass
-    
+
     def _prepare_content(self, text: str, sections: List[Dict] = None) -> str:
         """
         准备输入内容，优先使用结构化的 sections，否则使用 clean_text
@@ -133,11 +118,11 @@ class LLMPreselector:
             # 使用结构化的 sections，保留标题层次
             parts = []
             for sec in sections:
-                heading = sec.get('heading', '')
-                level = sec.get('level', 2)
-                sec_text = sec.get('text', '')
-                lists = sec.get('lists', [])
-                
+                heading = sec.get("heading", "")
+                level = sec.get("level", 2)
+                sec_text = sec.get("text", "")
+                lists = sec.get("lists", [])
+
                 # 构建章节文本
                 if heading:
                     parts.append(f"{'#' * level} {heading}")
@@ -147,60 +132,64 @@ class LLMPreselector:
                     for item in lists:
                         parts.append(f"- {item}")
                 parts.append("")  # 空行分隔
-            
+
             content = "\n".join(parts)
         else:
             content = text or ""
-        
+
         # 截断过长内容
         if len(content) > self.max_input_chars:
-            content = content[:self.max_input_chars] + "\n\n[...内容已截断...]"
-        
+            content = content[: self.max_input_chars] + "\n\n[...内容已截断...]"
+
         return content
-    
+
     def _call_llm(self, system_prompt: str, user_prompt: str) -> Tuple[Optional[str], Dict]:
         """调用 LLM API"""
         if not self.base_url or not self.api_key:
-            return None, {"error": "missing_filter_env", "need": ["FILTER_BASE_URL", "FILTER_API_KEY"]}
-        
+            return None, {
+                "error": "missing_filter_env",
+                "need": ["FILTER_BASE_URL", "FILTER_API_KEY"],
+            }
+
         try:
             import httpx
+
             url = f"{self.base_url}/chat/completions"
             headers = {
-                'Authorization': f'Bearer {self.api_key}',
-                'Content-Type': 'application/json',
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
             }
             body = {
-                'model': self.model_id,
-                'messages': [
-                    {'role': 'system', 'content': system_prompt},
-                    {'role': 'user', 'content': user_prompt},
+                "model": self.model_id,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
                 ],
-                'temperature': 0.1,  # 低温度保证一致性
-                'max_tokens': 4096,
+                "temperature": 0.1,  # 低温度保证一致性
+                "max_tokens": 4096,
             }
-            
+
             with httpx.Client(timeout=self.timeout) as client:
                 resp = client.post(url, headers=headers, json=body)
                 resp.raise_for_status()
                 data = resp.json()
-                content = ((data.get('choices') or [{}])[0].get('message') or {}).get('content', '')
+                content = ((data.get("choices") or [{}])[0].get("message") or {}).get("content", "")
                 trace = {
                     "provider": "siliconflow",
                     "model": self.model_id,
-                    "tokens": data.get('usage'),
-                    "status": "success"
+                    "tokens": data.get("usage"),
+                    "status": "success",
                 }
                 return content, trace
-        
+
         except Exception as e:
             return None, {"error": "llm_request_failed", "detail": str(e)}
-    
+
     def _parse_response(self, response: str) -> List[Dict[str, Any]]:
         """解析 LLM 响应，提取 JSON 数组"""
         if not response:
             return []
-        
+
         # 尝试直接解析
         try:
             result = json.loads(response)
@@ -208,135 +197,128 @@ class LLMPreselector:
                 return result
         except json.JSONDecodeError:
             pass
-        
+
         # 尝试提取 JSON 块
         patterns = [
-            r'```json\s*([\s\S]*?)\s*```',
-            r'```\s*([\s\S]*?)\s*```',
-            r'\[\s*\{[\s\S]*\}\s*\]',
+            r"```json\s*([\s\S]*?)\s*```",
+            r"```\s*([\s\S]*?)\s*```",
+            r"\[\s*\{[\s\S]*\}\s*\]",
         ]
-        
+
         for pattern in patterns:
             match = re.search(pattern, response)
             if match:
                 try:
-                    json_str = match.group(1) if '```' in pattern else match.group(0)
+                    json_str = match.group(1) if "```" in pattern else match.group(0)
                     result = json.loads(json_str)
                     if isinstance(result, list):
                         return result
                 except (json.JSONDecodeError, IndexError):
                     continue
-        
+
         return []
-    
+
     def preselect(self, parsed_data: Dict[str, Any]) -> Tuple[List[CandidateChunk], Dict[str, Any]]:
         """
         对 parsed.json 数据进行预筛选
-        
+
         Args:
             parsed_data: 包含 clean_text, sections, title, url 等字段的字典
-        
+
         Returns:
             (candidates, trace): 候选片段列表和追踪信息
         """
-        title = parsed_data.get('title', '未命名')
-        url = parsed_data.get('source_url') or parsed_data.get('url', '')
-        sections = parsed_data.get('sections') or parsed_data.get('structured_json') or []
-        clean_text = parsed_data.get('clean_text') or parsed_data.get('markdown') or ''
-        
+        title = parsed_data.get("title", "未命名")
+        url = parsed_data.get("source_url") or parsed_data.get("url", "")
+        sections = parsed_data.get("sections") or parsed_data.get("structured_json") or []
+        clean_text = parsed_data.get("clean_text") or parsed_data.get("markdown") or ""
+
         # 准备内容
         content = self._prepare_content(clean_text, sections)
-        
+
         if not content.strip():
             return [], {"error": "empty_content"}
-        
+
         # 构建提示词
-        user_prompt = PRESELECTOR_USER_PROMPT_TEMPLATE.format(
-            title=title,
-            url=url,
-            content=content
-        )
-        
+        user_prompt = PRESELECTOR_USER_PROMPT_TEMPLATE.format(title=title, url=url, content=content)
+
         # 调用 LLM
         response, trace = self._call_llm(PRESELECTOR_SYSTEM_PROMPT, user_prompt)
-        
+
         if not response:
             return [], trace
-        
+
         # 解析响应
         raw_candidates = self._parse_response(response)
         trace["raw_candidates_count"] = len(raw_candidates)
-        
+
         # 转换为 CandidateChunk
         candidates = []
         for item in raw_candidates:
             if not isinstance(item, dict):
                 continue
-            text = item.get('text', '').strip()
-            ctype = item.get('type', 'unknown').lower()
-            
+            text = item.get("text", "").strip()
+            ctype = item.get("type", "unknown").lower()
+
             # 验证类型
-            if ctype not in ('dfd', 'concept', 'rule', 'unknown'):
-                ctype = 'unknown'
-            
+            if ctype not in ("dfd", "concept", "rule", "unknown"):
+                ctype = "unknown"
+
             # 过滤过短的片段
             if len(text) < 30:
                 continue
-            
-            candidates.append(CandidateChunk(
-                text=text,
-                type=ctype,
-                confidence=0.8 if ctype != 'unknown' else 0.5
-            ))
-        
+
+            candidates.append(
+                CandidateChunk(text=text, type=ctype, confidence=0.8 if ctype != "unknown" else 0.5)
+            )
+
         trace["valid_candidates_count"] = len(candidates)
-        
+
         return candidates, trace
-    
-    def preselect_by_type(self, parsed_data: Dict[str, Any], target_type: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any], float]:
+
+    def preselect_by_type(
+        self, parsed_data: Dict[str, Any], target_type: str
+    ) -> Tuple[List[Dict[str, Any]], Dict[str, Any], float]:
         """
         按类型筛选候选，返回兼容原 adapter 接口的格式
-        
+
         Args:
             parsed_data: parsed.json 数据
             target_type: 目标类型 (dfd, concepts, rules)
-        
+
         Returns:
             (candidates, trace, score): 候选列表、追踪信息、得分
         """
         all_candidates, trace = self.preselect(parsed_data)
-        
+
         # 类型映射
         type_map = {
-            'dfd': 'dfd',
-            'concepts': 'concept',
-            'rules': 'rule',
+            "dfd": "dfd",
+            "concepts": "concept",
+            "rules": "rule",
         }
         target = type_map.get(target_type, target_type)
-        
+
         # 筛选目标类型（包括 unknown）
         filtered = []
         for c in all_candidates:
-            if c.type == target or c.type == 'unknown':
-                filtered.append({
-                    "text": c.text,
-                    "type": c.type,
-                    "confidence": c.confidence
-                })
-        
+            if c.type == target or c.type == "unknown":
+                filtered.append({"text": c.text, "type": c.type, "confidence": c.confidence})
+
         # 计算得分
         exact_match = sum(1 for c in all_candidates if c.type == target)
         score = min(1.0, exact_match / 5.0) if exact_match > 0 else 0.1
-        
+
         trace["target_type"] = target_type
         trace["filtered_count"] = len(filtered)
         trace["exact_match_count"] = exact_match
-        
+
         return filtered, trace, score
 
 
 # 便捷函数
 _preselector_instance = None
+
 
 def get_preselector() -> LLMPreselector:
     """获取单例 preselector"""
@@ -346,14 +328,16 @@ def get_preselector() -> LLMPreselector:
     return _preselector_instance
 
 
-def preselect_candidates(parsed_data: Dict[str, Any], target_type: str = None) -> Tuple[List[Dict], Dict, float]:
+def preselect_candidates(
+    parsed_data: Dict[str, Any], target_type: str = None
+) -> Tuple[List[Dict], Dict, float]:
     """
     便捷函数：预筛选候选片段
-    
+
     Args:
         parsed_data: parsed.json 数据
         target_type: 可选，指定目标类型 (dfd, concepts, rules)
-    
+
     Returns:
         (candidates, trace, score)
     """
@@ -363,4 +347,3 @@ def preselect_candidates(parsed_data: Dict[str, Any], target_type: str = None) -
     else:
         candidates, trace = preselector.preselect(parsed_data)
         return [{"text": c.text, "type": c.type} for c in candidates], trace, 0.5
-

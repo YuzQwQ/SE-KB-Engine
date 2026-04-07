@@ -63,7 +63,11 @@ class VisionModelHTTP(VisionModel):
         self.req: Dict[str, str] = options.get("request_schema", {})
         self.resp: Dict[str, str] = options.get("response_schema", {})
         default_tasks = options.get("default_tasks", ["ocr", "description", "dfd"])
-        self.default_tasks = list(default_tasks) if isinstance(default_tasks, list) else ["ocr", "description", "dfd"]
+        self.default_tasks = (
+            list(default_tasks)
+            if isinstance(default_tasks, list)
+            else ["ocr", "description", "dfd"]
+        )
 
     def infer(self, image_input: str) -> Dict[str, Any]:
         if not self.endpoint:
@@ -167,25 +171,35 @@ class VisionModelSiliconFlow(VisionModel):
         # Try multiple payload variants to maximize compatibility
         payload_variants = []
         # Variant A: OpenAI-style image_url
-        payload_variants.append({
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": [
-                    {"type": "text", "text": user_instruction},
-                    {"type": "image_url", "image_url": {"url": image_input}},
-                ]},
-            ]
-        })
+        payload_variants.append(
+            {
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": user_instruction},
+                            {"type": "image_url", "image_url": {"url": image_input}},
+                        ],
+                    },
+                ]
+            }
+        )
         # Variant B: Qwen-style input_image
-        payload_variants.append({
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": [
-                    {"type": "input_text", "text": user_instruction},
-                    {"type": "input_image", "image_url": image_input},
-                ]},
-            ]
-        })
+        payload_variants.append(
+            {
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "input_text", "text": user_instruction},
+                            {"type": "input_image", "image_url": image_input},
+                        ],
+                    },
+                ]
+            }
+        )
 
         text: str = ""
         data: Dict[str, Any] = {}
@@ -213,7 +227,9 @@ class VisionModelSiliconFlow(VisionModel):
                     elif isinstance(content_val, list):
                         for seg in content_val:
                             if isinstance(seg, dict):
-                                if seg.get("type") in ("text", "output_text") and isinstance(seg.get("text"), str):
+                                if seg.get("type") in ("text", "output_text") and isinstance(
+                                    seg.get("text"), str
+                                ):
                                     text = seg["text"]
                                     break
                                 content_text = seg.get("content")
@@ -286,7 +302,12 @@ def load_env_vision_config() -> Dict[str, Any]:
             pass
     base_url = os.getenv("BASE_URL", "")
     # Fallbacks: allow OPENAI_API_KEY or SILICONFLOW_API_KEY if VISUAL_MODEL_API_KEY absent
-    api_key = os.getenv("VISUAL_MODEL_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("SILICONFLOW_API_KEY") or ""
+    api_key = (
+        os.getenv("VISUAL_MODEL_API_KEY")
+        or os.getenv("OPENAI_API_KEY")
+        or os.getenv("SILICONFLOW_API_KEY")
+        or ""
+    )
     model = os.getenv("VISUAL_MODEL", "")
     cfg: Dict[str, Any] = {}
     if base_url and api_key and model:
@@ -314,7 +335,9 @@ def build_vision_model(options: Optional[Dict[str, Any]]) -> VisionModel:
     return VisionModel()
 
 
-def analyze_images(images: List[Dict[str, Any]], base_url: Optional[str], options: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+def analyze_images(
+    images: List[Dict[str, Any]], base_url: Optional[str], options: Optional[Dict[str, Any]] = None
+) -> List[Dict[str, Any]]:
     """Analyze images with a unified vision model, returning text-only info.
 
     - Input image dicts may contain: src, abs_url, base64, alt, title
@@ -333,12 +356,14 @@ def analyze_images(images: List[Dict[str, Any]], base_url: Optional[str], option
         else:
             vision = model.infer(image_input)
 
-        results.append({
-            "alt": alt,
-            "title": title,
-            "ocr": vision.get("ocr", []),
-            "description": vision.get("description", ""),
-            "dfd": vision.get("dfd"),
-        })
+        results.append(
+            {
+                "alt": alt,
+                "title": title,
+                "ocr": vision.get("ocr", []),
+                "description": vision.get("description", ""),
+                "dfd": vision.get("dfd"),
+            }
+        )
 
     return results

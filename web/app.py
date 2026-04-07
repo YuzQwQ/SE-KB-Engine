@@ -3,7 +3,6 @@
 简洁的前端，用于搜索、爬取、抽取知识
 """
 
-import os
 import sys
 import asyncio
 from pathlib import Path
@@ -19,22 +18,9 @@ from flask import Flask, render_template, request, jsonify, Response
 from flask_cors import CORS
 import queue
 import threading
+from utils.env_loader import load_env_file
 
-# 加载环境变量
-def load_env():
-    env_path = ROOT_DIR / '.env'
-    if env_path.exists():
-        for line in env_path.read_text(encoding='utf-8').splitlines():
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            if '=' in line:
-                k, v = line.split('=', 1)
-                k, v = k.strip(), v.strip()
-                if k and v and os.getenv(k) is None:
-                    os.environ[k] = v
-
-load_env()
+load_env_file(ROOT_DIR / ".env")
 
 import logging
 import services

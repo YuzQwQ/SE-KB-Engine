@@ -12,12 +12,13 @@ from typing import Dict, Any, Tuple, Optional, cast
 from dataclasses import dataclass
 
 from .type_registry import get_type_registry
+from utils.env_loader import load_env_file
 
 
 # ============================================================
 # 模型分级配置
 # 简单类型用小模型（降本），复杂类型用大模型（保质量）
-# 
+#
 # 可通过环境变量覆盖：
 #   KB_MODEL_ID       - 统一使用的模型（优先级最高，覆盖分级）
 #   KB_MODEL_SIMPLE   - 简单类型用的模型
@@ -49,45 +50,46 @@ COMPLEX_TYPES = {
 @dataclass
 class ExtractionResult:
     """抽取结果"""
+
     artifact: Optional[Dict[str, Any]]  # 结构化输出
-    success: bool                        # 是否成功
-    error: Optional[str]                 # 错误信息
-    tokens_used: int                     # 消耗的 tokens
+    success: bool  # 是否成功
+    error: Optional[str]  # 错误信息
+    tokens_used: int  # 消耗的 tokens
 
 
 class BaseExtractor(ABC):
     """抽取器基类"""
-    
+
     def __init__(self, type_id: str):
         self.type_id = type_id
-        self._load_env()
-        self.base_url = os.getenv('KB_BASE_URL', '').rstrip('/')
-        self.api_key = os.getenv('KB_API_KEY', '')
+        load_env_file()
+        self.base_url = os.getenv("KB_BASE_URL", "").rstrip("/")
+        self.api_key = os.getenv("KB_API_KEY", "")
         # 根据类型选择模型
         self.model_id = self._select_model(type_id)
         self.timeout = 90.0
         self.registry = get_type_registry()
         self.knowledge_type = self.registry.get(type_id)
-    
+
     def _select_model(self, type_id: str) -> str:
         """
         根据知识类型选择合适的模型
-        
+
         优先级：
         1. KB_MODEL_ID - 统一模型（最高优先级，禁用分级）
         2. KB_MODEL_SIMPLE / KB_MODEL_COMPLEX - 分级模型
         3. KB_MODEL_DEFAULT - 默认模型
         """
         # 如果设置了统一模型，直接使用（禁用分级）
-        unified_model = os.getenv('KB_MODEL_ID')
+        unified_model = os.getenv("KB_MODEL_ID")
         if unified_model:
             return unified_model
-        
+
         # 获取分级模型配置
-        model_simple = os.getenv('KB_MODEL_SIMPLE')
-        model_complex = os.getenv('KB_MODEL_COMPLEX')
-        model_default = os.getenv('KB_MODEL_DEFAULT', 'Qwen/Qwen2.5-72B-Instruct')
-        
+        model_simple = os.getenv("KB_MODEL_SIMPLE")
+        model_complex = os.getenv("KB_MODEL_COMPLEX")
+        model_default = os.getenv("KB_MODEL_DEFAULT", "Qwen/Qwen2.5-72B-Instruct")
+
         # 根据类型选择模型
         if type_id in SIMPLE_TYPES and model_simple:
             return model_simple
@@ -95,45 +97,28 @@ class BaseExtractor(ABC):
             return model_complex
         else:
             return model_default
-    
-    def _load_env(self):
-        """加载环境变量"""
-        env_path = Path('.env')
-        if env_path.exists():
-            try:
-                for line in env_path.read_text(encoding='utf-8').splitlines():
-                    line = line.strip()
-                    if not line or line.startswith('#'):
-                        continue
-                    if '=' in line:
-                        k, v = line.split('=', 1)
-                        k, v = k.strip(), v.strip()
-                        if k and v and os.getenv(k) is None:
-                            os.environ[k] = v
-            except Exception:
-                pass
-    
+
     def _load_schema(self) -> str:
         """加载 JSON Schema"""
         if not self.knowledge_type or not self.knowledge_type.schema_path:
             return "{}"
         try:
-            return Path(self.knowledge_type.schema_path).read_text(encoding='utf-8')
+            return Path(self.knowledge_type.schema_path).read_text(encoding="utf-8")
         except Exception:
             return "{}"
-    
+
     @abstractmethod
     def get_system_prompt(self) -> str:
         """获取专用系统提示词（子类实现）"""
         pass
-    
+
     def _build_user_prompt(self, content: str, ctx: Dict[str, Any]) -> str:
         """构建用户提示词"""
         return f"""请从以下内容中抽取 {self.knowledge_type.name if self.knowledge_type else self.type_id} 相关的结构化知识。
 
 ## 来源信息
-- 标题: {ctx.get('title', '未知')}
-- URL: {ctx.get('url', '')}
+- 标题: {ctx.get("title", "未知")}
+- URL: {ctx.get("url", "")}
 
 ## 内容
 
@@ -142,96 +127,97 @@ class BaseExtractor(ABC):
 ---
 
 请严格按照系统提示词中的 Schema 和要求输出 JSON。"""
-    
+
     def _call_llm(self, system_prompt: str, user_prompt: str) -> Tuple[Optional[str], Dict]:
         """调用大模型"""
         if not self.base_url or not self.api_key:
             return None, {"error": "missing_env", "need": ["KB_BASE_URL", "KB_API_KEY"]}
-        
+
         try:
             import httpx
+
             url = f"{self.base_url}/chat/completions"
             headers = {
-                'Authorization': f'Bearer {self.api_key}',
-                'Content-Type': 'application/json',
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
             }
             body = {
-                'model': self.model_id,
-                'messages': [
-                    {'role': 'system', 'content': system_prompt},
-                    {'role': 'user', 'content': user_prompt},
+                "model": self.model_id,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
                 ],
-                'temperature': 0,
-                'max_tokens': 4096,
-                'response_format': {'type': 'json_object'},
+                "temperature": 0,
+                "max_tokens": 4096,
+                "response_format": {"type": "json_object"},
             }
-            
+
             with httpx.Client(timeout=self.timeout) as client:
                 resp = client.post(url, headers=headers, json=body)
                 resp.raise_for_status()
                 data = resp.json()
-                content = ((data.get('choices') or [{}])[0].get('message') or {}).get('content', '')
-                tokens = data.get('usage', {}).get('total_tokens', 0)
+                content = ((data.get("choices") or [{}])[0].get("message") or {}).get("content", "")
+                tokens = data.get("usage", {}).get("total_tokens", 0)
                 return content, {"tokens": tokens, "model": self.model_id}
-        
+
         except Exception as e:
             return None, {"error": str(e)}
-    
+
     def _parse_json(self, response: str) -> Optional[Dict[str, Any]]:
         """解析 JSON 响应"""
         if not response:
             return None
-        
+
         try:
             return json.loads(response)
         except json.JSONDecodeError:
             pass
-        
+
         # 尝试提取 JSON 块
-        match = re.search(r'```json\s*([\s\S]*?)\s*```', response)
+        match = re.search(r"```json\s*([\s\S]*?)\s*```", response)
         if match:
             try:
                 return json.loads(match.group(1))
             except json.JSONDecodeError:
                 pass
-        
+
         return None
-    
+
     def extract(self, content: str, ctx: Dict[str, Any]) -> Tuple[ExtractionResult, Dict[str, Any]]:
         """
         执行抽取
-        
+
         Args:
             content: 待抽取的文本内容
             ctx: 上下文信息 (title, url 等)
-        
+
         Returns:
             (ExtractionResult, trace)
         """
         system_prompt = self.get_system_prompt()
         user_prompt = self._build_user_prompt(content, ctx)
-        
+
         response, trace = self._call_llm(system_prompt, user_prompt)
-        
+
         if not response:
-            return ExtractionResult(None, False, trace.get('error', 'LLM调用失败'), 0), trace
-        
+            return ExtractionResult(None, False, trace.get("error", "LLM调用失败"), 0), trace
+
         artifact = self._parse_json(response)
-        
+
         if artifact is None:
-            return ExtractionResult(None, False, "JSON解析失败", trace.get('tokens', 0)), trace
-        
-        trace['type_id'] = self.type_id
-        
-        return ExtractionResult(artifact, True, None, trace.get('tokens', 0)), trace
+            return ExtractionResult(None, False, "JSON解析失败", trace.get("tokens", 0)), trace
+
+        trace["type_id"] = self.type_id
+
+        return ExtractionResult(artifact, True, None, trace.get("tokens", 0)), trace
 
 
 class DFDExtractor(BaseExtractor):
     """DFD 专业抽取器"""
-    
+
     def __init__(self):
-        super().__init__('dfd')
-    
+        super().__init__("dfd")
+
     def get_system_prompt(self) -> str:
         schema = self._load_schema()
         return f"""你是数据流图(DFD)结构化抽取专家。请从给定内容中提取完整的 DFD 结构。
@@ -278,10 +264,10 @@ class DFDExtractor(BaseExtractor):
 
 class ConceptsExtractor(BaseExtractor):
     """概念定义专业抽取器"""
-    
+
     def __init__(self):
-        super().__init__('concepts')
-    
+        super().__init__("concepts")
+
     def get_system_prompt(self) -> str:
         return """你是概念定义结构化抽取专家。请从给定内容中提取专业概念和定义。
 
@@ -325,10 +311,10 @@ class ConceptsExtractor(BaseExtractor):
 
 class RulesExtractor(BaseExtractor):
     """规则约束专业抽取器"""
-    
+
     def __init__(self):
-        super().__init__('rules')
-    
+        super().__init__("rules")
+
     def get_system_prompt(self) -> str:
         return """你是规则约束结构化抽取专家。请从给定内容中提取业务规则和约束条件。
 
@@ -373,10 +359,10 @@ class RulesExtractor(BaseExtractor):
 
 class PatternsExtractor(BaseExtractor):
     """模式模板专业抽取器"""
-    
+
     def __init__(self):
-        super().__init__('patterns')
-    
+        super().__init__("patterns")
+
     def get_system_prompt(self) -> str:
         return """你是模式模板结构化抽取专家。请从给定内容中提取可重用的模式和模板。
 
@@ -413,10 +399,10 @@ class PatternsExtractor(BaseExtractor):
 
 class TransformationsExtractor(BaseExtractor):
     """转换方法专业抽取器"""
-    
+
     def __init__(self):
-        super().__init__('transformations')
-    
+        super().__init__("transformations")
+
     def get_system_prompt(self) -> str:
         return """你是转换方法结构化抽取专家。请从给定内容中提取格式转换和方法步骤。
 
@@ -453,10 +439,10 @@ class TransformationsExtractor(BaseExtractor):
 
 class ValidationExtractor(BaseExtractor):
     """验证标准专业抽取器"""
-    
+
     def __init__(self):
-        super().__init__('validation')
-    
+        super().__init__("validation")
+
     def get_system_prompt(self) -> str:
         return """你是验证标准结构化抽取专家。请从给定内容中提取验证标准、检查清单和错误模式。
 
@@ -506,12 +492,12 @@ class ValidationExtractor(BaseExtractor):
 
 # 旧抽取器注册表（保留用于兼容）
 LEGACY_EXTRACTORS = {
-    'dfd': DFDExtractor,
-    'concepts': ConceptsExtractor,
-    'rules': RulesExtractor,
-    'patterns': PatternsExtractor,
-    'transformations': TransformationsExtractor,
-    'validation': ValidationExtractor,
+    "dfd": DFDExtractor,
+    "concepts": ConceptsExtractor,
+    "rules": RulesExtractor,
+    "patterns": PatternsExtractor,
+    "transformations": TransformationsExtractor,
+    "validation": ValidationExtractor,
 }
 
 
@@ -523,34 +509,37 @@ def get_extractor(type_id: str) -> Optional[BaseExtractor]:
     # 1. 优先使用 SE-KB 抽取器
     try:
         from .se_kb_extractors import get_se_kb_extractor
+
         extractor = get_se_kb_extractor(type_id)
         if extractor:
             return extractor
     except ImportError:
         pass
-    
+
     # 2. 回退到旧版抽取器
     extractor_class = LEGACY_EXTRACTORS.get(type_id)
     if extractor_class:
         return cast(Any, extractor_class)()
-    
+
     return None
 
 
-def extract_by_type(type_id: str, content: str, ctx: Dict[str, Any]) -> Tuple[ExtractionResult, Dict[str, Any]]:
+def extract_by_type(
+    type_id: str, content: str, ctx: Dict[str, Any]
+) -> Tuple[ExtractionResult, Dict[str, Any]]:
     """
     便捷函数：按类型抽取
-    
+
     Args:
         type_id: 知识类型
         content: 待抽取内容
         ctx: 上下文
-    
+
     Returns:
         (ExtractionResult, trace)
     """
     extractor = get_extractor(type_id)
     if not extractor:
         return ExtractionResult(None, False, f"未知类型: {type_id}", 0), {"error": "unknown_type"}
-    
+
     return extractor.extract(content, ctx)

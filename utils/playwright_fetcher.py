@@ -29,7 +29,12 @@ BLOCK_PATTERNS: List[str] = [
 ]
 
 
-def fetch_rendered_html_sync(url: str, timeout_ms: int = 30000, human_simulation: bool = False, proxy_server: Optional[str] = None) -> Optional[str]:
+def fetch_rendered_html_sync(
+    url: str,
+    timeout_ms: int = 30000,
+    human_simulation: bool = False,
+    proxy_server: Optional[str] = None,
+) -> Optional[str]:
     """使用 Playwright 同步 API 获取渲染后的 HTML。
 
     Args:
@@ -57,7 +62,10 @@ def fetch_rendered_html_sync(url: str, timeout_ms: int = 30000, human_simulation
             vw = random.randint(1200, 1920)
             vh = random.randint(720, 1080)
 
-            launch_kwargs = {"headless": True, "args": ["--disable-blink-features=AutomationControlled"]}
+            launch_kwargs = {
+                "headless": True,
+                "args": ["--disable-blink-features=AutomationControlled"],
+            }
             if proxy_server:
                 launch_kwargs["proxy"] = {"server": proxy_server}
             browser = p.chromium.launch(**launch_kwargs)
@@ -150,8 +158,9 @@ def fetch_rendered_html_sync(url: str, timeout_ms: int = 30000, human_simulation
 
                 try:
                     import os
-                    min_dwell = float(os.getenv('HUMAN_SIM_MIN_DWELL_SEC', '7'))
-                    max_dwell = float(os.getenv('HUMAN_SIM_MAX_DWELL_SEC', '12'))
+
+                    min_dwell = float(os.getenv("HUMAN_SIM_MIN_DWELL_SEC", "7"))
+                    max_dwell = float(os.getenv("HUMAN_SIM_MAX_DWELL_SEC", "12"))
                     dwell = max(min_dwell, random.uniform(min_dwell, max_dwell))
                     time.sleep(dwell)
                 except Exception:

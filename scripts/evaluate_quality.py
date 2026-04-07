@@ -102,7 +102,9 @@ def find_first_list(data, keys):
     return []
 
 
-def add_item_metrics(item, required_fields, text_fields, dup_field, metrics, min_info_len, min_index_len):
+def add_item_metrics(
+    item, required_fields, text_fields, dup_field, metrics, min_info_len, min_index_len
+):
     for field in required_fields:
         value = item.get(field)
         if value is None or value == "" or value == []:
@@ -192,13 +194,30 @@ def evaluate_examples(data, metrics, min_info_len, min_index_len):
 
 def evaluate_levels(data, metrics, min_info_len, min_index_len):
     for items, required, text_fields, dup_field in [
-        (safe_list(data.get("leveling_principles")), ["id", "description"], ["description"], "description"),
-        (safe_list(data.get("decomposition_rules")), ["id", "description"], ["description"], "description"),
-        (safe_list(data.get("level_definitions")), ["level", "name", "purpose"], ["name", "purpose"], "purpose"),
+        (
+            safe_list(data.get("leveling_principles")),
+            ["id", "description"],
+            ["description"],
+            "description",
+        ),
+        (
+            safe_list(data.get("decomposition_rules")),
+            ["id", "description"],
+            ["description"],
+            "description",
+        ),
+        (
+            safe_list(data.get("level_definitions")),
+            ["level", "name", "purpose"],
+            ["name", "purpose"],
+            "purpose",
+        ),
     ]:
         for item in items:
             if isinstance(item, dict):
-                add_item_metrics(item, required, text_fields, dup_field, metrics, min_info_len, min_index_len)
+                add_item_metrics(
+                    item, required, text_fields, dup_field, metrics, min_info_len, min_index_len
+                )
         metrics["items"] += len(items)
 
 
@@ -434,18 +453,46 @@ def load_baseline(path: Path):
 
 def build_default_queries():
     return [
-        {"query": "外部实体是什么", "expected_collections": ["se_kb_dfd_concepts"], "group": "concept"},
-        {"query": "处理过程的定义", "expected_collections": ["se_kb_dfd_concepts"], "group": "concept"},
+        {
+            "query": "外部实体是什么",
+            "expected_collections": ["se_kb_dfd_concepts"],
+            "group": "concept",
+        },
+        {
+            "query": "处理过程的定义",
+            "expected_collections": ["se_kb_dfd_concepts"],
+            "group": "concept",
+        },
         {"query": "数据流含义", "expected_collections": ["se_kb_dfd_concepts"], "group": "concept"},
-        {"query": "图书馆管理系统数据流图案例", "expected_collections": ["se_kb_dfd_examples"], "group": "example"},
-        {"query": "ATM 余额查询 DFD 示例", "expected_collections": ["se_kb_dfd_examples"], "group": "example"},
-        {"query": "电商下单流程数据流图案例", "expected_collections": ["se_kb_dfd_examples"], "group": "example"},
+        {
+            "query": "图书馆管理系统数据流图案例",
+            "expected_collections": ["se_kb_dfd_examples"],
+            "group": "example",
+        },
+        {
+            "query": "ATM 余额查询 DFD 示例",
+            "expected_collections": ["se_kb_dfd_examples"],
+            "group": "example",
+        },
+        {
+            "query": "电商下单流程数据流图案例",
+            "expected_collections": ["se_kb_dfd_examples"],
+            "group": "example",
+        },
         {"query": "数据平衡规则", "expected_collections": ["se_kb_dfd_rules"], "group": "rule"},
         {"query": "父子图平衡规则", "expected_collections": ["se_kb_dfd_rules"], "group": "rule"},
         {"query": "命名规则约束", "expected_collections": ["se_kb_dfd_rules"], "group": "rule"},
-        {"query": "顶层图模板", "expected_collections": ["se_kb_dfd_templates"], "group": "template"},
+        {
+            "query": "顶层图模板",
+            "expected_collections": ["se_kb_dfd_templates"],
+            "group": "template",
+        },
         {"query": "分解模板", "expected_collections": ["se_kb_dfd_templates"], "group": "template"},
-        {"query": "数据存储交互模板", "expected_collections": ["se_kb_dfd_templates"], "group": "template"},
+        {
+            "query": "数据存储交互模板",
+            "expected_collections": ["se_kb_dfd_templates"],
+            "group": "template",
+        },
         {"query": "分层原则", "expected_collections": ["se_kb_dfd_levels"], "group": "level"},
         {"query": "分解规则", "expected_collections": ["se_kb_dfd_levels"], "group": "level"},
         {"query": "层次分解深度", "expected_collections": ["se_kb_dfd_levels"], "group": "level"},
@@ -467,11 +514,13 @@ def load_queries(path: Path):
                 expected = item.get("expected_collections") or []
                 group = item.get("group") or "general"
                 if query:
-                    queries.append({
-                        "query": query,
-                        "expected_collections": expected,
-                        "group": group,
-                    })
+                    queries.append(
+                        {
+                            "query": query,
+                            "expected_collections": expected,
+                            "group": group,
+                        }
+                    )
             return queries
     except Exception:
         return None
@@ -480,6 +529,7 @@ def load_queries(path: Path):
 
 def evaluate_recall(queries, top_k):
     from vectorizer.retriever import KnowledgeRetriever
+
     retriever = KnowledgeRetriever()
     k_values = [1, 3, 5]
     k_values = [k for k in k_values if k <= top_k]
@@ -503,14 +553,16 @@ def evaluate_recall(queries, top_k):
         for k in k_values:
             if hit_at[k]:
                 group_stats[f"hit@{k}"] += 1
-        details.append({
-            "query": query,
-            "group": group,
-            "expected_collections": list(expected),
-            "intent": response.intent.value if response.intent else None,
-            "hit_at": {f"hit@{k}": hit_at[k] for k in k_values},
-            "top_collections": collections,
-        })
+        details.append(
+            {
+                "query": query,
+                "group": group,
+                "expected_collections": list(expected),
+                "intent": response.intent.value if response.intent else None,
+                "hit_at": {f"hit@{k}": hit_at[k] for k in k_values},
+                "top_collections": collections,
+            }
+        )
     total_queries = len(queries)
     recall = {
         "top_k": top_k,
@@ -524,7 +576,9 @@ def evaluate_recall(queries, top_k):
         recall["hit_rates"][f"hit@{k}"] = rate
     for group, stats in groups.items():
         total = stats["total"]
-        group_rates = {f"hit@{k}": round(stats[f"hit@{k}"] / total, 4) if total else 0.0 for k in k_values}
+        group_rates = {
+            f"hit@{k}": round(stats[f"hit@{k}"] / total, 4) if total else 0.0 for k in k_values
+        }
         recall["groups"][group] = {
             "total": total,
             "hit_rates": group_rates,
@@ -550,10 +604,20 @@ def compute_trend(current, baseline):
                 continue
             base_metrics = baseline["types"][type_id]
             type_trend[type_id] = {
-                "missing_rate_delta": round(metrics.get("missing_rate", 0) - base_metrics.get("missing_rate", 0), 4),
-                "low_info_rate_delta": round(metrics.get("low_info_rate", 0) - base_metrics.get("low_info_rate", 0), 4),
-                "indexable_fail_rate_delta": round(metrics.get("indexable_fail_rate", 0) - base_metrics.get("indexable_fail_rate", 0), 4),
-                "duplicate_rate_delta": round(metrics.get("duplicate_rate", 0) - base_metrics.get("duplicate_rate", 0), 4),
+                "missing_rate_delta": round(
+                    metrics.get("missing_rate", 0) - base_metrics.get("missing_rate", 0), 4
+                ),
+                "low_info_rate_delta": round(
+                    metrics.get("low_info_rate", 0) - base_metrics.get("low_info_rate", 0), 4
+                ),
+                "indexable_fail_rate_delta": round(
+                    metrics.get("indexable_fail_rate", 0)
+                    - base_metrics.get("indexable_fail_rate", 0),
+                    4,
+                ),
+                "duplicate_rate_delta": round(
+                    metrics.get("duplicate_rate", 0) - base_metrics.get("duplicate_rate", 0), 4
+                ),
             }
         if type_trend:
             trend["types"] = type_trend
@@ -623,20 +687,22 @@ def main():
                 file_metrics = new_metrics()
                 evaluator(data, file_metrics, args.min_info_len, args.min_index_len)
                 rates = compute_rates(file_metrics)
-                file_reports.append({
-                    "file": str(file_path),
-                    "type_id": type_id,
-                    "items": file_metrics["items"],
-                    "missing_fields": file_metrics["missing_fields"],
-                    "required_fields_total": file_metrics["required_fields_total"],
-                    "low_info_fields": file_metrics["low_info_fields"],
-                    "text_fields_total": file_metrics["text_fields_total"],
-                    "indexable_failures": file_metrics["indexable_failures"],
-                    "missing_rate": rates["missing_rate"],
-                    "low_info_rate": rates["low_info_rate"],
-                    "indexable_fail_rate": rates["indexable_fail_rate"],
-                    "duplicate_rate": rates["duplicate_rate"],
-                })
+                file_reports.append(
+                    {
+                        "file": str(file_path),
+                        "type_id": type_id,
+                        "items": file_metrics["items"],
+                        "missing_fields": file_metrics["missing_fields"],
+                        "required_fields_total": file_metrics["required_fields_total"],
+                        "low_info_fields": file_metrics["low_info_fields"],
+                        "text_fields_total": file_metrics["text_fields_total"],
+                        "indexable_failures": file_metrics["indexable_failures"],
+                        "missing_rate": rates["missing_rate"],
+                        "low_info_rate": rates["low_info_rate"],
+                        "indexable_fail_rate": rates["indexable_fail_rate"],
+                        "duplicate_rate": rates["duplicate_rate"],
+                    }
+                )
         schema_validated = False
         schema_kt = registry.get(type_id)
         if schema_kt and schema_kt.schema_path:
@@ -653,12 +719,14 @@ def main():
                         schema_stats["passed"] += 1
                     else:
                         schema_stats["failed"] += 1
-                        schema_failures.append({
-                            "file": str(file_path),
-                            "type_id": type_id,
-                            "schema": str(schema_path),
-                            "errors": errors,
-                        })
+                        schema_failures.append(
+                            {
+                                "file": str(file_path),
+                                "type_id": type_id,
+                                "schema": str(schema_path),
+                                "errors": errors,
+                            }
+                        )
         if not schema_validated:
             schema_stats["skipped"] += 1
 

@@ -46,50 +46,62 @@ TESTS_DIR = PROJECT_ROOT / "tests"
 # 静态文件目录
 STATIC_DIR = PROJECT_ROOT / "static"
 
+
 def ensure_directories():
     """确保所有必要的目录都存在"""
     directories = [
-        DATA_DIR, RAW_DATA_DIR, PARSED_DATA_DIR, CONVERTED_DATA_DIR,
-        SHARED_DATA_DIR, KNOWLEDGE_BASE_DIR, ARCHIVED_DIR,
-        DFD_MODELING_DIR, REQUIREMENT_ANALYSIS_DIR, SOFTWARE_ENGINEERING_DIR,
-        UML_MODELING_DIR, CASE_STUDIES_DIR,
-        JSON_LLM_READY_DIR, MARKDOWN_LLM_READY_DIR,
-        LOGS_DIR
+        DATA_DIR,
+        RAW_DATA_DIR,
+        PARSED_DATA_DIR,
+        CONVERTED_DATA_DIR,
+        SHARED_DATA_DIR,
+        KNOWLEDGE_BASE_DIR,
+        ARCHIVED_DIR,
+        DFD_MODELING_DIR,
+        REQUIREMENT_ANALYSIS_DIR,
+        SOFTWARE_ENGINEERING_DIR,
+        UML_MODELING_DIR,
+        CASE_STUDIES_DIR,
+        JSON_LLM_READY_DIR,
+        MARKDOWN_LLM_READY_DIR,
+        LOGS_DIR,
     ]
-    
+
     for directory in directories:
         directory.mkdir(parents=True, exist_ok=True)
         print(f"✅ 确保目录存在: {directory}")
 
+
 def get_path_config():
     """获取所有路径配置"""
     return {
-        'project_root': PROJECT_ROOT,
-        'data': {
-            'root': DATA_DIR,
-            'raw': RAW_DATA_DIR,
-            'parsed': PARSED_DATA_DIR,
-            'converted': CONVERTED_DATA_DIR
+        "project_root": PROJECT_ROOT,
+        "data": {
+            "root": DATA_DIR,
+            "raw": RAW_DATA_DIR,
+            "parsed": PARSED_DATA_DIR,
+            "converted": CONVERTED_DATA_DIR,
         },
-        'shared_data': {
-            'root': SHARED_DATA_DIR,
-            'knowledge_base': KNOWLEDGE_BASE_DIR,
-            'archived': ARCHIVED_DIR,
-            'dfd_modeling': DFD_MODELING_DIR,
-            'requirement_analysis': REQUIREMENT_ANALYSIS_DIR,
-            'software_engineering': SOFTWARE_ENGINEERING_DIR,
-            'uml_modeling': UML_MODELING_DIR,
-            'case_studies': CASE_STUDIES_DIR,
-            'json_llm_ready': JSON_LLM_READY_DIR,
-            'markdown_llm_ready': MARKDOWN_LLM_READY_DIR
+        "shared_data": {
+            "root": SHARED_DATA_DIR,
+            "knowledge_base": KNOWLEDGE_BASE_DIR,
+            "archived": ARCHIVED_DIR,
+            "dfd_modeling": DFD_MODELING_DIR,
+            "requirement_analysis": REQUIREMENT_ANALYSIS_DIR,
+            "software_engineering": SOFTWARE_ENGINEERING_DIR,
+            "uml_modeling": UML_MODELING_DIR,
+            "case_studies": CASE_STUDIES_DIR,
+            "json_llm_ready": JSON_LLM_READY_DIR,
+            "markdown_llm_ready": MARKDOWN_LLM_READY_DIR,
         },
-        'logs': LOGS_DIR,
-        'config': CONFIG_DIR,
-        'utils': UTILS_DIR,
-        'scripts': SCRIPTS_DIR,
-        'tests': TESTS_DIR,
-        'static': STATIC_DIR
+        "logs": LOGS_DIR,
+        "config": CONFIG_DIR,
+        "utils": UTILS_DIR,
+        "scripts": SCRIPTS_DIR,
+        "tests": TESTS_DIR,
+        "static": STATIC_DIR,
     }
+
 
 # 路径配置字典，供其他脚本使用
 PATHS = get_path_config()
@@ -98,7 +110,7 @@ if __name__ == "__main__":
     print("🚀 初始化路径配置...")
     ensure_directories()
     print("✅ 路径配置完成！")
-    
+
     # 打印所有路径
     config = get_path_config()
     for category, paths in config.items():

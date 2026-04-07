@@ -9,15 +9,15 @@ from pathlib import Path
 
 def _load_env_file():
     """加载 .env 文件到环境变量"""
-    env_path = Path('.env')
+    env_path = Path(".env")
     if env_path.exists():
         try:
-            for line in env_path.read_text(encoding='utf-8').splitlines():
+            for line in env_path.read_text(encoding="utf-8").splitlines():
                 line = line.strip()
-                if not line or line.startswith('#'):
+                if not line or line.startswith("#"):
                     continue
-                if '=' in line:
-                    k, v = line.split('=', 1)
+                if "=" in line:
+                    k, v = line.split("=", 1)
                     k, v = k.strip(), v.strip()
                     if k and v and os.getenv(k) is None:
                         os.environ[k] = v
@@ -47,6 +47,7 @@ from validators.jsonschema_validator import make_validator
 def _namer_default(name: str) -> str:
     """默认命名规范化"""
     import re
+
     n = (name or "").strip()
     n = re.sub(r"\s+", " ", n)
     return n[:64] if len(n) > 64 else n
@@ -62,8 +63,9 @@ def _normalize_default(artifact: dict, namer) -> dict:
                 artifact[k] = _normalize_default(v, namer)
             elif isinstance(v, list):
                 artifact[k] = [
-                    _normalize_default(i, namer) if isinstance(i, dict) 
-                    else (namer(i) if isinstance(i, str) else i) 
+                    _normalize_default(i, namer)
+                    if isinstance(i, dict)
+                    else (namer(i) if isinstance(i, str) else i)
                     for i in v
                 ]
     return artifact
@@ -76,33 +78,33 @@ def _use_enhanced_adapters() -> bool:
     默认：如果配置了 FILTER_BASE_URL 则启用
     """
     # 显式设置
-    explicit = os.getenv('USE_ENHANCED_ADAPTERS', '').lower()
-    if explicit in ('true', '1', 'yes', 'on'):
+    explicit = os.getenv("USE_ENHANCED_ADAPTERS", "").lower()
+    if explicit in ("true", "1", "yes", "on"):
         return True
-    if explicit in ('false', '0', 'no', 'off'):
+    if explicit in ("false", "0", "no", "off"):
         return False
-    
+
     # 默认：检查是否配置了 preselector 所需的环境变量
-    filter_url = os.getenv('FILTER_BASE_URL', '')
-    filter_key = os.getenv('FILTER_API_KEY', '')
-    
+    filter_url = os.getenv("FILTER_BASE_URL", "")
+    filter_key = os.getenv("FILTER_API_KEY", "")
+
     # 调试输出
-    if os.getenv('DEBUG_REGISTRY'):
+    if os.getenv("DEBUG_REGISTRY"):
         print(f"[Registry Debug] FILTER_BASE_URL: {'configured' if filter_url else 'NOT SET'}")
         print(f"[Registry Debug] FILTER_API_KEY: {'configured' if filter_key else 'NOT SET'}")
-    
+
     return bool(filter_url and filter_key)
 
 
 def get_registry() -> dict:
     """
     获取知识类型注册表
-    
+
     根据配置自动选择使用 Legacy 或 Enhanced adapters
     """
     use_enhanced = _use_enhanced_adapters()
     base = Path("se_kb/schema")
-    
+
     if use_enhanced:
         # 使用增强版 adapter（基于 LLM Preselector）
         return {

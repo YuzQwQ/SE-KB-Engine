@@ -1,36 +1,20 @@
 import os
 import json
 import re
-from pathlib import Path
 from typing import Dict, Any, Optional
 import httpx
 
 from refiner.embedder import SemanticEmbedder
+from utils.env_loader import load_env_file
 
 
 class SemanticJudge:
     def __init__(self):
-        self._load_env()
+        load_env_file()
         self.base_url = os.getenv("JUDGE_BASE_URL", "").rstrip("/")
         self.api_key = os.getenv("JUDGE_API_KEY", "")
         self.model_id = os.getenv("JUDGE_MODEL_ID", "")
         self.timeout = float(os.getenv("JUDGE_TIMEOUT", "60"))
-
-    def _load_env(self):
-        env_path = Path(".env")
-        if env_path.exists():
-            try:
-                for line in env_path.read_text(encoding="utf-8").splitlines():
-                    line = line.strip()
-                    if not line or line.startswith("#"):
-                        continue
-                    if "=" in line:
-                        k, v = line.split("=", 1)
-                        k, v = k.strip(), v.strip()
-                        if k and v and os.getenv(k) is None:
-                            os.environ[k] = v
-            except Exception:
-                pass
 
     def is_available(self) -> bool:
         return bool(self.base_url and self.api_key and self.model_id)
@@ -48,9 +32,16 @@ class SemanticJudge:
                 return None
         return None
 
-    def judge(self, source_text: str, artifact_text: str, type_id: str, title: str, url: str) -> Dict[str, Any]:
+    def judge(
+        self, source_text: str, artifact_text: str, type_id: str, title: str, url: str
+    ) -> Dict[str, Any]:
         if not self.is_available():
-            return {"available": False, "passed": True, "score": None, "reason": "judge_unavailable"}
+            return {
+                "available": False,
+                "passed": True,
+                "score": None,
+                "reason": "judge_unavailable",
+            }
 
         source_snippet = source_text[:2000]
         artifact_snippet = artifact_text[:2000]
@@ -80,7 +71,9 @@ class SemanticJudge:
 
         try:
             with httpx.Client(timeout=self.timeout) as client:
-                response = client.post(f"{self.base_url}/chat/completions", headers=headers, json=payload)
+                response = client.post(
+                    f"{self.base_url}/chat/completions", headers=headers, json=payload
+                )
                 response.raise_for_status()
                 data = response.json()
             content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
@@ -90,7 +83,12 @@ class SemanticJudge:
             reason = parsed.get("reason", "") if isinstance(parsed.get("reason", ""), str) else ""
             return {"available": True, "passed": passed, "score": score, "reason": reason}
         except Exception as e:
-            return {"available": True, "passed": False, "score": None, "reason": f"judge_error: {e}"}
+            return {
+                "available": True,
+                "passed": False,
+                "score": None,
+                "reason": f"judge_error: {e}",
+            }
 
 
 class Stage3Validator:
@@ -101,7 +99,12 @@ class Stage3Validator:
 
     def _embedding_check(self, source_text: str, artifact_text: str) -> Dict[str, Any]:
         if not self.embedder.is_available():
-            return {"available": False, "passed": True, "score": None, "error": "embedding_unavailable"}
+            return {
+                "available": False,
+                "passed": True,
+                "score": None,
+                "error": "embedding_unavailable",
+            }
         if not source_text or not artifact_text:
             return {"available": True, "passed": True, "score": None, "error": "embedding_skipped"}
         vec_source = self.embedder.get_embedding(source_text)
@@ -116,7 +119,9 @@ class Stage3Validator:
             "error": "" if score >= self.embedding_threshold else "embedding_below_threshold",
         }
 
-    def validate(self, artifact: Dict[str, Any], source_text: str, type_id: str, title: str, url: str) -> Dict[str, Any]:
+    def validate(
+        self, artifact: Dict[str, Any], source_text: str, type_id: str, title: str, url: str
+    ) -> Dict[str, Any]:
         artifact_text = self.embedder.extract_text_for_embedding(artifact)
         embedding_result = self._embedding_check(source_text, artifact_text)
         judge_result = self.judge.judge(source_text, artifact_text, type_id, title, url)

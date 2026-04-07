@@ -21,17 +21,17 @@ from .llm_preselector import (
 
 __all__ = [
     # Legacy
-    'DFDAdapter',
-    'ConceptsAdapter', 
-    'RulesAdapter',
+    "DFDAdapter",
+    "ConceptsAdapter",
+    "RulesAdapter",
     # Enhanced
-    'EnhancedDFDAdapter',
-    'EnhancedConceptsAdapter',
-    'EnhancedRulesAdapter',
-    'get_enhanced_adapter',
+    "EnhancedDFDAdapter",
+    "EnhancedConceptsAdapter",
+    "EnhancedRulesAdapter",
+    "get_enhanced_adapter",
     # Preselector
-    'LLMPreselector',
-    'get_preselector',
-    'preselect_candidates',
-    'CandidateChunk',
+    "LLMPreselector",
+    "get_preselector",
+    "preselect_candidates",
+    "CandidateChunk",
 ]
