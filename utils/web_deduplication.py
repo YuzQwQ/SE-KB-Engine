@@ -6,11 +6,11 @@
 """
 
 import sqlite3
+from contextlib import closing
 import hashlib
 import re
 import logging
 from typing import Optional, Dict, Tuple, Any
-from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 import difflib
 import os
 
@@ -31,11 +31,13 @@ class WebDeduplication:
         )  # 内容相似度阈值
         self.enable_url_dedup = os.getenv("ENABLE_URL_DEDUP", "true").lower() == "true"
         self.enable_content_dedup = os.getenv("ENABLE_CONTENT_DEDUP", "true").lower() == "true"
+        # Approximate matches can discard semantically different technical examples.
+        self.enable_near_content_dedup = os.getenv("ENABLE_NEAR_CONTENT_DEDUP", "false").lower() == "true"
 
     def init_database(self):
         """初始化数据库表结构"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with closing(sqlite3.connect(self.db_path)) as conn, conn:
                 cursor = conn.cursor()
 
                 # URL去重表
@@ -93,85 +95,9 @@ class WebDeduplication:
 
     def normalize_url(self, url: str) -> str:
         """标准化URL，移除不影响内容的参数"""
-        try:
-            parsed = urlparse(url.strip())
+        from se_kb_app.crawling.http import canonical_url
 
-            # 标准化域名（转小写）
-            netloc = parsed.netloc.lower()
-
-            # 移除默认端口
-            if netloc.endswith(":80") and parsed.scheme == "http":
-                netloc = netloc[:-3]
-            elif netloc.endswith(":443") and parsed.scheme == "https":
-                netloc = netloc[:-4]
-
-            # 标准化路径
-            path = parsed.path
-            if not path:
-                path = "/"
-
-            # 处理查询参数 - 移除常见的跟踪参数
-            query_params = parse_qs(parsed.query)
-
-            # 需要移除的跟踪参数
-            tracking_params = {
-                "utm_source",
-                "utm_medium",
-                "utm_campaign",
-                "utm_term",
-                "utm_content",
-                "gclid",
-                "fbclid",
-                "msclkid",
-                "_ga",
-                "_gid",
-                "ref",
-                "referrer",
-                "source",
-                "from",
-                "spm",
-                "scm",
-                "pvid",
-                "pos",
-                "ps",
-                "clickid",
-                "timestamp",
-                "time",
-                "t",
-                "_t",
-                "v",
-                "version",
-            }
-
-            # 过滤掉跟踪参数
-            filtered_params = {
-                k: v for k, v in query_params.items() if k.lower() not in tracking_params
-            }
-
-            # 重新构建查询字符串（按键排序以确保一致性）
-            if filtered_params:
-                sorted_params = sorted(filtered_params.items())
-                query = urlencode(sorted_params, doseq=True)
-            else:
-                query = ""
-
-            # 重新构建URL
-            normalized = urlunparse(
-                (
-                    parsed.scheme.lower(),
-                    netloc,
-                    path,
-                    parsed.params,
-                    query,
-                    "",  # 移除fragment
-                )
-            )
-
-            return normalized
-
-        except Exception as e:
-            logger.warning(f"URL标准化失败: {url}, 错误: {e}")
-            return url
+        return canonical_url(url.strip())
 
     def generate_url_hash(self, normalized_url: str) -> str:
         """生成URL哈希值"""
@@ -179,10 +105,10 @@ class WebDeduplication:
 
     def generate_content_hash(self, content: str) -> str:
         """生成内容哈希值"""
-        # 清理内容：移除多余空白、标点符号等
-        cleaned_content = re.sub(r"\s+", " ", content.strip())
-        cleaned_content = re.sub(r"[^\w\s\u4e00-\u9fff]", "", cleaned_content)
-        return hashlib.sha256(cleaned_content.encode("utf-8")).hexdigest()
+        # Version the identity rather than rewriting old cache rows. Operators and
+        # code indentation are meaningful; only equivalent line endings normalize.
+        text = content.replace("\r\n", "\n").replace("\r", "\n")
+        return "v2:" + hashlib.sha256(text.encode("utf-8")).hexdigest()
 
     def generate_content_fingerprint(self, content: str, length: int = 200) -> str:
         """生成内容指纹（用于相似度比较）"""
@@ -190,7 +116,7 @@ class WebDeduplication:
         words = re.findall(r"\b\w{3,}\b", content.lower())
         # 取前N个词作为指纹
         fingerprint_words = words[:length] if len(words) > length else words
-        return " ".join(fingerprint_words)
+        return " ".join(fingerprint_words)[:2048]
 
     def is_url_duplicate(self, url: str) -> Tuple[bool, Optional[Dict]]:
         """检查URL是否重复"""
@@ -201,7 +127,7 @@ class WebDeduplication:
             normalized_url = self.normalize_url(url)
             url_hash = self.generate_url_hash(normalized_url)
 
-            with sqlite3.connect(self.db_path) as conn:
+            with closing(sqlite3.connect(self.db_path)) as conn, conn:
                 cursor = conn.cursor()
 
                 # 检查是否存在相同的URL哈希
@@ -221,7 +147,7 @@ class WebDeduplication:
                     cursor.execute(
                         """
                         UPDATE url_cache 
-                        SET last_crawled = CURRENT_TIMESTAMP, crawl_count = crawl_count + 1
+                        SET crawl_count = crawl_count + 1
                         WHERE url_hash = ?
                     """,
                         (url_hash,),
@@ -258,7 +184,7 @@ class WebDeduplication:
             content_hash = self.generate_content_hash(content)
             content_fingerprint = self.generate_content_fingerprint(content)
 
-            with sqlite3.connect(self.db_path) as conn:
+            with closing(sqlite3.connect(self.db_path)) as conn, conn:
                 cursor = conn.cursor()
 
                 # 首先检查完全相同的内容
@@ -275,13 +201,16 @@ class WebDeduplication:
                     return True, {
                         "match_type": "exact",
                         "similarity": 1.0,
-                        "cached_title": exact_match[2],
+                        "cached_title": exact_match[3],
                         "first_url": exact_match[5],
                     }
 
-                # 检查相似内容
+                if not self.enable_near_content_dedup or not content_fingerprint:
+                    return False, None
+                # Explicit opt-in only, with bounded candidates and fingerprint size.
                 cursor.execute("""
-                    SELECT content_fingerprint, title, first_url FROM content_cache
+                    SELECT substr(content_fingerprint, 1, 2048), title, first_url
+                    FROM content_cache ORDER BY id DESC LIMIT 128
                 """)
 
                 cached_contents = cursor.fetchall()
@@ -319,7 +248,7 @@ class WebDeduplication:
             normalized_url = self.normalize_url(url)
             url_hash = self.generate_url_hash(normalized_url)
 
-            with sqlite3.connect(self.db_path) as conn:
+            with closing(sqlite3.connect(self.db_path)) as conn, conn:
                 cursor = conn.cursor()
 
                 cursor.execute(
@@ -352,7 +281,7 @@ class WebDeduplication:
             content_hash = self.generate_content_hash(content)
             content_fingerprint = self.generate_content_fingerprint(content)
 
-            with sqlite3.connect(self.db_path) as conn:
+            with closing(sqlite3.connect(self.db_path)) as conn, conn:
                 cursor = conn.cursor()
 
                 cursor.execute(
@@ -373,7 +302,7 @@ class WebDeduplication:
     def clean_expired_cache(self):
         """清理过期的缓存记录"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with closing(sqlite3.connect(self.db_path)) as conn, conn:
                 cursor = conn.cursor()
 
                 # 清理过期的URL缓存
@@ -400,7 +329,7 @@ class WebDeduplication:
     def get_cache_stats(self) -> Dict:
         """获取缓存统计信息"""
         try:
-            with sqlite3.connect(self.db_path) as conn:
+            with closing(sqlite3.connect(self.db_path)) as conn, conn:
                 cursor = conn.cursor()
 
                 # URL缓存统计

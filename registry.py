@@ -5,24 +5,12 @@ Registry - 知识类型注册表
 
 import os
 from pathlib import Path
+from utils.env_loader import load_env_file
 
 
 def _load_env_file():
     """加载 .env 文件到环境变量"""
-    env_path = Path(".env")
-    if env_path.exists():
-        try:
-            for line in env_path.read_text(encoding="utf-8").splitlines():
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
-                if "=" in line:
-                    k, v = line.split("=", 1)
-                    k, v = k.strip(), v.strip()
-                    if k and v and os.getenv(k) is None:
-                        os.environ[k] = v
-        except Exception:
-            pass
+    load_env_file(Path(".env"))
 
 
 # 在导入前加载环境变量

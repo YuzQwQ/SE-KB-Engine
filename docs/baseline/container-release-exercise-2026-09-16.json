@@ -1,0 +1,11 @@
+{
+  "compose_project": "sekbexercise-local-20260916",
+  "temporary_named_volumes": true,
+  "non_root_uid": 10001,
+  "read_only_root": true,
+  "startup_and_auth_smoke": true,
+  "upgrade_ok": true,
+  "rollback_ok": true,
+  "artifact_and_index_sha256": "d267cb7e5d57211b9eb7fa04f62aecdd114c1d5594cdba1a8503bc47c2277843",
+  "temporary_resources_removed": true
+}

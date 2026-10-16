@@ -1,0 +1,133 @@
+{
+  "status": "complete",
+  "candidate": "vector",
+  "metrics": {
+    "recall_at_k": 0.8333333333333334,
+    "mrr": 0.8333333333333334,
+    "ndcg_at_k": 0.82597176489103,
+    "no_answer_accuracy": 0.8571428571428571,
+    "p50_latency_ms": 0.41420001070946455,
+    "p95_latency_ms": 0.6354800047120078,
+    "peak_memory_bytes": 15526,
+    "input_tokens": 29,
+    "estimated_cost": 0.0
+  },
+  "fingerprints": {
+    "commit": "68d16520da4be092f1bd3ed84349049849be81cb",
+    "dirty": true,
+    "environment": {
+      "python": "3.13.2",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "implementation": "CPython",
+      "offline": true
+    },
+    "dependencies": "557233bce252f09ccb8bb80bee4f9865fac3f845da4fe48114ace9df2096ac23",
+    "dataset": "36d0a5fa3582102b08892e0640be502e402403d94437aaa37df3e733362cb081",
+    "dataset_version": "1.0.0",
+    "configuration": "542deb6eb7b141686cddc7c4fd634c405bfcfb380f7ebdb1177cbe0556acdaf1",
+    "chunker": "document-v1:size=0:overlap=0",
+    "embedding": "hash-vector-v1",
+    "index": "fixture-vector-size-0-overlap-0-v1",
+    "query_planner": "direct-v1",
+    "seed": 20260915
+  },
+  "queries": [
+    {
+      "query_id": "q-external",
+      "ranked_ids": [
+        "dfd-external-entity",
+        "dfd-data-store",
+        "dfd-process",
+        "payment-example",
+        "weather-flow"
+      ],
+      "top_score": 0.269581933008596,
+      "expected_no_answer": false,
+      "predicted_no_answer": false,
+      "latency_ms": 0.4054000019095838
+    },
+    {
+      "query_id": "q-process-en",
+      "ranked_ids": [
+        "dfd-leveling",
+        "weather-flow",
+        "software-cohesion",
+        "dfd-data-flow",
+        "dfd-data-store"
+      ],
+      "top_score": 0.2668802563418119,
+      "expected_no_answer": false,
+      "predicted_no_answer": false,
+      "latency_ms": 0.39330002618953586
+    },
+    {
+      "query_id": "q-flow",
+      "ranked_ids": [
+        "dfd-data-flow",
+        "dfd-balance",
+        "dfd-data-store",
+        "dfd-process",
+        "payment-example"
+      ],
+      "top_score": 0.5976143046671968,
+      "expected_no_answer": false,
+      "predicted_no_answer": false,
+      "latency_ms": 0.6971000111661851
+    },
+    {
+      "query_id": "q-store",
+      "ranked_ids": [
+        "dfd-data-store",
+        "payment-example",
+        "dfd-data-flow",
+        "dfd-process",
+        "dfd-balance"
+      ],
+      "top_score": 0.3668126156726501,
+      "expected_no_answer": false,
+      "predicted_no_answer": false,
+      "latency_ms": 0.49169998965226114
+    },
+    {
+      "query_id": "q-balance",
+      "ranked_ids": [
+        "dfd-balance",
+        "accounting-balance",
+        "dfd-leveling",
+        "dfd-process",
+        "weather-flow"
+      ],
+      "top_score": 0.45144694907163446,
+      "expected_no_answer": false,
+      "predicted_no_answer": false,
+      "latency_ms": 0.42460000258870423
+    },
+    {
+      "query_id": "q-cohesion",
+      "ranked_ids": [
+        "software-cohesion",
+        "dfd-external-entity",
+        "dfd-leveling",
+        "accounting-balance"
+      ],
+      "top_score": 0.13968605915391563,
+      "expected_no_answer": false,
+      "predicted_no_answer": false,
+      "latency_ms": 0.394799979403615
+    },
+    {
+      "query_id": "q-neural",
+      "ranked_ids": [
+        "dfd-data-store",
+        "dfd-external-entity",
+        "dfd-data-flow",
+        "dfd-process",
+        "payment-example"
+      ],
+      "top_score": 0.16918197377512545,
+      "expected_no_answer": true,
+      "predicted_no_answer": false,
+      "latency_ms": 0.41420001070946455
+    }
+  ]
+}

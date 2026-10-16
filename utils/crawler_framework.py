@@ -4,7 +4,8 @@
 """
 
 import json
-import requests
+import httpx
+import atexit
 import time
 import os
 from pathlib import Path
@@ -36,6 +37,11 @@ class CrawlerFramework:
 
         # API密钥
         self.serpapi_key = os.getenv("SERPAPI_API_KEY")
+        self._client = httpx.Client(timeout=20.0, trust_env=False, follow_redirects=False)
+        atexit.register(self.close)
+
+    def close(self) -> None:
+        self._client.close()
 
     def _load_engine_configs(self) -> Dict[str, Dict]:
         """加载所有搜索引擎配置"""
@@ -145,11 +151,14 @@ class CrawlerFramework:
         params.update(kwargs)
 
         # 发送请求
-        response = requests.get(config["base_url"], params=params, timeout=120)
+        from se_kb_app.jobs.context import checkpoint
+        checkpoint()
+        response = self._client.get(config["base_url"], params=params)
+        checkpoint()
         response.raise_for_status()
 
         logger = logging.getLogger(__name__)
-        logger.info(f"SerpAPI请求URL: {response.url}")
+        logger.info("SerpAPI response received")
         logger.info(f"响应状态码: {response.status_code}")
         logger.info(f"响应大小: {len(response.content)} bytes")
 
@@ -163,8 +172,8 @@ class CrawlerFramework:
         search_params.update(kwargs)
         search_params["max_results"] = max_results
 
-        ddgs = DDGS()
-        results = list(ddgs.text(keyword, **search_params))
+        with DDGS() as ddgs:
+            results = list(ddgs.text(keyword, **search_params))
 
         logger.info(f"DuckDuckGo搜索: {keyword}")
         logger.info(f"获取结果数: {len(results)}")

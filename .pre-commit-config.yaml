@@ -1,0 +1,18 @@
+repos:
+  - repo: local
+    hooks:
+      - id: encoding-compile
+        name: encoding and compile
+        entry: python scripts/check_encodings.py
+        language: system
+        pass_filenames: false
+      - id: ruff
+        name: Ruff
+        entry: python -m ruff check
+        language: system
+        types: [python]
+      - id: mypy-core
+        name: mypy core
+        entry: python -m mypy se_kb_app service_boundary vectorizer
+        language: system
+        pass_filenames: false

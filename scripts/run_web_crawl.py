@@ -90,7 +90,7 @@ def main():
             final_urls.append(u)
     for u in final_urls:
         try:
-            res = wc.crawl_and_parse(u, save_data=True)
+            res = wc.crawl_and_parse(u, save_data=True, automatic=True)
             print({"url": u, "files": res.get("file_paths")})
         except Exception as e:
             print({"url": u, "error": str(e)})

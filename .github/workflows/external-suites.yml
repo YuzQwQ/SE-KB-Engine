@@ -1,0 +1,59 @@
+name: optional-external-suites
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Explicit optional suite
+        type: choice
+        options: [browser, network, llm, tor, container]
+        required: true
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  optional-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: external-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+        with: {enable-cache: true, cache-dependency-glob: uv.lock}
+      - run: uv sync --frozen --all-extras --group dev
+      - name: Run explicitly selected suite
+        shell: bash
+        env:
+          SELECTED_SUITE: ${{ inputs.suite || 'container' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          EMBEDDING_API_KEY: ${{ secrets.EMBEDDING_API_KEY }}
+          EXTERNAL_TEST_MAX_COST_USD: "1.00"
+        run: |
+          case "$SELECTED_SUITE" in
+            browser)
+              uv run playwright install --with-deps chromium
+              timeout 20m uv run pytest -m browser -q
+              ;;
+            network|llm|tor) timeout 20m uv run pytest -m "$SELECTED_SUITE" -q ;;
+            container)
+              export SE_KB_EXERCISE_PROJECT="sekbexercise-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+              export SE_KB_CONTAINER_EVIDENCE="docs/baseline/container-release-exercise-${GITHUB_RUN_ID}.json"
+              timeout 20m uv run python scripts/exercise_container_release.py \
+                --project "$SE_KB_EXERCISE_PROJECT" \
+                --output "$SE_KB_CONTAINER_EVIDENCE"
+              ;;
+            *) exit 2 ;;
+          esac
+      - name: Upload container exercise evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: container-release-exercise-${{ github.run_id }}
+          path: docs/baseline/container-release-exercise-*.json
+          if-no-files-found: ignore
+          retention-days: 14

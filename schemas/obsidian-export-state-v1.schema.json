@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://se-kb.local/schemas/obsidian-export-state-v1.schema.json",
+  "title": "SE-KB Obsidian export state v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "vault_name", "managed_directory", "exported_at", "corpus_fingerprint", "notes"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "vault_name": {"type": "string", "minLength": 1, "maxLength": 160},
+    "managed_directory": {"type": "string", "minLength": 1, "maxLength": 400},
+    "exported_at": {"type": "string", "format": "date-time"},
+    "corpus_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "notes": {
+      "type": "array",
+      "maxItems": 1000000,
+      "items": {"$ref": "#/$defs/note"}
+    }
+  },
+  "$defs": {
+    "note": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identifier", "logical_path", "source_hash", "published_hash", "title", "aliases"],
+      "properties": {
+        "identifier": {"type": "string", "minLength": 1, "maxLength": 512},
+        "logical_path": {"type": "string", "minLength": 4, "maxLength": 500},
+        "source_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "published_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "aliases": {"type": "array", "maxItems": 100, "items": {"type": "string", "minLength": 1, "maxLength": 1000}}
+      }
+    }
+  }
+}
+

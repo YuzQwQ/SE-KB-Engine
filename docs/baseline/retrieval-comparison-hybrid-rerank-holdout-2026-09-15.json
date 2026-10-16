@@ -1,0 +1,31 @@
+{
+  "baseline": "vector",
+  "candidate": "hybrid-rerank",
+  "dataset": "36d0a5fa3582102b08892e0640be502e402403d94437aaa37df3e733362cb081",
+  "dataset_version": "1.0.0",
+  "budgets": {
+    "max_recall_regression": 0.0,
+    "max_mrr_regression": 0.0,
+    "max_ndcg_regression": 0.01,
+    "min_no_answer_accuracy": 0.8,
+    "max_p95_latency_ms": 50.0,
+    "max_peak_memory_bytes": 33554432,
+    "max_estimated_cost": 0.0
+  },
+  "deltas": {
+    "estimated_cost": 0.0,
+    "input_tokens": 0,
+    "mrr": 0.0,
+    "ndcg_at_k": -0.02259230296003989,
+    "no_answer_accuracy": 0.33333333333333337,
+    "p50_latency_ms": 0.39780003135092556,
+    "p95_latency_ms": 0.7212600321508944,
+    "peak_memory_bytes": 3798,
+    "recall_at_k": -0.125
+  },
+  "passed": false,
+  "failures": [
+    "recall_at_k regression exceeds budget",
+    "ndcg_at_k regression exceeds budget"
+  ]
+}

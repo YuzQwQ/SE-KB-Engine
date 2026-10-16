@@ -1,0 +1,42 @@
+name: required-ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-quality:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.11", "3.12", "3.13"]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - run: uv sync --frozen --extra api --group dev
+      - run: uv run python scripts/quality.py
+        env:
+          SE_KB_SKIP_DOTENV: "1"
+          SE_KB_OFFLINE_BENCHMARK: "1"
+      - run: uv run python scripts/run_retrieval_benchmark.py --candidate hybrid --quiet --output artifacts/retrieval-summary.json
+      - run: uv run coverage run --source=se_kb_app,service_boundary -m pytest -q
+      - run: uv run coverage json -o artifacts/coverage.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: offline-evidence-${{ matrix.os }}-py${{ matrix.python }}
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 14

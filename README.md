@@ -1,185 +1,118 @@
 # SE-KB-Engine
 
-一个用于 **知识库构建的智能爬取与信息抽取引擎**。
+SE-KB-Engine 是一个用于技术知识库构建的搜索、抓取、清洗、结构化抽取、版本化落盘与检索系统。项目提供彼此独立的 MCP、REST、Web 和离线脚本入口；默认质量流程完全离线，不调用付费模型。
 
-SE-KB-Engine 提供从 **搜索 → 抓取 → 清洗 → 知识抽取 → 数据落盘** 的完整流水线，
-用于自动化收集技术资料并构建结构化知识库。
+## 支持范围
 
-项目最初用于个人知识库构建实验，目前仍在持续开发中。
+- Python 3.11、3.12、3.13；本地和容器推荐 3.13。
+- Windows 与 Linux 必需 CI。
+- HTTP 抓取，按策略回退 Playwright；可选代理/Tor。
+- 结构化抽取、版本化 artifact、完整性扫描与 copy-only 迁移。
+- Chroma 兼容入口与离线 BM25/vector/hybrid 检索评测。
+- Bearer 角色鉴权、CSRF、SSRF 边界、限流、任务取消和关联诊断。
+- 可选 Obsidian Vault 投影、冲突保护、知识关系图与 JSON Canvas 输出。
 
----
-
-## ✨ Features
-
-- 🔍 **搜索驱动抓取**
-  - 通过搜索接口获取候选网页
-  - 自动批量抓取相关内容
-
-- ⚡ **混合抓取策略**
-  - HTTPX 静态抓取，高性能处理普通网页
-  - Playwright 动态回退，兼容依赖 JavaScript 渲染的页面
-
-- 🧹 **内容清洗**
-  - 使用 BeautifulSoup 提取正文
-  - 去除广告、导航栏等无关内容
-
-- 🧠 **LLM 知识抽取**
-  - 基于 MCP + LLM API 进行结构化信息抽取
-  - 输出 JSON / Markdown 等知识产物
-
-- 📊 **任务管理 Web 控制台**
-  - 基于 Flask + JavaScript
-  - 支持 URL 抓取、批量任务、进度监控与结果管理
-
-- 🗂 **数据管理**
-  - 基于 SQLite 实现 URL 去重
-  - 支持历史记录管理
-
-- 🐳 **部署友好**
-  - 支持 Docker 部署
-  - 支持 Nginx + Gunicorn
-  - 可选代理 / Tor / SOCKS5 增强网络鲁棒性
-
----
-
-## 🏗 Architecture
-
-整体流程：
+## 目录与架构
 
 ```text
-Search
-  ↓
-URL Queue
-  ↓
-Crawler
-  ↓
-Content Cleaner
-  ↓
-LLM Extractor
-  ↓
-Knowledge Artifacts
+api/                 REST API（Flask，默认 8000）
+web/                 Web 控制台（单独启动，默认 8000）
+server.py            MCP stdio 服务
+se_kb_app/           应用、领域、任务、抓取、artifact、抽取与检索核心
+service_boundary/    鉴权、输入、URL/fetch、安全错误与审计边界
+vectorizer/          现有 Chroma 分块、索引和查询适配器
+scripts/             离线质量、扫描、迁移、评测和运维命令
+schemas/             artifact、抽取、检索与索引 JSON Schema
+deploy/              容器、Compose 与 Nginx 配置
+tests/                默认断网的单元、集成、契约和安全测试
+openspec/             主规格与变更历史
 ```
 
-核心模块示意：
+运行时依赖方向为 `入口/适配器 → application/domain ← infrastructure`。配置和拥有生命周期的资源由 `se_kb_app.composition.Application` 组装。详见 [架构说明](docs/ARCHITECTURE.md)。
 
-```text
-se-kb-engine/
-│
-├─ crawler/        # 抓取模块
-├─ extractor/      # LLM 抽取模块
-├─ pipeline/       # 数据处理流水线
-├─ web/            # Flask 控制台
-├─ database/       # SQLite 管理
-└─ scripts/        # 工具脚本
+## 离线快速开始
+
+安装 [uv](https://docs.astral.sh/uv/) 后：
+
+```powershell
+uv sync --frozen --extra api --group dev
+uv run python scripts/quality.py
 ```
 
----
+质量命令执行编码/编译、锁文件漂移、离线安全、Ruff、mypy、离线检索基准和 182+ 个默认断网测试。它不需要 API key。
 
-## 🚀 Quick Start
+## 服务入口
 
-### 1. 安装依赖
+推荐本地开发使用窗口启动器。先安装桌面依赖：
 
-```bash
-pip install -r requirements.txt
+```powershell
+uv sync --frozen --extra api --extra desktop --group dev
 ```
 
-### 2. 启动服务
+Windows 双击根目录 `启动工作台.vbs`，或运行 `.venv\Scripts\python.exe start_launcher.py`。可一键启动 Web（8000）与 REST API（8001）、查看日志和分别重启；Windows 还需 WebView2 Runtime，详见[窗口开发启动器](docs/DEV_LAUNCHER.md)。
 
-```bash
-python app.py
+先复制 `.env.example` 的非秘密配置，并用进程环境或秘密管理器提供长随机密钥。不要提交 `.env`。
+
+REST API（`http://127.0.0.1:8000`）：
+
+```powershell
+$env:KB_READ_KEYS='replace-with-random-read-key'
+$env:KB_ADMIN_KEYS='replace-with-random-admin-key'
+uv run python -m api.app
 ```
 
-### 3. 打开 Web 控制台
+Web 控制台（也使用 8000，不能与 REST 同时占用同一地址）：
 
-```text
-http://localhost:5000
+```powershell
+uv run python start_web.py
 ```
 
----
+MCP 是 stdio 服务，由 MCP 客户端启动，不监听 HTTP 端口：
 
-## ⚙ Tech Stack
-
-- Python 3
-- Flask
-- SQLite
-- HTTPX
-- BeautifulSoup
-- Playwright
-- MCP (Model Context Protocol)
-- OpenAI / OpenRouter / DeepSeek
-- Docker
-- Nginx
-- Gunicorn
-
----
-
-## 📌 Use Cases
-
-- 构建技术知识库
-- 自动整理技术博客与文档
-- 为 AI Agent 提供知识数据源
-- 生成 RAG 所需的数据集
-
----
-
-## 🖼 Screenshot
-
-你可以在这里放项目界面截图：
-
-```markdown
-![Web Console](docs/images/web-ui.png)
+```powershell
+uv run python server.py
 ```
 
----
+`/api/v1/live` 只表示进程响应；`/api/v1/ready` 检查必需检索能力；详细诊断在需要 admin bearer 的 `/api/v1/admin/diagnostics`。
 
-## 📄 Example Output
+## 容器
 
-结构化抽取结果示例：
+容器默认非 root、只读根文件系统，数据/缓存/输出/日志/索引使用独立卷，密钥从启动环境注入：
 
-```json
-{
-  "title": "Transformer Attention Explained",
-  "summary": "本文介绍了注意力机制的基本原理及其在 Transformer 中的作用。",
-  "concepts": ["attention", "softmax", "transformer"],
-  "source": "https://example.com/article"
-}
+```powershell
+$env:KB_READ_KEYS='replace-with-random-read-key'
+$env:KB_ADMIN_KEYS='replace-with-random-admin-key'
+docker compose -f deploy/docker-compose.yml up --build kb-api
 ```
 
----
+网关是显式 profile，默认只绑定回环地址的 8080；公网/TLS 必须在部署前另行配置和验证：
 
-## 📈 Roadmap
+```powershell
+docker compose -f deploy/docker-compose.yml --profile gateway up --build
+```
 
-- [ ] 自动质量评分
-- [ ] 更稳定的反爬策略
-- [ ] 向量数据库集成
-- [ ] RAG Pipeline 支持
-- [ ] 更完善的任务调度与可观测性
+参见 [容器与回滚](docs/CONTAINER_OPERATIONS.md)。本项目不会自动公开部署、删除旧索引或迁移唯一数据副本。
 
-**Backend**
+## 网络、费用与数据写入
 
-- Python 3
-- Flask
-- SQLite
+- 默认质量和检索评测：无网络、无模型费用，只写临时目录或明确的报告目标。
+- 搜索、抓取、浏览器、Tor 和真实模型测试：可能访问外网；LLM/embedding 可能收费，必须显式选择对应 pytest marker 或脚本。
+- artifact 迁移默认 dry-run；`--execute` 只允许在审核了精确源/目标后使用。
+- 索引构建默认 dry-run，新索引验证后才可原子切换，旧索引不会自动删除。
 
-**Web Crawling**
+详细说明见 [测试分层](docs/TESTING.md)、[安全边界](docs/SECURITY.md)、[artifact 生命周期](docs/ARTIFACT_LIFECYCLE.md) 和 [检索评测](docs/RETRIEVAL_EVALUATION.md)。
 
-- HTTPX
-- BeautifulSoup
-- Playwright
+## 运维与发布
 
-**LLM Integration**
+- [配置参考](docs/SETTINGS.md)
+- [Obsidian Vault 集成](docs/OBSIDIAN_INTEGRATION.md)
+- [REST/MCP 契约与副作用](docs/INTERFACES.md)
+- [故障处理手册](docs/RUNBOOKS.md)
+- [发布流程](docs/RELEASE_PROCESS.md)
+- [供应链分诊](docs/SUPPLY_CHAIN_TRIAGE.md)
 
-- MCP (Model Context Protocol)
-- OpenAI / OpenRouter / DeepSeek APIs
+版本的唯一来源是 `pyproject.toml` 中的 `[project].version`。发布前必须完成 `docs/RELEASE_READINESS.md` 的证据清单。
 
-**Deployment**
-
-- Docker
-- Nginx
-- Gunicorn
-
----
-
-## 📜 License
+## License
 
 MIT License

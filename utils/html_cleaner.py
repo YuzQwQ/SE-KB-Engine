@@ -395,22 +395,20 @@ class HTMLCleaner:
             for t in soup.find_all(tag):
                 t.decompose()
 
-        # 移除注释
-        for comment in soup.find_all(string=lambda s: isinstance(s, type(s)) and False):
-            # BeautifulSoup 不直接提供注释类型判断，这里留空（注释已在文本清理中处理）
-            pass
+        from bs4 import Comment
+        for comment in soup.find_all(string=lambda value: isinstance(value, Comment)):
+            comment.extract()
 
     def _remove_blacklist_nodes(self, soup: "BeautifulSoup", rules: Dict[str, Any]) -> int:
-        keywords = [k.lower() for k in rules.get("blacklist_keywords", [])]
+        keywords = {str(k).lower() for k in rules.get("blacklist_keywords", [])}
         hits = 0
-        # 使用属性匹配
-        for kw in keywords:
-            # class 包含关键词
-            for el in soup.select(f'[class*="{kw}"]'):
-                el.decompose()
-                hits += 1
-            # id 包含关键词
-            for el in soup.select(f'[id*="{kw}"]'):
+        for el in list(soup.find_all(True)):
+            if not el.attrs:
+                continue
+            attributes = [str(el.get("id", "")), *el.get("class", [])]
+            # Attribute tokens, not substrings: "heading" is not an advertisement.
+            if any(value.lower() in keywords or keywords.intersection(re.split(r"[-_\s]+", value.lower()))
+                   for value in attributes if value):
                 el.decompose()
                 hits += 1
         return hits
@@ -465,7 +463,7 @@ class HTMLCleaner:
         domain = urlparse(base_url).netloc
         domain_rules = None
         for key, cfg in overrides.items():
-            if key in domain:
+            if domain == key or domain.endswith("." + key):
                 domain_rules = cfg
                 break
 
@@ -473,23 +471,25 @@ class HTMLCleaner:
         if domain_rules and "main_selectors" in domain_rules:
             selectors = domain_rules["main_selectors"] + selectors
 
-        for sel in selectors:
-            try:
-                el = soup.select_one(sel)
-            except Exception:
-                el = None
-            if el:
-                return el
-
-        # 评分选择
-        candidates = soup.find_all(["article", "main", "section", "div"])
-        best = None
-        best_score = 0
-        for c in candidates:
-            s = self._score_container(c, rules)
-            if s > best_score:
-                best, best_score = c, s
-        return best or soup.body or soup
+        if domain_rules:
+            for selector in domain_rules.get("main_selectors", []):
+                selected = soup.select_one(selector)
+                if selected is not None:
+                    return selected
+        candidates = []
+        seen = set()
+        for selector in selectors:
+            for selected in soup.select(selector, limit=16):
+                if id(selected) not in seen:
+                    candidates.append(selected)
+                    seen.add(id(selected))
+                if len(candidates) >= 64:
+                    break
+            if len(candidates) >= 64:
+                break
+        if not candidates:
+            candidates = soup.find_all(["article", "main", "section", "div"], limit=64)
+        return max(candidates, key=lambda node: self._score_container(node, rules)) if candidates else soup.body or soup
 
     def _internal_cleanup(self, node: "BeautifulSoup", rules: Dict[str, Any]) -> None:
         # 域名覆盖的移除选择器
@@ -567,142 +567,6 @@ class HTMLCleaner:
             return soup.title.get_text(strip=True)
         return ""
 
-    def _sections_from_container(self, container: "BeautifulSoup") -> List[Dict[str, Any]]:
-        sections: List[Dict[str, Any]] = []
-        current = {
-            "heading": None,
-            "level": None,
-            "text": "",
-            "lists": [],
-            "images": [],
-            "code_blocks": [],
-            "tables": [],
-        }
-
-        def flush():
-            nonlocal current
-            if (
-                current["heading"]
-                or current["text"].strip()
-                or current["lists"]
-                or current["images"]
-                or current["code_blocks"]
-                or current["tables"]
-            ):
-                sections.append(current)
-            current = {
-                "heading": None,
-                "level": None,
-                "text": "",
-                "lists": [],
-                "images": [],
-                "code_blocks": [],
-                "tables": [],
-            }
-
-        for el in container.descendants:
-            if not getattr(el, "name", None):
-                continue
-            name = el.name
-            if name in ["h1", "h2", "h3"]:
-                flush()
-                current["heading"] = el.get_text(strip=True)
-                current["level"] = int(name[1])
-            elif name == "p":
-                txt = el.get_text(" ", strip=True)
-                if txt:
-                    current["text"] += txt + "\n"
-            elif name in ["ul", "ol"]:
-                items = []
-                for li in el.find_all("li"):
-                    t = li.get_text(" ", strip=True)
-                    if t:
-                        items.append(t)
-                if items:
-                    current["lists"].extend(items)
-            elif name in ["pre", "code"]:
-                code_text = el.get_text("\n", strip=True)
-                if code_text:
-                    current["code_blocks"].append(code_text)
-            elif name == "table":
-                rows = []
-                for tr in el.find_all("tr"):
-                    row = [td.get_text(" ", strip=True) for td in tr.find_all(["th", "td"])]
-                    if row:
-                        rows.append(row)
-                if rows:
-                    current["tables"].append(rows)
-            elif name == "img":
-                alt = el.get("alt", "")
-                src = el.get("src") or el.get("data-src") or ""
-                if src:
-                    current["images"].append({"src": src, "alt": alt})
-
-        flush()
-        return sections
-
-    def _tables_to_markdown(self, rows: List[List[str]]) -> str:
-        if not rows:
-            return ""
-        header = rows[0]
-        md = "| " + " | ".join(header) + " |\n"
-        md += "| " + " | ".join(["---"] * len(header)) + " |\n"
-        for r in rows[1:]:
-            md += "| " + " | ".join(r) + " |\n"
-        return md
-
-    def _to_markdown(self, container: "BeautifulSoup", base_url: str, rules: Dict[str, Any]) -> str:
-        lines: List[str] = []
-        for el in container.descendants:
-            if not getattr(el, "name", None):
-                continue
-            name = el.name
-            if name in ["h1", "h2", "h3", "h4", "h5", "h6"]:
-                level = int(name[1])
-                lines.append("#" * level + " " + el.get_text(strip=True))
-            elif name == "p":
-                txt = el.get_text(" ", strip=True)
-                if txt:
-                    lines.append(txt)
-            elif name == "blockquote":
-                txt = el.get_text("\n", strip=True)
-                if txt:
-                    for line_text in txt.splitlines():
-                        lines.append("> " + line_text)
-            elif name in ["ul", "ol"]:
-                for i, li in enumerate(el.find_all("li", recursive=False)):
-                    txt = li.get_text(" ", strip=True)
-                    if txt:
-                        prefix = "- " if name == "ul" else f"{i + 1}. "
-                        lines.append(prefix + txt)
-            elif name in ["pre", "code"]:
-                code_text = el.get_text("\n", strip=True)
-                if code_text:
-                    lines.append("```")
-                    lines.append(code_text)
-                    lines.append("```")
-            elif name == "table":
-                rows = []
-                for tr in el.find_all("tr"):
-                    row = [td.get_text(" ", strip=True) for td in tr.find_all(["th", "td"])]
-                    if row:
-                        rows.append(row)
-                md = self._tables_to_markdown(rows)
-                if md:
-                    lines.append(md.strip())
-            elif name == "img":
-                alt = el.get("alt", "")
-                src = el.get("src") or el.get("data-src") or ""
-                if src:
-                    # 标准化URL
-                    full = self._normalize_image_url(base_url, src)
-                    lines.append(f"![{alt}]({full})")
-        # 合并并规范化换行
-        md = "\n\n".join([line for line in lines if line.strip()])
-        max_n = self.get_rules().get("text_normalization", {}).get("max_consecutive_newlines", 2)
-        md = re.sub(r"(\n){" + str(max_n + 1) + r",}", "\n" * max_n, md)
-        return md.strip()
-
     def _normalize_image_url(self, base_url: str, img_url: str) -> str:
         if not img_url:
             return ""
@@ -760,57 +624,44 @@ class HTMLCleaner:
                 "images": [],
             }
 
+        from se_kb_app.extraction.blocks import collect_blocks, render_blocks, sections_from_blocks
+
+        from service_boundary.html_policy import enforce_html_budget
+        enforce_html_budget(html_content)
         rules = self.get_rules()
         soup = BeautifulSoup(html_content, "html.parser")
-
-        # 基础清理
         self._basic_tag_cleanup(soup, rules)
         self._remove_blacklist_nodes(soup, rules)
-
-        # 定位正文容器
+        host = (urlparse(base_url).hostname or "").lower()
+        for domain, override in rules.get("domain_overrides", {}).items():
+            if host == domain or host.endswith("." + domain):
+                for selector in override.get("remove_selectors", []):
+                    for node in soup.select(selector):
+                        node.decompose()
         container = self._locate_main_content(soup, base_url, rules)
         if container is None:
             container = soup.body or soup
-
-        # 容器内部清理与解包
         self._internal_cleanup(container, rules)
-        self._unwrap_non_whitelist(container, rules)
-
-        # 连贯性检查与可能的上升
-        container = self._ensure_continuity(soup, container, rules)
-
-        # 结构提取
         title = self._extract_title(soup, container)
-        clean_text = self.clean_html_content(container.get_text("\n"))
-        clean_text = self._remove_invisible_and_emoji(clean_text, rules)
-
-        # sections
-        sections = self._sections_from_container(container)
-
-        # markdown
-        markdown = self._to_markdown(container, base_url, rules)
-
-        # images（从sections与容器提取并过滤）
-        raw_images = []
-        for sec in sections:
-            for img in sec.get("images", []):
-                raw_images.append(img)
-        for el in container.find_all("img"):
-            raw_images.append(
-                {"src": el.get("src") or el.get("data-src") or "", "alt": el.get("alt", "")}
-            )
-        images = self._filter_images(raw_images, base_url, rules)
-
-        return {
-            "title": title or "",
-            "source_url": base_url,
-            "clean_text": clean_text,
-            "markdown": markdown,
-            "markdown_content": markdown,
-            "sections": sections,
-            "structured_json": sections,
-            "images": images,
-        }
+        blocks = collect_blocks(container, base_url)
+        sections = sections_from_blocks(blocks)
+        images = self._filter_images([
+            {"src": image.get("src") or image.get("data-src") or "", "alt": image.get("alt", "")}
+            for image in container.find_all("img")
+        ], base_url, rules)
+        markdown = render_blocks(blocks)
+        links = []
+        for link in container.find_all("a", href=True):
+            target = urljoin(base_url, str(link["href"]))
+            if target.startswith(("https://", "http://")):
+                item = {"url": target, "text": link.get_text(" ", strip=True)}
+                if item not in links:
+                    links.append(item)
+        return {"title": title or "", "source_url": base_url,
+                "clean_text": render_blocks(blocks, markdown=False),
+                "markdown": markdown, "markdown_content": markdown,
+                "sections": sections, "structured_json": sections, "blocks": blocks,
+                "images": images, "links": links, "cleaner_version": "technical-blocks-v2"}
 
     def _remove_invisible_and_emoji(self, text: str, rules: Dict[str, Any]) -> str:
         if not text:

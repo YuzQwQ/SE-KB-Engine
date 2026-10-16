@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "fixture-incomplete",
+  "document_id": "doc_1111111111111111111111111111111111111111111111111111111111111111",
+  "source_url": "https://example.com/incomplete",
+  "content_hash": "cnt_1111111111111111111111111111111111111111111111111111111111111111",
+  "created_at": "2026-09-15T00:00:00+00:00",
+  "trace": {
+    "application_version": "0.1.0", "cleaner_version": "cleaner-v1", "router_version": "router-v1",
+    "prompt_version": "prompt-v1", "model_version": "model-v1", "parameter_version": "params-v1",
+    "schema_version": "concept-v1"
+  },
+  "outcome": {"tag": "success", "artifact_ids": ["art_2222222222222222222222222222222222222222222222222222222222222222"], "diagnostics": []},
+  "derived_files": [{"path": "missing.json", "sha256": "3333333333333333333333333333333333333333333333333333333333333333", "bytes": 10, "media_type": "application/json"}],
+  "anchors": [],
+  "metadata": {"fixture": true}
+}

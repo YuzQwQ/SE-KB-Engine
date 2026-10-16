@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://se-kb.local/schemas/index-manifest-v1.schema.json",
+  "title": "Retrieval index manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["index_id", "source_manifest", "chunker_version", "embedding_model", "embedding_dimension", "normalization", "distance_metric", "collection_mapping", "schema_version"],
+  "properties": {
+    "index_id": {"type": "string", "minLength": 1},
+    "source_manifest": {"type": "string", "minLength": 1},
+    "chunker_version": {"type": "string", "minLength": 1},
+    "embedding_model": {"type": "string", "minLength": 1},
+    "embedding_dimension": {"type": "integer", "minimum": 1},
+    "normalization": {"type": "string", "minLength": 1},
+    "distance_metric": {"type": "string", "minLength": 1},
+    "collection_mapping": {"type": "object", "additionalProperties": {"type": "string"}},
+    "schema_version": {"const": "1.0"}
+  }
+}

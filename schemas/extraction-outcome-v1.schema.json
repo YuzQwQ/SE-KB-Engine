@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://se-kb.local/schemas/extraction-outcome-v1.schema.json",
+  "title": "SE-KB extraction outcome v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tag", "artifact_ids", "diagnostics"],
+  "properties": {
+    "tag": {"enum": ["success", "no_knowledge", "validation_failed", "dependency_failed", "policy_failed", "cancelled"]},
+    "artifact_ids": {"type": "array", "items": {"type": "string"}},
+    "diagnostics": {"type": "array", "maxItems": 100, "items": {"type": "string", "maxLength": 1000}}
+  }
+}

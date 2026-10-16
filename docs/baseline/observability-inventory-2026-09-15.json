@@ -1,0 +1,9032 @@
+{
+  "root": "D:\\develop\\MCP-develop\\mcp-client",
+  "categories": {
+    "basic_config": [],
+    "print": [
+      {
+        "path": "check_chromadb.py",
+        "line": 8
+      },
+      {
+        "path": "check_chromadb.py",
+        "line": 10
+      },
+      {
+        "path": "check_chromadb.py",
+        "line": 15
+      },
+      {
+        "path": "check_chromadb.py",
+        "line": 18
+      },
+      {
+        "path": "client.py",
+        "line": 49
+      },
+      {
+        "path": "client.py",
+        "line": 134
+      },
+      {
+        "path": "client.py",
+        "line": 143
+      },
+      {
+        "path": "client.py",
+        "line": 144
+      },
+      {
+        "path": "client.py",
+        "line": 147
+      },
+      {
+        "path": "client.py",
+        "line": 160
+      },
+      {
+        "path": "client.py",
+        "line": 180
+      },
+      {
+        "path": "client.py",
+        "line": 191
+      },
+      {
+        "path": "client.py",
+        "line": 192
+      },
+      {
+        "path": "client.py",
+        "line": 203
+      },
+      {
+        "path": "client.py",
+        "line": 207
+      },
+      {
+        "path": "client.py",
+        "line": 212
+      },
+      {
+        "path": "client.py",
+        "line": 215
+      },
+      {
+        "path": "client.py",
+        "line": 219
+      },
+      {
+        "path": "client.py",
+        "line": 223
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 72
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 110
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 112
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 118
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 120
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 122
+      },
+      {
+        "path": "exporter.py",
+        "line": 66
+      },
+      {
+        "path": "exporter.py",
+        "line": 175
+      },
+      {
+        "path": "exporter.py",
+        "line": 191
+      },
+      {
+        "path": "exporter.py",
+        "line": 206
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 59
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 60
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 62
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 82
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 88
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 127
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 154
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 159
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 259
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 260
+      },
+      {
+        "path": "extractors/type_registry.py",
+        "line": 46
+      },
+      {
+        "path": "extractors/type_registry.py",
+        "line": 95
+      },
+      {
+        "path": "refiner/deduplicator.py",
+        "line": 283
+      },
+      {
+        "path": "refiner/deduplicator.py",
+        "line": 284
+      },
+      {
+        "path": "refiner/deduplicator.py",
+        "line": 285
+      },
+      {
+        "path": "refiner/deduplicator.py",
+        "line": 286
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 42
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 43
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 44
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 45
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 137
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 204
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 390
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 397
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 398
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 399
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 400
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 547
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 550
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 39
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 42
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 84
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 115
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 122
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 128
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 133
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 137
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 140
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 195
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 201
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 298
+      },
+      {
+        "path": "registry.py",
+        "line": 81
+      },
+      {
+        "path": "registry.py",
+        "line": 82
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 24
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 29
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 30
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 31
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 32
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 49
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 53
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 54
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 55
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 56
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 58
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 59
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 60
+      },
+      {
+        "path": "scripts/analyze_examples.py",
+        "line": 62
+      },
+      {
+        "path": "scripts/benchmark_telemetry.py",
+        "line": 66
+      },
+      {
+        "path": "scripts/build_retrieval_index.py",
+        "line": 41
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 47
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 63
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 64
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 65
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 66
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 69
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 108
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 111
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 113
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 20
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 33
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 39
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 40
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 41
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 47
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 48
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 51
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 54
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 57
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 63
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 64
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 65
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 71
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 72
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 73
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 76
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 79
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 85
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 86
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 87
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 92
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 93
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 97
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 99
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 104
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 105
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 106
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 112
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 121
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 125
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 129
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 131
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 132
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 134
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 138
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 139
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 140
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 143
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 152
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 153
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 154
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 157
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 159
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 160
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 162
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 36
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 38
+      },
+      {
+        "path": "scripts/check_dependencies.py",
+        "line": 44
+      },
+      {
+        "path": "scripts/check_dependencies.py",
+        "line": 45
+      },
+      {
+        "path": "scripts/check_dependencies.py",
+        "line": 65
+      },
+      {
+        "path": "scripts/check_dependencies.py",
+        "line": 66
+      },
+      {
+        "path": "scripts/check_dependencies.py",
+        "line": 71
+      },
+      {
+        "path": "scripts/check_dependencies.py",
+        "line": 78
+      },
+      {
+        "path": "scripts/check_docs.py",
+        "line": 51
+      },
+      {
+        "path": "scripts/check_docs.py",
+        "line": 53
+      },
+      {
+        "path": "scripts/check_docs.py",
+        "line": 55
+      },
+      {
+        "path": "scripts/check_encodings.py",
+        "line": 130
+      },
+      {
+        "path": "scripts/check_encodings.py",
+        "line": 132
+      },
+      {
+        "path": "scripts/check_encodings.py",
+        "line": 134
+      },
+      {
+        "path": "scripts/check_encodings.py",
+        "line": 136
+      },
+      {
+        "path": "scripts/check_security.py",
+        "line": 60
+      },
+      {
+        "path": "scripts/check_security.py",
+        "line": 62
+      },
+      {
+        "path": "scripts/check_security.py",
+        "line": 64
+      },
+      {
+        "path": "scripts/compare_retrieval_reports.py",
+        "line": 43
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 10
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 11
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 12
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 17
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 18
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 21
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 22
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 23
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 24
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 36
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 37
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 50
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 70
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 73
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 75
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 78
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 82
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 83
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 99
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 101
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 104
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 105
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 112
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 114
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 116
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 118
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 119
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 120
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 123
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 129
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 130
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 134
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 137
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 138
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 143
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 144
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 146
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 148
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 149
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 150
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 777
+      },
+      {
+        "path": "scripts/exercise_release_rollback.py",
+        "line": 74
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 1429
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 1430
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 1431
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 1432
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 503
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 504
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 505
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 506
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 507
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 508
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 509
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 510
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 511
+      },
+      {
+        "path": "scripts/generate_sbom.py",
+        "line": 40
+      },
+      {
+        "path": "scripts/inventory_observability.py",
+        "line": 63
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 45
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 46
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 47
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 54
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 58
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 64
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 65
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 66
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 71
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 75
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 81
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 82
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 86
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 92
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 94
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 97
+      },
+      {
+        "path": "scripts/measure_cleaning_baseline.py",
+        "line": 53
+      },
+      {
+        "path": "scripts/migrate_artifacts.py",
+        "line": 26
+      },
+      {
+        "path": "scripts/quality.py",
+        "line": 45
+      },
+      {
+        "path": "scripts/quality.py",
+        "line": 50
+      },
+      {
+        "path": "scripts/quality.py",
+        "line": 52
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 54
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 70
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 80
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 86
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 103
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 108
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 109
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 112
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 115
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 116
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 121
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 126
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 132
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 139
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 143
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 157
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 159
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 172
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 204
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 206
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 227
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 229
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 230
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 231
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 234
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 235
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 49
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 65
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 66
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 68
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 70
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 74
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 75
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 79
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 81
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 84
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 85
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 87
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 92
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 93
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 95
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 96
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 97
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 98
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 99
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 102
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 104
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 132
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 152
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 160
+      },
+      {
+        "path": "scripts/refine_knowledge.py",
+        "line": 164
+      },
+      {
+        "path": "scripts/run_offline_crawl_soak.py",
+        "line": 86
+      },
+      {
+        "path": "scripts/run_retrieval_benchmark.py",
+        "line": 68
+      },
+      {
+        "path": "scripts/run_retrieval_benchmark.py",
+        "line": 74
+      },
+      {
+        "path": "scripts/run_web_crawl.py",
+        "line": 94
+      },
+      {
+        "path": "scripts/run_web_crawl.py",
+        "line": 96
+      },
+      {
+        "path": "scripts/scan_artifacts.py",
+        "line": 21
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 103
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 104
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 105
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 117
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 124
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 133
+      },
+      {
+        "path": "scripts/test_decompose.py",
+        "line": 26
+      },
+      {
+        "path": "scripts/test_decompose.py",
+        "line": 29
+      },
+      {
+        "path": "scripts/test_decompose.py",
+        "line": 33
+      },
+      {
+        "path": "scripts/test_decompose.py",
+        "line": 37
+      },
+      {
+        "path": "scripts/test_decompose.py",
+        "line": 39
+      },
+      {
+        "path": "scripts/test_decompose.py",
+        "line": 40
+      },
+      {
+        "path": "scripts/test_decompose.py",
+        "line": 42
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 34
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 35
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 36
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 39
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 44
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 45
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 46
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 49
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 56
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 59
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 69
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 71
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 74
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 79
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 81
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 84
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 85
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 87
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 88
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 91
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 95
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 97
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 98
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 101
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 104
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 106
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 108
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 112
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 114
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 116
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 118
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 12
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 21
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 30
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 31
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 32
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 33
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 34
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 37
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 46
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 56
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 57
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 58
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 61
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 62
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 63
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 32
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 33
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 34
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 37
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 43
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 44
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 45
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 46
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 50
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 53
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 57
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 75
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 76
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 86
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 91
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 92
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 94
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 95
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 98
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 99
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 24
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 25
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 26
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 30
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 32
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 33
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 35
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 36
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 37
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 42
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 43
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 44
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 48
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 49
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 53
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 54
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 55
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 58
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 61
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 64
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 65
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 66
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 67
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 68
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 75
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 76
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 77
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 79
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 81
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 83
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 86
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 87
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 88
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 89
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 91
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 93
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 98
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 101
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 104
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 106
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 109
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 111
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 121
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 126
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 128
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 153
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 157
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 32
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 33
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 34
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 40
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 43
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 44
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 45
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 46
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 49
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 50
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 51
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 55
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 56
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 57
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 58
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 61
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 67
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 68
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 69
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 70
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 71
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 72
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 75
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 78
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 79
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 80
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 83
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 84
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 85
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 88
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 89
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 92
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 95
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 96
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 97
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 101
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 103
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 124
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 125
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 126
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 133
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 134
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 135
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 136
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 143
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 144
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 145
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 146
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 148
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 149
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 150
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 34
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 35
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 36
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 39
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 41
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 42
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 43
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 44
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 47
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 50
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 52
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 56
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 58
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 60
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 63
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 72
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 75
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 77
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 78
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 79
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 81
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 84
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 107
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 110
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 114
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 117
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 119
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 121
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 124
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 126
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 128
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 129
+      },
+      {
+        "path": "scripts/test_vector_store.py",
+        "line": 130
+      },
+      {
+        "path": "scripts/test_vision_from_parsed.py",
+        "line": 37
+      },
+      {
+        "path": "scripts/test_vision_from_parsed.py",
+        "line": 54
+      },
+      {
+        "path": "scripts/test_vision_from_parsed.py",
+        "line": 93
+      },
+      {
+        "path": "scripts/test_vision_run.py",
+        "line": 43
+      },
+      {
+        "path": "scripts/test_vision_single.py",
+        "line": 27
+      },
+      {
+        "path": "scripts/test_vision_single.py",
+        "line": 35
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1557
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1561
+      },
+      {
+        "path": "start_web.py",
+        "line": 21
+      },
+      {
+        "path": "start_web.py",
+        "line": 24
+      },
+      {
+        "path": "start_web.py",
+        "line": 25
+      },
+      {
+        "path": "start_web.py",
+        "line": 26
+      },
+      {
+        "path": "start_web.py",
+        "line": 27
+      },
+      {
+        "path": "start_web.py",
+        "line": 28
+      },
+      {
+        "path": "start_web.py",
+        "line": 29
+      },
+      {
+        "path": "start_web.py",
+        "line": 30
+      },
+      {
+        "path": "start_web.py",
+        "line": 31
+      },
+      {
+        "path": "tests/test_smoke.py",
+        "line": 56
+      },
+      {
+        "path": "tests/test_smoke.py",
+        "line": 64
+      },
+      {
+        "path": "tests/test_smoke.py",
+        "line": 72
+      },
+      {
+        "path": "tests/test_smoke.py",
+        "line": 80
+      },
+      {
+        "path": "tests/test_smoke.py",
+        "line": 92
+      },
+      {
+        "path": "vectorizer/chunker.py",
+        "line": 51
+      },
+      {
+        "path": "vectorizer/retriever.py",
+        "line": 239
+      },
+      {
+        "path": "vectorizer/retriever.py",
+        "line": 260
+      },
+      {
+        "path": "vectorizer/retriever.py",
+        "line": 279
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 103
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 142
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 165
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 170
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 173
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 198
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 262
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 265
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 273
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 276
+      },
+      {
+        "path": "web/app.py",
+        "line": 342
+      },
+      {
+        "path": "web/app.py",
+        "line": 343
+      },
+      {
+        "path": "web/app.py",
+        "line": 344
+      },
+      {
+        "path": "web/app.py",
+        "line": 345
+      },
+      {
+        "path": "web/app.py",
+        "line": 346
+      },
+      {
+        "path": "web/app.py",
+        "line": 352
+      }
+    ],
+    "logger": [
+      {
+        "path": "api/app.py",
+        "line": 73
+      },
+      {
+        "path": "api/app.py",
+        "line": 82
+      },
+      {
+        "path": "api/app.py",
+        "line": 84
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 62
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 67
+      },
+      {
+        "path": "api/v1/search.py",
+        "line": 68
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 30
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 43
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 46
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 551
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 576
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 579
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 584
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 598
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 602
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 603
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 48
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 51
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 70
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 73
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 88
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 868
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1259
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 95
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 109
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 198
+      },
+      {
+        "path": "server.py",
+        "line": 154
+      },
+      {
+        "path": "server.py",
+        "line": 156
+      },
+      {
+        "path": "server.py",
+        "line": 175
+      },
+      {
+        "path": "server.py",
+        "line": 178
+      },
+      {
+        "path": "server.py",
+        "line": 209
+      },
+      {
+        "path": "server.py",
+        "line": 275
+      },
+      {
+        "path": "server.py",
+        "line": 323
+      },
+      {
+        "path": "server.py",
+        "line": 341
+      },
+      {
+        "path": "server.py",
+        "line": 342
+      },
+      {
+        "path": "server.py",
+        "line": 358
+      },
+      {
+        "path": "server.py",
+        "line": 445
+      },
+      {
+        "path": "server.py",
+        "line": 455
+      },
+      {
+        "path": "server.py",
+        "line": 534
+      },
+      {
+        "path": "server.py",
+        "line": 536
+      },
+      {
+        "path": "server.py",
+        "line": 537
+      },
+      {
+        "path": "server.py",
+        "line": 539
+      },
+      {
+        "path": "server.py",
+        "line": 540
+      },
+      {
+        "path": "server.py",
+        "line": 560
+      },
+      {
+        "path": "server.py",
+        "line": 570
+      },
+      {
+        "path": "server.py",
+        "line": 574
+      },
+      {
+        "path": "server.py",
+        "line": 1068
+      },
+      {
+        "path": "server.py",
+        "line": 1133
+      },
+      {
+        "path": "server.py",
+        "line": 1209
+      },
+      {
+        "path": "server.py",
+        "line": 1665
+      },
+      {
+        "path": "server.py",
+        "line": 1677
+      },
+      {
+        "path": "server.py",
+        "line": 1680
+      },
+      {
+        "path": "server.py",
+        "line": 1682
+      },
+      {
+        "path": "server.py",
+        "line": 1691
+      },
+      {
+        "path": "server.py",
+        "line": 1698
+      },
+      {
+        "path": "server.py",
+        "line": 1702
+      },
+      {
+        "path": "server.py",
+        "line": 1714
+      },
+      {
+        "path": "server.py",
+        "line": 1717
+      },
+      {
+        "path": "server.py",
+        "line": 1785
+      },
+      {
+        "path": "server.py",
+        "line": 1854
+      },
+      {
+        "path": "server.py",
+        "line": 1855
+      },
+      {
+        "path": "server.py",
+        "line": 1857
+      },
+      {
+        "path": "server.py",
+        "line": 1860
+      },
+      {
+        "path": "server.py",
+        "line": 1931
+      },
+      {
+        "path": "server.py",
+        "line": 1935
+      },
+      {
+        "path": "server.py",
+        "line": 1945
+      },
+      {
+        "path": "server.py",
+        "line": 2038
+      },
+      {
+        "path": "server.py",
+        "line": 2041
+      },
+      {
+        "path": "server.py",
+        "line": 2210
+      },
+      {
+        "path": "server.py",
+        "line": 2220
+      },
+      {
+        "path": "server.py",
+        "line": 2493
+      },
+      {
+        "path": "server.py",
+        "line": 2618
+      },
+      {
+        "path": "server.py",
+        "line": 2644
+      },
+      {
+        "path": "server.py",
+        "line": 2652
+      },
+      {
+        "path": "server.py",
+        "line": 2683
+      },
+      {
+        "path": "server.py",
+        "line": 2701
+      },
+      {
+        "path": "server.py",
+        "line": 2715
+      },
+      {
+        "path": "server.py",
+        "line": 2734
+      },
+      {
+        "path": "server.py",
+        "line": 2740
+      },
+      {
+        "path": "server.py",
+        "line": 2769
+      },
+      {
+        "path": "server.py",
+        "line": 2778
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 44
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 53
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 55
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 152
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 153
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 154
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 169
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 170
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 215
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 245
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 381
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 384
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 407
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 410
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 437
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 115
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 265
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 267
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 334
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 864
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 891
+      },
+      {
+        "path": "utils/playwright_fetcher.py",
+        "line": 53
+      },
+      {
+        "path": "utils/playwright_fetcher.py",
+        "line": 187
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 88
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 91
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 173
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 243
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 249
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 274
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 295
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 306
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 344
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 347
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 368
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 371
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 395
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 398
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 434
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 113
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 120
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 152
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 157
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 392
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 394
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 419
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 421
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 437
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 439
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 471
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 510
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 528
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 97
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 109
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 113
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 139
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 152
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 231
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 262
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 263
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 279
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 295
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 317
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 338
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 340
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 68
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 83
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 109
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 113
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 172
+      },
+      {
+        "path": "web/app.py",
+        "line": 336
+      },
+      {
+        "path": "web/services.py",
+        "line": 29
+      },
+      {
+        "path": "web/services.py",
+        "line": 31
+      }
+    ],
+    "sensitive_payload": [
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 95
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 108
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 113
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 136
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 138
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 141
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 142
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 144
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 148
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 151
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 159
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 160
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 165
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 166
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 169
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 176
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 180
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 183
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 237
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 239
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 240
+      },
+      {
+        "path": "adapters/llm_preselector.py",
+        "line": 243
+      },
+      {
+        "path": "api/app.py",
+        "line": 22
+      },
+      {
+        "path": "api/app.py",
+        "line": 33
+      },
+      {
+        "path": "api/app.py",
+        "line": 45
+      },
+      {
+        "path": "api/app.py",
+        "line": 46
+      },
+      {
+        "path": "api/app.py",
+        "line": 48
+      },
+      {
+        "path": "api/auth.py",
+        "line": 7
+      },
+      {
+        "path": "api/auth.py",
+        "line": 20
+      },
+      {
+        "path": "api/v1/search.py",
+        "line": 72
+      },
+      {
+        "path": "api/v1/search.py",
+        "line": 108
+      },
+      {
+        "path": "client.py",
+        "line": 18
+      },
+      {
+        "path": "client.py",
+        "line": 22
+      },
+      {
+        "path": "client.py",
+        "line": 23
+      },
+      {
+        "path": "client.py",
+        "line": 25
+      },
+      {
+        "path": "client.py",
+        "line": 59
+      },
+      {
+        "path": "client.py",
+        "line": 109
+      },
+      {
+        "path": "client.py",
+        "line": 150
+      },
+      {
+        "path": "client.py",
+        "line": 151
+      },
+      {
+        "path": "client.py",
+        "line": 152
+      },
+      {
+        "path": "client.py",
+        "line": 154
+      },
+      {
+        "path": "client.py",
+        "line": 155
+      },
+      {
+        "path": "client.py",
+        "line": 156
+      },
+      {
+        "path": "client.py",
+        "line": 160
+      },
+      {
+        "path": "client.py",
+        "line": 166
+      },
+      {
+        "path": "client.py",
+        "line": 184
+      },
+      {
+        "path": "client.py",
+        "line": 186
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 57
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 86
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 123
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 150
+      },
+      {
+        "path": "exporter_v2.py",
+        "line": 164
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 31
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 41
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 60
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 103
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 115
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 121
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 135
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 139
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 154
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 155
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 159
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 172
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 181
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 192
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 36
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 51
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 75
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 102
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 128
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 148
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 173
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 202
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 227
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 247
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 271
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 297
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 327
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 350
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 379
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 402
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 432
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 453
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 482
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 509
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 538
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 551
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 580
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 593
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 57
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 67
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 115
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 125
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 133
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 134
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 141
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 142
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 147
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 148
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 151
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 159
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 160
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 161
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 186
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 191
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 198
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 208
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 212
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 528
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 535
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 545
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 23
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 65
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 78
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 80
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 84
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 105
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 108
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 111
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 114
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 115
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 117
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 126
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 127
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 134
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 135
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 140
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 141
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 144
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 151
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 152
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 153
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 205
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 207
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 208
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 213
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 240
+      },
+      {
+        "path": "llm_client.py",
+        "line": 15
+      },
+      {
+        "path": "llm_client.py",
+        "line": 61
+      },
+      {
+        "path": "llm_client.py",
+        "line": 69
+      },
+      {
+        "path": "llm_client.py",
+        "line": 70
+      },
+      {
+        "path": "llm_client.py",
+        "line": 75
+      },
+      {
+        "path": "llm_client.py",
+        "line": 76
+      },
+      {
+        "path": "llm_client.py",
+        "line": 85
+      },
+      {
+        "path": "llm_client.py",
+        "line": 86
+      },
+      {
+        "path": "llm_client.py",
+        "line": 87
+      },
+      {
+        "path": "llm_client.py",
+        "line": 89
+      },
+      {
+        "path": "llm_client.py",
+        "line": 91
+      },
+      {
+        "path": "llm_client.py",
+        "line": 92
+      },
+      {
+        "path": "refiner/deduplicator.py",
+        "line": 266
+      },
+      {
+        "path": "refiner/deduplicator.py",
+        "line": 274
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 27
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 41
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 44
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 49
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 114
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 179
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 180
+      },
+      {
+        "path": "refiner/embedder.py",
+        "line": 266
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 56
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 169
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 184
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 269
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 270
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 271
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 318
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 331
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 365
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 385
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 386
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 387
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 410
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 412
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 414
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 509
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 35
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 36
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 38
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 39
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 66
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 87
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 94
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 96
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 99
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 112
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 277
+      },
+      {
+        "path": "refiner/merger.py",
+        "line": 285
+      },
+      {
+        "path": "registry.py",
+        "line": 77
+      },
+      {
+        "path": "registry.py",
+        "line": 82
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 44
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 49
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 68
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 72
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 109
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 119
+      },
+      {
+        "path": "scripts/check_config.py",
+        "line": 160
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 15
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 16
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 17
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 20
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 21
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 22
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 23
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 24
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 25
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 26
+      },
+      {
+        "path": "scripts/check_security.py",
+        "line": 2
+      },
+      {
+        "path": "scripts/check_security.py",
+        "line": 13
+      },
+      {
+        "path": "scripts/check_security.py",
+        "line": 15
+      },
+      {
+        "path": "scripts/check_security.py",
+        "line": 51
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 26
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 31
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 41
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 42
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 87
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 90
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 108
+      },
+      {
+        "path": "scripts/diagnose_env.py",
+        "line": 120
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 68
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 69
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 87
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 135
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 150
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 157
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 167
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 169
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 172
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 175
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 177
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 181
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 192
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 207
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 217
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 232
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 241
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 245
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 259
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 269
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 282
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 298
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 304
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 357
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 375
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 376
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 379
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 382
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 383
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 435
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 582
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 583
+      },
+      {
+        "path": "scripts/format_processor.py",
+        "line": 594
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 856
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 858
+      },
+      {
+        "path": "scripts/inventory_observability.py",
+        "line": 14
+      },
+      {
+        "path": "scripts/inventory_observability.py",
+        "line": 16
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 89
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 90
+      },
+      {
+        "path": "scripts/manual_crawl.py",
+        "line": 91
+      },
+      {
+        "path": "scripts/measure_cleaning_baseline.py",
+        "line": 36
+      },
+      {
+        "path": "scripts/query_knowledge.py",
+        "line": 235
+      },
+      {
+        "path": "scripts/run_web_crawl.py",
+        "line": 27
+      },
+      {
+        "path": "scripts/run_web_crawl.py",
+        "line": 29
+      },
+      {
+        "path": "scripts/run_web_crawl.py",
+        "line": 44
+      },
+      {
+        "path": "scripts/run_web_crawl.py",
+        "line": 45
+      },
+      {
+        "path": "scripts/run_web_crawl.py",
+        "line": 51
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 128
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 131
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 133
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 41
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 45
+      },
+      {
+        "path": "scripts/test_embedding.py",
+        "line": 48
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 26
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 31
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 36
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 37
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 42
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 50
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 52
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 55
+      },
+      {
+        "path": "scripts/test_llm_connection.py",
+        "line": 56
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 39
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 44
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 52
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 53
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 62
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 63
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 69
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 72
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 90
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 91
+      },
+      {
+        "path": "scripts/test_merger_api.py",
+        "line": 94
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 57
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 58
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 68
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 89
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 60
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 61
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 80
+      },
+      {
+        "path": "scripts/test_vision_run.py",
+        "line": 31
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 16
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 78
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 87
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 89
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 113
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 119
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 120
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 121
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 122
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 125
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 126
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 127
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 130
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 131
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 132
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 143
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 145
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 149
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 154
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 158
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 159
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 165
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 166
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 222
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 227
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 229
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 233
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 235
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 237
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 242
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 245
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 248
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 253
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 280
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 499
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 502
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 505
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 510
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 537
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 585
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 588
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 591
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 596
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 623
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 772
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 779
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 782
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 787
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 812
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 861
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 863
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 867
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 869
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 875
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 882
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 934
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 983
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 989
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1006
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1011
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1022
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1043
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1045
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1049
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1050
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1053
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1062
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1088
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1145
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1151
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1168
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1176
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1183
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1192
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1200
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1207
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1216
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1224
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1280
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1284
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1299
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1314
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1329
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1344
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1539
+      },
+      {
+        "path": "scripts/universal_knowledge_processor.py",
+        "line": 1550
+      },
+      {
+        "path": "se_kb_app/artifacts/__init__.py",
+        "line": 1
+      },
+      {
+        "path": "se_kb_app/artifacts/__init__.py",
+        "line": 11
+      },
+      {
+        "path": "se_kb_app/artifacts/identity.py",
+        "line": 10
+      },
+      {
+        "path": "se_kb_app/artifacts/identity.py",
+        "line": 11
+      },
+      {
+        "path": "se_kb_app/artifacts/identity.py",
+        "line": 15
+      },
+      {
+        "path": "se_kb_app/artifacts/identity.py",
+        "line": 16
+      },
+      {
+        "path": "se_kb_app/artifacts/migration.py",
+        "line": 10
+      },
+      {
+        "path": "se_kb_app/artifacts/migration.py",
+        "line": 68
+      },
+      {
+        "path": "se_kb_app/artifacts/migration.py",
+        "line": 69
+      },
+      {
+        "path": "se_kb_app/artifacts/migration.py",
+        "line": 70
+      },
+      {
+        "path": "se_kb_app/artifacts/migration.py",
+        "line": 79
+      },
+      {
+        "path": "se_kb_app/artifacts/migration.py",
+        "line": 97
+      },
+      {
+        "path": "se_kb_app/artifacts/migration.py",
+        "line": 100
+      },
+      {
+        "path": "se_kb_app/artifacts/migration.py",
+        "line": 107
+      },
+      {
+        "path": "se_kb_app/artifacts/models.py",
+        "line": 72
+      },
+      {
+        "path": "se_kb_app/artifacts/models.py",
+        "line": 92
+      },
+      {
+        "path": "se_kb_app/artifacts/models.py",
+        "line": 137
+      },
+      {
+        "path": "se_kb_app/artifacts/models.py",
+        "line": 169
+      },
+      {
+        "path": "se_kb_app/artifacts/scanner.py",
+        "line": 71
+      },
+      {
+        "path": "se_kb_app/artifacts/scanner.py",
+        "line": 85
+      },
+      {
+        "path": "se_kb_app/artifacts/scanner.py",
+        "line": 86
+      },
+      {
+        "path": "se_kb_app/artifacts/scanner.py",
+        "line": 87
+      },
+      {
+        "path": "se_kb_app/artifacts/scanner.py",
+        "line": 94
+      },
+      {
+        "path": "se_kb_app/artifacts/scanner.py",
+        "line": 125
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 16
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 29
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 77
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 84
+      },
+      {
+        "path": "se_kb_app/crawling/browser.py",
+        "line": 50
+      },
+      {
+        "path": "se_kb_app/crawling/browser.py",
+        "line": 51
+      },
+      {
+        "path": "se_kb_app/crawling/http.py",
+        "line": 126
+      },
+      {
+        "path": "se_kb_app/crawling/http.py",
+        "line": 128
+      },
+      {
+        "path": "se_kb_app/crawling/http.py",
+        "line": 129
+      },
+      {
+        "path": "se_kb_app/crawling/http.py",
+        "line": 132
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 9
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 23
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 27
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 28
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 30
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 31
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 32
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 34
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 35
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 84
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 85
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 87
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 91
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 142
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 162
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 163
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 165
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 181
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 183
+      },
+      {
+        "path": "se_kb_app/crawling/models.py",
+        "line": 26
+      },
+      {
+        "path": "se_kb_app/crawling/models.py",
+        "line": 29
+      },
+      {
+        "path": "se_kb_app/crawling/models.py",
+        "line": 36
+      },
+      {
+        "path": "se_kb_app/crawling/models.py",
+        "line": 47
+      },
+      {
+        "path": "se_kb_app/crawling/models.py",
+        "line": 56
+      },
+      {
+        "path": "se_kb_app/crawling/models.py",
+        "line": 57
+      },
+      {
+        "path": "se_kb_app/domain.py",
+        "line": 34
+      },
+      {
+        "path": "se_kb_app/domain.py",
+        "line": 40
+      },
+      {
+        "path": "se_kb_app/errors.py",
+        "line": 11
+      },
+      {
+        "path": "se_kb_app/extraction/cache.py",
+        "line": 11
+      },
+      {
+        "path": "se_kb_app/extraction/cache.py",
+        "line": 19
+      },
+      {
+        "path": "se_kb_app/extraction/cleaning.py",
+        "line": 9
+      },
+      {
+        "path": "se_kb_app/extraction/cleaning.py",
+        "line": 28
+      },
+      {
+        "path": "se_kb_app/extraction/cleaning.py",
+        "line": 36
+      },
+      {
+        "path": "se_kb_app/extraction/cleaning.py",
+        "line": 76
+      },
+      {
+        "path": "se_kb_app/extraction/context.py",
+        "line": 13
+      },
+      {
+        "path": "se_kb_app/extraction/context.py",
+        "line": 20
+      },
+      {
+        "path": "se_kb_app/extraction/context.py",
+        "line": 32
+      },
+      {
+        "path": "se_kb_app/extraction/context.py",
+        "line": 63
+      },
+      {
+        "path": "se_kb_app/extraction/context.py",
+        "line": 64
+      },
+      {
+        "path": "se_kb_app/extraction/context.py",
+        "line": 70
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 55
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 61
+      },
+      {
+        "path": "se_kb_app/extraction/refinement.py",
+        "line": 16
+      },
+      {
+        "path": "se_kb_app/extraction/refinement.py",
+        "line": 33
+      },
+      {
+        "path": "se_kb_app/extraction/refinement.py",
+        "line": 41
+      },
+      {
+        "path": "se_kb_app/extraction/refinement.py",
+        "line": 53
+      },
+      {
+        "path": "se_kb_app/extraction/refinement.py",
+        "line": 60
+      },
+      {
+        "path": "se_kb_app/extraction/refinement.py",
+        "line": 63
+      },
+      {
+        "path": "se_kb_app/factories.py",
+        "line": 54
+      },
+      {
+        "path": "se_kb_app/factories.py",
+        "line": 55
+      },
+      {
+        "path": "se_kb_app/factories.py",
+        "line": 58
+      },
+      {
+        "path": "se_kb_app/infrastructure/vector.py",
+        "line": 24
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 11
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 15
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 66
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 67
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 85
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 86
+      },
+      {
+        "path": "se_kb_app/jobs/store.py",
+        "line": 22
+      },
+      {
+        "path": "se_kb_app/jobs/store.py",
+        "line": 47
+      },
+      {
+        "path": "se_kb_app/jobs/store.py",
+        "line": 79
+      },
+      {
+        "path": "se_kb_app/jobs/store.py",
+        "line": 95
+      },
+      {
+        "path": "se_kb_app/jobs/store.py",
+        "line": 104
+      },
+      {
+        "path": "se_kb_app/jobs/store.py",
+        "line": 106
+      },
+      {
+        "path": "se_kb_app/jobs/store.py",
+        "line": 145
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 19
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 20
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 22
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 24
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 45
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 47
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 49
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 50
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 51
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 55
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 66
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 69
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 71
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 77
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 81
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 84
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 88
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 89
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 27
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 66
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 76
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 106
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 107
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 30
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 31
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 34
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 40
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 41
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 77
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 79
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 84
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 89
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 93
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 96
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 97
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 100
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 117
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 118
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 7
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 49
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 53
+      },
+      {
+        "path": "se_kb_app/retrieval/planning.py",
+        "line": 15
+      },
+      {
+        "path": "se_kb_app/retrieval/planning.py",
+        "line": 46
+      },
+      {
+        "path": "se_kb_app/retrieval/planning.py",
+        "line": 47
+      },
+      {
+        "path": "se_kb_app/services/prompts.py",
+        "line": 25
+      },
+      {
+        "path": "se_kb_app/services/prompts.py",
+        "line": 27
+      },
+      {
+        "path": "se_kb_app/services/prompts.py",
+        "line": 32
+      },
+      {
+        "path": "se_kb_app/services/prompts.py",
+        "line": 33
+      },
+      {
+        "path": "se_kb_app/settings.py",
+        "line": 32
+      },
+      {
+        "path": "se_kb_app/settings.py",
+        "line": 45
+      },
+      {
+        "path": "se_kb_app/settings.py",
+        "line": 103
+      },
+      {
+        "path": "se_kb_app/settings.py",
+        "line": 116
+      },
+      {
+        "path": "server.py",
+        "line": 58
+      },
+      {
+        "path": "server.py",
+        "line": 90
+      },
+      {
+        "path": "server.py",
+        "line": 103
+      },
+      {
+        "path": "server.py",
+        "line": 104
+      },
+      {
+        "path": "server.py",
+        "line": 106
+      },
+      {
+        "path": "server.py",
+        "line": 222
+      },
+      {
+        "path": "server.py",
+        "line": 226
+      },
+      {
+        "path": "server.py",
+        "line": 232
+      },
+      {
+        "path": "server.py",
+        "line": 293
+      },
+      {
+        "path": "server.py",
+        "line": 294
+      },
+      {
+        "path": "server.py",
+        "line": 309
+      },
+      {
+        "path": "server.py",
+        "line": 310
+      },
+      {
+        "path": "server.py",
+        "line": 340
+      },
+      {
+        "path": "server.py",
+        "line": 342
+      },
+      {
+        "path": "server.py",
+        "line": 410
+      },
+      {
+        "path": "server.py",
+        "line": 416
+      },
+      {
+        "path": "server.py",
+        "line": 645
+      },
+      {
+        "path": "server.py",
+        "line": 648
+      },
+      {
+        "path": "server.py",
+        "line": 657
+      },
+      {
+        "path": "server.py",
+        "line": 668
+      },
+      {
+        "path": "server.py",
+        "line": 682
+      },
+      {
+        "path": "server.py",
+        "line": 717
+      },
+      {
+        "path": "server.py",
+        "line": 721
+      },
+      {
+        "path": "server.py",
+        "line": 722
+      },
+      {
+        "path": "server.py",
+        "line": 724
+      },
+      {
+        "path": "server.py",
+        "line": 726
+      },
+      {
+        "path": "server.py",
+        "line": 742
+      },
+      {
+        "path": "server.py",
+        "line": 756
+      },
+      {
+        "path": "server.py",
+        "line": 766
+      },
+      {
+        "path": "server.py",
+        "line": 776
+      },
+      {
+        "path": "server.py",
+        "line": 806
+      },
+      {
+        "path": "server.py",
+        "line": 812
+      },
+      {
+        "path": "server.py",
+        "line": 824
+      },
+      {
+        "path": "server.py",
+        "line": 888
+      },
+      {
+        "path": "server.py",
+        "line": 946
+      },
+      {
+        "path": "server.py",
+        "line": 982
+      },
+      {
+        "path": "server.py",
+        "line": 1074
+      },
+      {
+        "path": "server.py",
+        "line": 1118
+      },
+      {
+        "path": "server.py",
+        "line": 1181
+      },
+      {
+        "path": "server.py",
+        "line": 1216
+      },
+      {
+        "path": "server.py",
+        "line": 1243
+      },
+      {
+        "path": "server.py",
+        "line": 1244
+      },
+      {
+        "path": "server.py",
+        "line": 1245
+      },
+      {
+        "path": "server.py",
+        "line": 1263
+      },
+      {
+        "path": "server.py",
+        "line": 1281
+      },
+      {
+        "path": "server.py",
+        "line": 1282
+      },
+      {
+        "path": "server.py",
+        "line": 1366
+      },
+      {
+        "path": "server.py",
+        "line": 1451
+      },
+      {
+        "path": "server.py",
+        "line": 1468
+      },
+      {
+        "path": "server.py",
+        "line": 1469
+      },
+      {
+        "path": "server.py",
+        "line": 1470
+      },
+      {
+        "path": "server.py",
+        "line": 1510
+      },
+      {
+        "path": "server.py",
+        "line": 1564
+      },
+      {
+        "path": "server.py",
+        "line": 1565
+      },
+      {
+        "path": "server.py",
+        "line": 1603
+      },
+      {
+        "path": "server.py",
+        "line": 1614
+      },
+      {
+        "path": "server.py",
+        "line": 1615
+      },
+      {
+        "path": "server.py",
+        "line": 1622
+      },
+      {
+        "path": "server.py",
+        "line": 1623
+      },
+      {
+        "path": "server.py",
+        "line": 1654
+      },
+      {
+        "path": "server.py",
+        "line": 1657
+      },
+      {
+        "path": "server.py",
+        "line": 1661
+      },
+      {
+        "path": "server.py",
+        "line": 1663
+      },
+      {
+        "path": "server.py",
+        "line": 1742
+      },
+      {
+        "path": "server.py",
+        "line": 1743
+      },
+      {
+        "path": "server.py",
+        "line": 1766
+      },
+      {
+        "path": "server.py",
+        "line": 1778
+      },
+      {
+        "path": "server.py",
+        "line": 1780
+      },
+      {
+        "path": "server.py",
+        "line": 1782
+      },
+      {
+        "path": "server.py",
+        "line": 1784
+      },
+      {
+        "path": "server.py",
+        "line": 1793
+      },
+      {
+        "path": "server.py",
+        "line": 1829
+      },
+      {
+        "path": "server.py",
+        "line": 1836
+      },
+      {
+        "path": "server.py",
+        "line": 1839
+      },
+      {
+        "path": "server.py",
+        "line": 1845
+      },
+      {
+        "path": "server.py",
+        "line": 1891
+      },
+      {
+        "path": "server.py",
+        "line": 1929
+      },
+      {
+        "path": "server.py",
+        "line": 1933
+      },
+      {
+        "path": "server.py",
+        "line": 1948
+      },
+      {
+        "path": "server.py",
+        "line": 1959
+      },
+      {
+        "path": "server.py",
+        "line": 1960
+      },
+      {
+        "path": "server.py",
+        "line": 1969
+      },
+      {
+        "path": "server.py",
+        "line": 1974
+      },
+      {
+        "path": "server.py",
+        "line": 1975
+      },
+      {
+        "path": "server.py",
+        "line": 1985
+      },
+      {
+        "path": "server.py",
+        "line": 2001
+      },
+      {
+        "path": "server.py",
+        "line": 2002
+      },
+      {
+        "path": "server.py",
+        "line": 2004
+      },
+      {
+        "path": "server.py",
+        "line": 2008
+      },
+      {
+        "path": "server.py",
+        "line": 2023
+      },
+      {
+        "path": "server.py",
+        "line": 2093
+      },
+      {
+        "path": "server.py",
+        "line": 2140
+      },
+      {
+        "path": "server.py",
+        "line": 2145
+      },
+      {
+        "path": "server.py",
+        "line": 2155
+      },
+      {
+        "path": "server.py",
+        "line": 2161
+      },
+      {
+        "path": "server.py",
+        "line": 2181
+      },
+      {
+        "path": "server.py",
+        "line": 2187
+      },
+      {
+        "path": "server.py",
+        "line": 2198
+      },
+      {
+        "path": "server.py",
+        "line": 2203
+      },
+      {
+        "path": "server.py",
+        "line": 2206
+      },
+      {
+        "path": "server.py",
+        "line": 2209
+      },
+      {
+        "path": "server.py",
+        "line": 2211
+      },
+      {
+        "path": "server.py",
+        "line": 2212
+      },
+      {
+        "path": "server.py",
+        "line": 2226
+      },
+      {
+        "path": "server.py",
+        "line": 2228
+      },
+      {
+        "path": "server.py",
+        "line": 2233
+      },
+      {
+        "path": "server.py",
+        "line": 2278
+      },
+      {
+        "path": "server.py",
+        "line": 2279
+      },
+      {
+        "path": "server.py",
+        "line": 2282
+      },
+      {
+        "path": "server.py",
+        "line": 2287
+      },
+      {
+        "path": "server.py",
+        "line": 2360
+      },
+      {
+        "path": "server.py",
+        "line": 2476
+      },
+      {
+        "path": "server.py",
+        "line": 2548
+      },
+      {
+        "path": "server.py",
+        "line": 2557
+      },
+      {
+        "path": "server.py",
+        "line": 2564
+      },
+      {
+        "path": "server.py",
+        "line": 2565
+      },
+      {
+        "path": "server.py",
+        "line": 2626
+      },
+      {
+        "path": "server.py",
+        "line": 2765
+      },
+      {
+        "path": "server.py",
+        "line": 2767
+      },
+      {
+        "path": "server.py",
+        "line": 2786
+      },
+      {
+        "path": "server.py",
+        "line": 2808
+      },
+      {
+        "path": "server.py",
+        "line": 2810
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 13
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 14
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 17
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 18
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 19
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 20
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 21
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 22
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 26
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 29
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 30
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 31
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 34
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 35
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 41
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 43
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 48
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 50
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 51
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 53
+      },
+      {
+        "path": "service_boundary/audit.py",
+        "line": 54
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 48
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 51
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 56
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 58
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 59
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 68
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 70
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 85
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 92
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 93
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 111
+      },
+      {
+        "path": "service_boundary/auth.py",
+        "line": 112
+      },
+      {
+        "path": "service_boundary/fetch.py",
+        "line": 94
+      },
+      {
+        "path": "service_boundary/fetch.py",
+        "line": 95
+      },
+      {
+        "path": "service_boundary/fetch.py",
+        "line": 96
+      },
+      {
+        "path": "service_boundary/fetch.py",
+        "line": 100
+      },
+      {
+        "path": "service_boundary/fetch.py",
+        "line": 146
+      },
+      {
+        "path": "service_boundary/fetch.py",
+        "line": 147
+      },
+      {
+        "path": "service_boundary/fetch.py",
+        "line": 148
+      },
+      {
+        "path": "service_boundary/fetch.py",
+        "line": 152
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 5
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 69
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 80
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 88
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 96
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 127
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 128
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 129
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 130
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 162
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 200
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 214
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 216
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 10
+      },
+      {
+        "path": "service_boundary/inputs.py",
+        "line": 20
+      },
+      {
+        "path": "service_boundary/inputs.py",
+        "line": 40
+      },
+      {
+        "path": "service_boundary/url_policy.py",
+        "line": 63
+      },
+      {
+        "path": "tests/conftest.py",
+        "line": 48
+      },
+      {
+        "path": "tests/conftest.py",
+        "line": 50
+      },
+      {
+        "path": "tests/conftest.py",
+        "line": 51
+      },
+      {
+        "path": "tests/conftest.py",
+        "line": 52
+      },
+      {
+        "path": "tests/conftest.py",
+        "line": 130
+      },
+      {
+        "path": "tests/conftest.py",
+        "line": 182
+      },
+      {
+        "path": "tests/conftest.py",
+        "line": 184
+      },
+      {
+        "path": "tests/conftest.py",
+        "line": 185
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 23
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 27
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 38
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 44
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 46
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 53
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 66
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 67
+      },
+      {
+        "path": "tests/test_application_foundations.py",
+        "line": 38
+      },
+      {
+        "path": "tests/test_application_foundations.py",
+        "line": 40
+      },
+      {
+        "path": "tests/test_application_foundations.py",
+        "line": 46
+      },
+      {
+        "path": "tests/test_application_foundations.py",
+        "line": 59
+      },
+      {
+        "path": "tests/test_application_services.py",
+        "line": 77
+      },
+      {
+        "path": "tests/test_application_services.py",
+        "line": 82
+      },
+      {
+        "path": "tests/test_application_services.py",
+        "line": 99
+      },
+      {
+        "path": "tests/test_application_services.py",
+        "line": 103
+      },
+      {
+        "path": "tests/test_application_services.py",
+        "line": 107
+      },
+      {
+        "path": "tests/test_application_services.py",
+        "line": 114
+      },
+      {
+        "path": "tests/test_application_services.py",
+        "line": 126
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 7
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 26
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 59
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 60
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 63
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 64
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 66
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 68
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 72
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 73
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 74
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 75
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 77
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 78
+      },
+      {
+        "path": "tests/test_boundary_primitives.py",
+        "line": 127
+      },
+      {
+        "path": "tests/test_browser_tor_lifecycle.py",
+        "line": 33
+      },
+      {
+        "path": "tests/test_browser_tor_lifecycle.py",
+        "line": 34
+      },
+      {
+        "path": "tests/test_core_units.py",
+        "line": 10
+      },
+      {
+        "path": "tests/test_core_units.py",
+        "line": 33
+      },
+      {
+        "path": "tests/test_core_units.py",
+        "line": 50
+      },
+      {
+        "path": "tests/test_core_units.py",
+        "line": 53
+      },
+      {
+        "path": "tests/test_core_units.py",
+        "line": 54
+      },
+      {
+        "path": "tests/test_core_units.py",
+        "line": 55
+      },
+      {
+        "path": "tests/test_core_units.py",
+        "line": 63
+      },
+      {
+        "path": "tests/test_core_units.py",
+        "line": 64
+      },
+      {
+        "path": "tests/test_crawl_soak.py",
+        "line": 37
+      },
+      {
+        "path": "tests/test_extraction_pipeline_refinement.py",
+        "line": 26
+      },
+      {
+        "path": "tests/test_extraction_pipeline_refinement.py",
+        "line": 70
+      },
+      {
+        "path": "tests/test_extraction_pipeline_refinement.py",
+        "line": 81
+      },
+      {
+        "path": "tests/test_extraction_pipeline_refinement.py",
+        "line": 82
+      },
+      {
+        "path": "tests/test_extraction_pipeline_refinement.py",
+        "line": 83
+      },
+      {
+        "path": "tests/test_extraction_pipeline_refinement.py",
+        "line": 91
+      },
+      {
+        "path": "tests/test_fetch_state_machine.py",
+        "line": 9
+      },
+      {
+        "path": "tests/test_fetch_state_machine.py",
+        "line": 28
+      },
+      {
+        "path": "tests/test_fetch_state_machine.py",
+        "line": 29
+      },
+      {
+        "path": "tests/test_fetch_state_machine.py",
+        "line": 35
+      },
+      {
+        "path": "tests/test_fetch_state_machine.py",
+        "line": 85
+      },
+      {
+        "path": "tests/test_fetch_state_machine.py",
+        "line": 87
+      },
+      {
+        "path": "tests/test_fetch_state_machine.py",
+        "line": 97
+      },
+      {
+        "path": "tests/test_fetch_state_machine.py",
+        "line": 98
+      },
+      {
+        "path": "tests/test_fetch_state_machine.py",
+        "line": 100
+      },
+      {
+        "path": "tests/test_http_fixture_server.py",
+        "line": 19
+      },
+      {
+        "path": "tests/test_http_fixture_server.py",
+        "line": 20
+      },
+      {
+        "path": "tests/test_http_fixture_server.py",
+        "line": 22
+      },
+      {
+        "path": "tests/test_managed_jobs.py",
+        "line": 132
+      },
+      {
+        "path": "tests/test_managed_jobs.py",
+        "line": 135
+      },
+      {
+        "path": "tests/test_managed_jobs.py",
+        "line": 138
+      },
+      {
+        "path": "tests/test_managed_jobs.py",
+        "line": 181
+      },
+      {
+        "path": "tests/test_managed_jobs.py",
+        "line": 200
+      },
+      {
+        "path": "tests/test_managed_jobs.py",
+        "line": 204
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 23
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 24
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 25
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 26
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 31
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 32
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 33
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 36
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 39
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 81
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 82
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 83
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 93
+      },
+      {
+        "path": "tests/test_reproducible_delivery.py",
+        "line": 18
+      },
+      {
+        "path": "tests/test_reproducible_delivery.py",
+        "line": 58
+      },
+      {
+        "path": "tests/test_reproducible_delivery.py",
+        "line": 59
+      },
+      {
+        "path": "tests/test_reproducible_delivery.py",
+        "line": 64
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 90
+      },
+      {
+        "path": "tests/test_security_scan.py",
+        "line": 11
+      },
+      {
+        "path": "tests/test_security_scan.py",
+        "line": 15
+      },
+      {
+        "path": "tests/test_security_scan.py",
+        "line": 19
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 14
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 15
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 54
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 113
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 137
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 146
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 147
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 188
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 207
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 208
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 212
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 222
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 227
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 230
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 240
+      },
+      {
+        "path": "tests/test_shared_retrieval_adapters.py",
+        "line": 19
+      },
+      {
+        "path": "tests/test_shared_retrieval_adapters.py",
+        "line": 38
+      },
+      {
+        "path": "tests/test_shared_retrieval_adapters.py",
+        "line": 57
+      },
+      {
+        "path": "tests/test_shared_retrieval_adapters.py",
+        "line": 67
+      },
+      {
+        "path": "tests/test_smoke.py",
+        "line": 25
+      },
+      {
+        "path": "tests/test_trustworthy_extraction.py",
+        "line": 38
+      },
+      {
+        "path": "tests/test_trustworthy_extraction.py",
+        "line": 60
+      },
+      {
+        "path": "tests/test_trustworthy_extraction.py",
+        "line": 63
+      },
+      {
+        "path": "tests/test_trustworthy_extraction.py",
+        "line": 127
+      },
+      {
+        "path": "tests/test_url_policy.py",
+        "line": 21
+      },
+      {
+        "path": "tests/test_url_policy.py",
+        "line": 90
+      },
+      {
+        "path": "tests/test_url_policy.py",
+        "line": 113
+      },
+      {
+        "path": "tests/test_versioned_artifacts.py",
+        "line": 9
+      },
+      {
+        "path": "tests/test_versioned_artifacts.py",
+        "line": 21
+      },
+      {
+        "path": "tests/test_versioned_artifacts.py",
+        "line": 22
+      },
+      {
+        "path": "tests/test_versioned_artifacts.py",
+        "line": 28
+      },
+      {
+        "path": "tests/test_versioned_artifacts.py",
+        "line": 33
+      },
+      {
+        "path": "tests/test_versioned_artifacts.py",
+        "line": 39
+      },
+      {
+        "path": "tests/test_versioned_artifacts.py",
+        "line": 40
+      },
+      {
+        "path": "tests/test_versioned_artifacts.py",
+        "line": 41
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 38
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 137
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 138
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 142
+      },
+      {
+        "path": "utils/crawler_framework.py",
+        "line": 154
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 83
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 88
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 93
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 98
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 101
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 104
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 107
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 110
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 112
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 117
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 218
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 219
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 221
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 222
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 223
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 227
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 275
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 278
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 284
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 286
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 288
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 290
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 293
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 296
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 297
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 300
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 302
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 304
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 308
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 329
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 331
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 335
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 337
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 340
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 343
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 346
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 351
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 354
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 355
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 359
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 361
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 363
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 367
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 369
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 371
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 372
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 374
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 376
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 378
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 382
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 386
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 435
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 460
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 531
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 563
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 564
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 740
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 742
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 753
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 764
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 771
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 784
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 809
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 841
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 846
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 851
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 852
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 856
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 859
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 861
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 866
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 868
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 873
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 889
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 894
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 900
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 965
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 967
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 970
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 972
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 975
+      },
+      {
+        "path": "utils/html_cleaner.py",
+        "line": 977
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 52
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 61
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 76
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 77
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 78
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 135
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 142
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 151
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 155
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 156
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 177
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 180
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 192
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 195
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 211
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 224
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 225
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 226
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 227
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 228
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 235
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 236
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 237
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 304
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 305
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 306
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 307
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 308
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 313
+      },
+      {
+        "path": "utils/image_analyzer.py",
+        "line": 317
+      },
+      {
+        "path": "utils/playwright_fetcher.py",
+        "line": 105
+      },
+      {
+        "path": "utils/playwright_fetcher.py",
+        "line": 106
+      },
+      {
+        "path": "utils/playwright_fetcher.py",
+        "line": 126
+      },
+      {
+        "path": "utils/playwright_fetcher.py",
+        "line": 129
+      },
+      {
+        "path": "utils/playwright_fetcher.py",
+        "line": 177
+      },
+      {
+        "path": "utils/playwright_fetcher.py",
+        "line": 179
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 29
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 30
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 33
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 53
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 54
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 61
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 63
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 64
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 69
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 81
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 84
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 122
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 180
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 183
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 184
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 185
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 187
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 190
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 240
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 252
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 254
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 258
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 259
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 267
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 269
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 284
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 287
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 289
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 291
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 294
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 314
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 315
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 329
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 338
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 339
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 349
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 352
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 353
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 360
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 361
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 364
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 419
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 420
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 426
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 428
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 430
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 437
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 441
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 444
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 453
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 458
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 459
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 460
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 461
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 464
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 468
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 469
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 470
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 497
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 500
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 503
+      },
+      {
+        "path": "utils/web_deduplication.py",
+        "line": 506
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 26
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 106
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 144
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 163
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 174
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 204
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 207
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 209
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 210
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 250
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 254
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 260
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 273
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 274
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 275
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 276
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 277
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 279
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 282
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 283
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 284
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 286
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 289
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 291
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 310
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 331
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 336
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 412
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 430
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 444
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 445
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 447
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 453
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 464
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 484
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 521
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 525
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 158
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 168
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 189
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 191
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 199
+      },
+      {
+        "path": "validators/semantic_stage3.py",
+        "line": 15
+      },
+      {
+        "path": "validators/semantic_stage3.py",
+        "line": 20
+      },
+      {
+        "path": "validators/semantic_stage3.py",
+        "line": 51
+      },
+      {
+        "path": "validators/semantic_stage3.py",
+        "line": 63
+      },
+      {
+        "path": "validators/semantic_stage3.py",
+        "line": 65
+      },
+      {
+        "path": "validators/semantic_stage3.py",
+        "line": 66
+      },
+      {
+        "path": "validators/semantic_stage3.py",
+        "line": 70
+      },
+      {
+        "path": "validators/semantic_stage3.py",
+        "line": 79
+      },
+      {
+        "path": "validators/semantic_stage3.py",
+        "line": 80
+      },
+      {
+        "path": "vectorizer/chunker.py",
+        "line": 419
+      },
+      {
+        "path": "vectorizer/config.py",
+        "line": 27
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 45
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 87
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 88
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 94
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 95
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 97
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 202
+      },
+      {
+        "path": "vectorizer/query_planner.py",
+        "line": 222
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 79
+      },
+      {
+        "path": "vectorizer/store.py",
+        "line": 80
+      },
+      {
+        "path": "web/app.py",
+        "line": 42
+      },
+      {
+        "path": "web/app.py",
+        "line": 59
+      },
+      {
+        "path": "web/app.py",
+        "line": 319
+      },
+      {
+        "path": "web/services.py",
+        "line": 94
+      },
+      {
+        "path": "web/services.py",
+        "line": 95
+      },
+      {
+        "path": "web/services.py",
+        "line": 96
+      },
+      {
+        "path": "web/services.py",
+        "line": 105
+      },
+      {
+        "path": "web/services.py",
+        "line": 186
+      },
+      {
+        "path": "web/services.py",
+        "line": 193
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 51
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 52
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 56
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 57
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 59
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 61
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 62
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 63
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 64
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 65
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 73
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 84
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 85
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 87
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 88
+      }
+    ],
+    "health_signal": [
+      {
+        "path": "api/v1/admin.py",
+        "line": 7
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 14
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 15
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 26
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 32
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 36
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 37
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 38
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 40
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 41
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 44
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 96
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 102
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 30
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 31
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 65
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 66
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 94
+      },
+      {
+        "path": "config/path_config.py",
+        "line": 95
+      },
+      {
+        "path": "extractors/se_kb_extractors.py",
+        "line": 482
+      },
+      {
+        "path": "scripts/check_delivery.py",
+        "line": 14
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 250
+      },
+      {
+        "path": "scripts/inventory_observability.py",
+        "line": 15
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 133
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 18
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 41
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 42
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 46
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 47
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 49
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 54
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 56
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 72
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 83
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 93
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 94
+      },
+      {
+        "path": "se_kb_app/services/tor.py",
+        "line": 28
+      },
+      {
+        "path": "se_kb_app/services/tor.py",
+        "line": 39
+      },
+      {
+        "path": "se_kb_app/services/tor.py",
+        "line": 90
+      },
+      {
+        "path": "se_kb_app/services/tor.py",
+        "line": 94
+      },
+      {
+        "path": "se_kb_app/services/tor.py",
+        "line": 98
+      },
+      {
+        "path": "server.py",
+        "line": 3
+      },
+      {
+        "path": "server.py",
+        "line": 5
+      },
+      {
+        "path": "server.py",
+        "line": 348
+      },
+      {
+        "path": "server.py",
+        "line": 350
+      },
+      {
+        "path": "server.py",
+        "line": 421
+      },
+      {
+        "path": "server.py",
+        "line": 445
+      },
+      {
+        "path": "server.py",
+        "line": 1315
+      },
+      {
+        "path": "server.py",
+        "line": 1864
+      },
+      {
+        "path": "server.py",
+        "line": 1865
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 10
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 11
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 14
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 17
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 18
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 19
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 23
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 25
+      },
+      {
+        "path": "service_boundary/health.py",
+        "line": 26
+      },
+      {
+        "path": "tests/test_application_composition.py",
+        "line": 47
+      },
+      {
+        "path": "tests/test_application_composition.py",
+        "line": 65
+      },
+      {
+        "path": "tests/test_application_composition.py",
+        "line": 74
+      },
+      {
+        "path": "tests/test_application_composition.py",
+        "line": 75
+      },
+      {
+        "path": "tests/test_application_composition.py",
+        "line": 76
+      },
+      {
+        "path": "tests/test_application_composition.py",
+        "line": 82
+      },
+      {
+        "path": "tests/test_browser_tor_lifecycle.py",
+        "line": 107
+      },
+      {
+        "path": "tests/test_mcp_golden_contracts.py",
+        "line": 23
+      },
+      {
+        "path": "tests/test_reproducible_delivery.py",
+        "line": 53
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 19
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 20
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 24
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 168
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 170
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 171
+      },
+      {
+        "path": "tests/test_service_contracts.py",
+        "line": 172
+      }
+    ],
+    "metric_source": [
+      {
+        "path": "adapters/concepts_adapter.py",
+        "line": 16
+      },
+      {
+        "path": "adapters/concepts_adapter.py",
+        "line": 17
+      },
+      {
+        "path": "adapters/dfd_adapter.py",
+        "line": 35
+      },
+      {
+        "path": "adapters/dfd_adapter.py",
+        "line": 36
+      },
+      {
+        "path": "adapters/enhanced_adapters.py",
+        "line": 72
+      },
+      {
+        "path": "adapters/enhanced_adapters.py",
+        "line": 114
+      },
+      {
+        "path": "adapters/enhanced_adapters.py",
+        "line": 121
+      },
+      {
+        "path": "adapters/enhanced_adapters.py",
+        "line": 155
+      },
+      {
+        "path": "adapters/enhanced_adapters.py",
+        "line": 160
+      },
+      {
+        "path": "adapters/enhanced_adapters.py",
+        "line": 207
+      },
+      {
+        "path": "adapters/enhanced_adapters.py",
+        "line": 212
+      },
+      {
+        "path": "adapters/rules_adapter.py",
+        "line": 18
+      },
+      {
+        "path": "adapters/rules_adapter.py",
+        "line": 19
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 8
+      },
+      {
+        "path": "api/v1/admin.py",
+        "line": 104
+      },
+      {
+        "path": "exporter.py",
+        "line": 107
+      },
+      {
+        "path": "exporter.py",
+        "line": 157
+      },
+      {
+        "path": "exporter.py",
+        "line": 172
+      },
+      {
+        "path": "exporter.py",
+        "line": 189
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 115
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 121
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 155
+      },
+      {
+        "path": "extractors/pipeline.py",
+        "line": 159
+      },
+      {
+        "path": "extractors/specialized_extractors.py",
+        "line": 57
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 23
+      },
+      {
+        "path": "extractors/type_router.py",
+        "line": 240
+      },
+      {
+        "path": "refiner/knowledge_refiner.py",
+        "line": 156
+      },
+      {
+        "path": "scripts/benchmark_telemetry.py",
+        "line": 33
+      },
+      {
+        "path": "scripts/benchmark_telemetry.py",
+        "line": 35
+      },
+      {
+        "path": "scripts/build_retrieval_index.py",
+        "line": 35
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 107
+      },
+      {
+        "path": "scripts/build_vector_index.py",
+        "line": 108
+      },
+      {
+        "path": "scripts/compare_retrieval_reports.py",
+        "line": 24
+      },
+      {
+        "path": "scripts/compare_retrieval_reports.py",
+        "line": 25
+      },
+      {
+        "path": "scripts/compare_retrieval_reports.py",
+        "line": 33
+      },
+      {
+        "path": "scripts/compare_retrieval_reports.py",
+        "line": 34
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 5
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 18
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 105
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 106
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 111
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 112
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 118
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 119
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 121
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 125
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 128
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 132
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 137
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 141
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 144
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 148
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 153
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 157
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 160
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 163
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 168
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 172
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 183
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 188
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 192
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 195
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 218
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 219
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 221
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 224
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 229
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 234
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 238
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 242
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 247
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 251
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 254
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 258
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 263
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 267
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 270
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 274
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 279
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 283
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 287
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 292
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 296
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 299
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 302
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 307
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 311
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 315
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 320
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 324
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 328
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 333
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 337
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 341
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 346
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 350
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 353
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 358
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 363
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 367
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 370
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 372
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 377
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 381
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 398
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 400
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 401
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 403
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 404
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 406
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 407
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 409
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 410
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 411
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 412
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 432
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 602
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 605
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 608
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 611
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 614
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 615
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 619
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 656
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 681
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 682
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 685
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 687
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 688
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 689
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 694
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 695
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 696
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 697
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 698
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 699
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 752
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 753
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 755
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 756
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 757
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 758
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 759
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 760
+      },
+      {
+        "path": "scripts/evaluate_quality.py",
+        "line": 761
+      },
+      {
+        "path": "scripts/exercise_release_rollback.py",
+        "line": 37
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 34
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 431
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 443
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 477
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 506
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 773
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 877
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 1185
+      },
+      {
+        "path": "scripts/generate_copyright_design_doc.py",
+        "line": 1189
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 14
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 387
+      },
+      {
+        "path": "scripts/generate_copyright_program_material.py",
+        "line": 391
+      },
+      {
+        "path": "scripts/inventory_observability.py",
+        "line": 16
+      },
+      {
+        "path": "scripts/inventory_observability.py",
+        "line": 56
+      },
+      {
+        "path": "scripts/measure_cleaning_baseline.py",
+        "line": 28
+      },
+      {
+        "path": "scripts/measure_cleaning_baseline.py",
+        "line": 37
+      },
+      {
+        "path": "scripts/run_offline_crawl_soak.py",
+        "line": 42
+      },
+      {
+        "path": "scripts/run_offline_crawl_soak.py",
+        "line": 52
+      },
+      {
+        "path": "scripts/run_offline_crawl_soak.py",
+        "line": 60
+      },
+      {
+        "path": "scripts/run_offline_crawl_soak.py",
+        "line": 65
+      },
+      {
+        "path": "scripts/run_offline_crawl_soak.py",
+        "line": 75
+      },
+      {
+        "path": "scripts/run_offline_crawl_soak.py",
+        "line": 76
+      },
+      {
+        "path": "scripts/run_offline_crawl_soak.py",
+        "line": 79
+      },
+      {
+        "path": "scripts/run_retrieval_benchmark.py",
+        "line": 69
+      },
+      {
+        "path": "scripts/run_retrieval_benchmark.py",
+        "line": 70
+      },
+      {
+        "path": "scripts/run_retrieval_benchmark.py",
+        "line": 71
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 38
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 63
+      },
+      {
+        "path": "scripts/test_crawl_single.py",
+        "line": 114
+      },
+      {
+        "path": "scripts/test_pipeline.py",
+        "line": 68
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 131
+      },
+      {
+        "path": "scripts/test_preselector.py",
+        "line": 141
+      },
+      {
+        "path": "se_kb_app/artifacts/scanner.py",
+        "line": 5
+      },
+      {
+        "path": "se_kb_app/artifacts/scanner.py",
+        "line": 69
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 9
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 18
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 31
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 52
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 80
+      },
+      {
+        "path": "se_kb_app/budgets.py",
+        "line": 87
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 11
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 106
+      },
+      {
+        "path": "se_kb_app/composition.py",
+        "line": 108
+      },
+      {
+        "path": "se_kb_app/crawling/browser.py",
+        "line": 9
+      },
+      {
+        "path": "se_kb_app/crawling/browser.py",
+        "line": 70
+      },
+      {
+        "path": "se_kb_app/crawling/browser.py",
+        "line": 76
+      },
+      {
+        "path": "se_kb_app/crawling/capacity.py",
+        "line": 10
+      },
+      {
+        "path": "se_kb_app/crawling/capacity.py",
+        "line": 46
+      },
+      {
+        "path": "se_kb_app/crawling/capacity.py",
+        "line": 57
+      },
+      {
+        "path": "se_kb_app/crawling/capacity.py",
+        "line": 58
+      },
+      {
+        "path": "se_kb_app/crawling/capacity.py",
+        "line": 70
+      },
+      {
+        "path": "se_kb_app/crawling/capacity.py",
+        "line": 71
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 20
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 192
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 193
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 194
+      },
+      {
+        "path": "se_kb_app/crawling/machine.py",
+        "line": 195
+      },
+      {
+        "path": "se_kb_app/extraction/cache.py",
+        "line": 6
+      },
+      {
+        "path": "se_kb_app/extraction/cache.py",
+        "line": 33
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 5
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 12
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 43
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 54
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 59
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 62
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 74
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 90
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 101
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 102
+      },
+      {
+        "path": "se_kb_app/extraction/pipeline.py",
+        "line": 103
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 6
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 12
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 38
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 39
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 65
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 81
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 99
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 100
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 101
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 102
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 107
+      },
+      {
+        "path": "se_kb_app/jobs/runner.py",
+        "line": 108
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 10
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 42
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 127
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 128
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 132
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 134
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 141
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 151
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 158
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 162
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 167
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 168
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 170
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 171
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 176
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 178
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 183
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 185
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 193
+      },
+      {
+        "path": "se_kb_app/observability.py",
+        "line": 201
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 16
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 18
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 37
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 45
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 72
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 74
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 91
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 101
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 103
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 104
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 109
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 110
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 111
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 112
+      },
+      {
+        "path": "se_kb_app/retrieval/benchmark.py",
+        "line": 117
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 6
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 77
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 83
+      },
+      {
+        "path": "se_kb_app/retrieval/engines.py",
+        "line": 89
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 80
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 91
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 96
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 97
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 98
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 101
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 102
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 103
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 104
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 108
+      },
+      {
+        "path": "se_kb_app/retrieval/experiments.py",
+        "line": 109
+      },
+      {
+        "path": "se_kb_app/retrieval/indexing.py",
+        "line": 14
+      },
+      {
+        "path": "se_kb_app/retrieval/indexing.py",
+        "line": 38
+      },
+      {
+        "path": "se_kb_app/retrieval/indexing.py",
+        "line": 54
+      },
+      {
+        "path": "se_kb_app/retrieval/indexing.py",
+        "line": 73
+      },
+      {
+        "path": "se_kb_app/retrieval/indexing.py",
+        "line": 112
+      },
+      {
+        "path": "se_kb_app/retrieval/indexing.py",
+        "line": 116
+      },
+      {
+        "path": "se_kb_app/retrieval/indexing.py",
+        "line": 148
+      },
+      {
+        "path": "se_kb_app/retrieval/indexing.py",
+        "line": 149
+      },
+      {
+        "path": "se_kb_app/retrieval/indexing.py",
+        "line": 152
+      },
+      {
+        "path": "se_kb_app/retrieval/metrics.py",
+        "line": 10
+      },
+      {
+        "path": "se_kb_app/retrieval/metrics.py",
+        "line": 42
+      },
+      {
+        "path": "se_kb_app/retrieval/metrics.py",
+        "line": 51
+      },
+      {
+        "path": "server.py",
+        "line": 2560
+      },
+      {
+        "path": "server.py",
+        "line": 2563
+      },
+      {
+        "path": "server.py",
+        "line": 2570
+      },
+      {
+        "path": "server.py",
+        "line": 2575
+      },
+      {
+        "path": "server.py",
+        "line": 2576
+      },
+      {
+        "path": "server.py",
+        "line": 2581
+      },
+      {
+        "path": "server.py",
+        "line": 2585
+      },
+      {
+        "path": "server.py",
+        "line": 2606
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 19
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 92
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 93
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 114
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 115
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 116
+      },
+      {
+        "path": "service_boundary/flask_support.py",
+        "line": 135
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 6
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 16
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 82
+      },
+      {
+        "path": "tests/fixtures/http_server.py",
+        "line": 83
+      },
+      {
+        "path": "tests/test_crawl_soak.py",
+        "line": 21
+      },
+      {
+        "path": "tests/test_crawl_soak.py",
+        "line": 23
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 13
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 56
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 68
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 69
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 71
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 72
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 75
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 79
+      },
+      {
+        "path": "tests/test_operational_observability.py",
+        "line": 95
+      },
+      {
+        "path": "tests/test_reproducible_delivery.py",
+        "line": 53
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 18
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 46
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 79
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 88
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 89
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 90
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 92
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 102
+      },
+      {
+        "path": "tests/test_retrieval_evaluation.py",
+        "line": 104
+      },
+      {
+        "path": "tests/test_retrieval_index_lifecycle.py",
+        "line": 32
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 223
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 238
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 242
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 245
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 246
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 446
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 470
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 471
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 489
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 507
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 508
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 511
+      },
+      {
+        "path": "utils/webpage_crawler.py",
+        "line": 534
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 129
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 132
+      },
+      {
+        "path": "utils/webpage_storage.py",
+        "line": 133
+      },
+      {
+        "path": "vectorizer/indexer.py",
+        "line": 33
+      },
+      {
+        "path": "vectorizer/indexer.py",
+        "line": 143
+      },
+      {
+        "path": "vectorizer/indexer.py",
+        "line": 241
+      },
+      {
+        "path": "web/app.py",
+        "line": 288
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 95
+      },
+      {
+        "path": "writers/artifacts_writer.py",
+        "line": 108
+      }
+    ]
+  },
+  "counts": {
+    "basic_config": 0,
+    "print": 549,
+    "logger": 153,
+    "sensitive_payload": 1122,
+    "health_signal": 75,
+    "metric_source": 353
+  }
+}

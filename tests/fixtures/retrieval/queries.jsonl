@@ -1,0 +1,10 @@
+{"dataset_version":"1.0.0","id":"q-external","text":"DFD 中什么是外部实体？","intent":"concept","relevance":{"dfd-external-entity":3},"hard_negatives":[],"no_answer":false,"split":"dev"}
+{"dataset_version":"1.0.0","id":"q-process-en","text":"How should a DFD process be named and what inputs does it need?","intent":"concept","relevance":{"dfd-process":3},"hard_negatives":[],"no_answer":false,"split":"dev"}
+{"dataset_version":"1.0.0","id":"q-flow","text":"数据流是否表示控制信号和执行顺序？","intent":"rule","relevance":{"dfd-data-flow":3},"hard_negatives":["weather-flow"],"no_answer":false,"split":"dev"}
+{"dataset_version":"1.0.0","id":"q-store","text":"订单数据应该如何在 DFD 中表示和保存？","intent":"concept","relevance":{"dfd-data-store":3,"payment-example":1},"hard_negatives":[],"no_answer":false,"split":"dev"}
+{"dataset_version":"1.0.0","id":"q-balance","text":"父图和子图怎样保持输入输出平衡？","intent":"rule","relevance":{"dfd-balance":3,"dfd-leveling":2},"hard_negatives":["accounting-balance"],"no_answer":false,"split":"dev"}
+{"dataset_version":"1.0.0","id":"q-cohesion","text":"What does cohesion mean in software design?","intent":"theory","relevance":{"software-cohesion":3},"hard_negatives":[],"no_answer":false,"split":"dev"}
+{"dataset_version":"1.0.0","id":"q-payment-long","text":"请为一个支付订单场景找出客户、处理过程、订单存储和状态流相关的 DFD 参考案例。","intent":"example","relevance":{"payment-example":3,"dfd-external-entity":1,"dfd-process":1,"dfd-data-store":1},"hard_negatives":[],"no_answer":false,"split":"holdout"}
+{"dataset_version":"1.0.0","id":"q-neural","text":"Transformer 神经网络的注意力头如何训练？","intent":"theory","relevance":{},"hard_negatives":[],"no_answer":true,"split":"dev"}
+{"dataset_version":"1.0.0","id":"q-ambiguous-balance","text":"DFD balance rule","intent":"rule","relevance":{"dfd-balance":3},"hard_negatives":["accounting-balance"],"no_answer":false,"split":"holdout"}
+{"dataset_version":"1.0.0","id":"q-quantum","text":"量子纠错码的阈值是多少？","intent":"theory","relevance":{},"hard_negatives":[],"no_answer":true,"split":"holdout"}

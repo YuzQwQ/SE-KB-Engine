@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://se-kb.local/schemas/artifact-manifest-v1.schema.json",
+  "title": "SE-KB artifact manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "batch_id", "document_id", "source_url", "content_hash", "created_at", "trace", "outcome", "derived_files", "anchors", "metadata"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "batch_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "document_id": {"type": "string", "pattern": "^doc_[a-f0-9]{64}$"},
+    "source_url": {"type": "string", "format": "uri", "maxLength": 2048},
+    "content_hash": {"type": "string", "pattern": "^cnt_[a-f0-9]{64}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "trace": {"$ref": "#/$defs/trace"},
+    "outcome": {"$ref": "#/$defs/outcome"},
+    "derived_files": {"type": "array", "maxItems": 1000, "items": {"$ref": "#/$defs/derivedFile"}},
+    "anchors": {"type": "array", "maxItems": 10000, "items": {"$ref": "#/$defs/anchor"}},
+    "metadata": {"type": "object"}
+  },
+  "$defs": {
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["application_version", "cleaner_version", "router_version", "prompt_version", "model_version", "parameter_version", "schema_version"],
+      "properties": {
+        "application_version": {"type": "string"}, "cleaner_version": {"type": "string"},
+        "router_version": {"type": "string"}, "prompt_version": {"type": "string"},
+        "model_version": {"type": "string"}, "parameter_version": {"type": "string"},
+        "schema_version": {"type": "string"}
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "artifact_ids", "diagnostics"],
+      "properties": {
+        "tag": {"enum": ["success", "no_knowledge", "validation_failed", "dependency_failed", "policy_failed", "cancelled"]},
+        "artifact_ids": {"type": "array", "items": {"type": "string", "pattern": "^art_[a-f0-9]{64}$"}},
+        "diagnostics": {"type": "array", "maxItems": 100, "items": {"type": "string", "maxLength": 1000}}
+      }
+    },
+    "derivedFile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "media_type"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "bytes": {"type": "integer", "minimum": 0}, "media_type": {"type": "string"}
+      }
+    },
+    "anchor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["document_id", "start_offset", "end_offset", "quote_hash", "heading_path"],
+      "properties": {
+        "document_id": {"type": "string"}, "start_offset": {"type": "integer", "minimum": 0},
+        "end_offset": {"type": "integer", "minimum": 0}, "quote_hash": {"type": "string"},
+        "heading_path": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

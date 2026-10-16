@@ -17,6 +17,7 @@ import sys
 import argparse
 import json
 from pathlib import Path
+from typing import cast
 
 # 添加项目根目录
 project_root = Path(__file__).parent.parent
@@ -28,6 +29,10 @@ load_env_file(project_root / ".env")
 
 from vectorizer import VectorConfig
 from vectorizer.retriever import KnowledgeRetriever, QueryIntent
+from se_kb_app.composition import Application, create_application
+from se_kb_app.domain import RetrievalRequest
+from se_kb_app.presenters import retrieval_payload
+from se_kb_app.services.retrieval import RetrievalService
 
 
 def colored(text: str, color: str) -> str:
@@ -171,7 +176,7 @@ def interactive_mode(retriever: KnowledgeRetriever):
             run_query(retriever, query, intent_type)
 
 
-def main():
+def main(application: Application | None = None):
     parser = argparse.ArgumentParser(
         description="SE-KB 知识库语义检索工具", formatter_class=argparse.RawDescriptionHelpFormatter
     )
@@ -192,11 +197,9 @@ def main():
 
     print_banner()
 
-    # 创建检索器
-    config = VectorConfig()
-    retriever = KnowledgeRetriever(config)
-
     if args.stats:
+        config = VectorConfig()
+        retriever = KnowledgeRetriever(config)
         stats = retriever.get_stats()
         print(f"索引统计: {stats['total_documents']} 文档")
         for name, count in stats["collections"].items():
@@ -204,6 +207,8 @@ def main():
         return
 
     if args.interactive:
+        config = VectorConfig()
+        retriever = KnowledgeRetriever(config)
         interactive_mode(retriever)
         return
 
@@ -211,11 +216,26 @@ def main():
         parser.print_help()
         return
 
-    if args.json:
-        response = retriever.retrieve(args.query, top_k=args.top_k)
-        print(json.dumps(response.to_dict(), ensure_ascii=False, indent=2))
-    else:
-        run_query(retriever, args.query, args.type, args.top_k)
+    owned_application = application is None
+    runtime = application or create_application(include_default_services=True)
+    try:
+        service = cast(RetrievalService, runtime.resource("retrieval"))
+        payload = retrieval_payload(
+            service.retrieve(RetrievalRequest(args.query, args.top_k, args.type))
+        )
+        if args.json:
+            print(json.dumps(payload, ensure_ascii=False, indent=2))
+        else:
+            print(f"\n{colored('Query:', 'blue')} {payload['query']}")
+            print(f"{colored('Intent:', 'blue')} {payload['intent']}")
+            print(f"{colored('Found:', 'blue')} {payload['total_found']} results")
+            for index, result in enumerate(payload["results"], 1):
+                score = float(result.get("score", 0.0))
+                print(f"\n[{index}] Score: {score:.2f} | {result.get('collection', '')}")
+                print(f"    {str(result.get('content', ''))[:200]}")
+    finally:
+        if owned_application:
+            runtime.close()
 
 
 if __name__ == "__main__":

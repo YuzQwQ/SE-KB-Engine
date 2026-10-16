@@ -4,6 +4,8 @@ from typing import Dict, Optional
 
 
 def load_env_file(env_path: Optional[Path] = None, override: bool = False) -> Dict[str, str]:
+    if os.getenv("SE_KB_SKIP_DOTENV", "").lower() in {"1", "true", "yes"}:
+        return {}
     path = env_path or Path(".env")
     loaded: Dict[str, str] = {}
     if not path.exists():

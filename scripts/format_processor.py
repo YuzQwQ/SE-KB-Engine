@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 from typing import Dict, List, Any
 from datetime import datetime
+from se_kb_app.artifacts.storage import atomic_write_json
 
 # 配置日志
 logger = logging.getLogger(__name__)
@@ -517,8 +518,7 @@ class FormatProcessor:
                     }
 
                     # 保存文件
-                    with open(file_path, "w", encoding="utf-8") as f:
-                        json.dump(category_data, f, ensure_ascii=False, indent=2)
+                    atomic_write_json(file_path, category_data)
 
                     saved_files.append(str(file_path))
 
@@ -537,8 +537,7 @@ class FormatProcessor:
                 },
             }
 
-            with open(summary_file, "w", encoding="utf-8") as f:
-                json.dump(summary_data, f, ensure_ascii=False, indent=2)
+            atomic_write_json(summary_file, summary_data)
 
             return {
                 "success": True,

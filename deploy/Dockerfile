@@ -1,45 +1,44 @@
-# 使用官方轻量级 Python 镜像
-FROM python:3.10-slim
+# Base updates are deliberate: Python 3.13.2 is inside the supported 3.11-3.13 range.
+FROM python:3.13.2-slim-bookworm AS builder
 
-# 设置环境变量
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1
+WORKDIR /build
+COPY requirements-prod.txt ./
+RUN python -m pip wheel --require-hashes --wheel-dir /wheels -r requirements-prod.txt
+
+FROM python:3.13.2-slim-bookworm AS runtime
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app
+    PYTHONPATH=/app \
+    DATA_ROOT=/app/data \
+    CACHE_ROOT=/app/cache \
+    OUTPUT_ROOT=/app/output
 
-# 设置工作目录
+RUN groupadd --gid 10001 app && useradd --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app
 WORKDIR /app
+COPY --from=builder /wheels /wheels
+COPY requirements-prod.txt ./
+# Builder inputs were verified with --require-hashes above. Wheels built from an
+# sdist have a new local hash, so the runtime installs only from that isolated
+# wheelhouse. Install every verified build output directly, without an index or
+# dependency resolution; requirements-prod.txt remains in the image as the lock record.
+RUN python -m pip install --no-index --no-deps /wheels/*.whl \
+    && rm -rf /wheels
 
-# 安装系统依赖 (编译工具和常用库)
-# ChromaDB 可能需要 g++ 编译
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    libgl1-mesa-glx \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+COPY --chown=10001:10001 api ./api
+COPY --chown=10001:10001 config ./config
+COPY --chown=10001:10001 se_kb_app ./se_kb_app
+COPY --chown=10001:10001 service_boundary ./service_boundary
+COPY --chown=10001:10001 utils ./utils
+COPY --chown=10001:10001 vectorizer ./vectorizer
+RUN mkdir -p /app/data /app/cache /app/output /app/logs /app/se_kb && chown -R 10001:10001 /app
 
-# 复制依赖文件
-COPY requirements-prod.txt .
-
-# 安装 Python 依赖
-RUN pip install --no-cache-dir -r requirements-prod.txt
-
-# 复制应用代码
-COPY api/ ./api/
-COPY vectorizer/ ./vectorizer/
-COPY se_kb/ ./se_kb/
-# 注意：不复制 web/, scripts/ 等离线/前端代码，减小体积
-
-# 创建日志目录
-RUN mkdir -p logs
-
-# 创建非 root 用户运行
-RUN useradd -m appuser && chown -R appuser /app
-USER appuser
-
-# 暴露端口
+USER 10001:10001
 EXPOSE 8000
+STOPSIGNAL SIGTERM
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/ready', timeout=3).read()"]
 
-# 启动命令
-# 4 个 Worker，绑定 0.0.0.0:8000，超时 120秒（防止大模型生成慢）
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "api.app:app"]
+CMD ["sh", "-c", "exec gunicorn --workers ${GUNICORN_WORKERS:-2} --threads ${GUNICORN_THREADS:-4} --bind 0.0.0.0:8000 --timeout ${GUNICORN_TIMEOUT:-60} --graceful-timeout ${GUNICORN_GRACEFUL_TIMEOUT:-30} --keep-alive 5 --max-requests 1000 --max-requests-jitter 100 --access-logfile - --error-logfile - api.app:app"]

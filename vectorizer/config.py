@@ -3,12 +3,12 @@
 """
 
 import os
-from dotenv import load_dotenv
+from utils.env_loader import load_env_file
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Dict
 
-load_dotenv()
+load_env_file()
 
 
 @dataclass
@@ -74,12 +74,6 @@ class VectorConfig:
     # 检索配置
     default_top_k: int = 5
     similarity_threshold: float = 0.2
-
-    def __post_init__(self):
-        """确保路径存在"""
-        self.vector_store_path.mkdir(parents=True, exist_ok=True)
-        self.embedding_cache_path.mkdir(parents=True, exist_ok=True)
-
 
 # 知识类型到 Collection 的映射
 TYPE_TO_COLLECTION = {

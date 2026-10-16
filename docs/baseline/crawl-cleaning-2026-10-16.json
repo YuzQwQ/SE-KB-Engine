@@ -1,0 +1,20 @@
+{
+  "body_precision": 1.0,
+  "body_recall": 1.0,
+  "body_retention_ratio": 1.0,
+  "body_retention_ratio_semantics": "compatibility alias for gold block recall",
+  "cases": 50,
+  "cleaner_version": "technical-blocks-v2",
+  "code_retention": 1.0,
+  "corpus_kind": "synthetic-authored-gold",
+  "duplicate_blocks": 0,
+  "heading_retention": 1.0,
+  "link_retention": 1.0,
+  "metadata_identity_completeness": 1.0,
+  "navigation_noise_hits": 0,
+  "peak_python_memory_bytes": 6165685,
+  "rss_measured": false,
+  "runtime_ms": 1438.2,
+  "sections": 50,
+  "table_row_retention": 1.0
+}

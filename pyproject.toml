@@ -3,35 +3,91 @@ name = "mcp-client"
 version = "0.1.0"
 description = "A powerful universal web scraping and content analysis system based on MCP (Model Context Protocol)"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11,<3.14"
 dependencies = [
-    "deepseek>=1.0.0",
+    "aiohttp>=3.12.0,<4",
+    "beautifulsoup4>=4.13.0,<5",
+    "chromadb>=1.3.0,<2",
+    "duckduckgo-search>=8.0.0,<9",
     "httpx>=0.28.1",
+    "jsonschema>=4.25.0,<5",
     "mcp>=1.6.0",
     "openai>=1.70.0",
-    "openrouter>=1.0",
+    "pillow>=11.2.0,<13",
+    "pydantic>=2.11.0,<3",
     "python-dotenv>=1.1.0",
-    "ruff>=0.9.4",
-    "mypy>=1.9.0",
+    "requests[socks]>=2.32.0,<3",
+]
+
+[project.optional-dependencies]
+desktop = [
+    "pywebview>=6,<7",
+]
+api = [
+    "flask>=3.1.0,<4",
+    "flask-cors>=6.0.0,<7",
+    "flasgger>=0.9.7.1,<0.10",
+    "gunicorn>=23.0.0,<24; platform_system != 'Windows'",
+]
+browser = [
+    "httpx-socks>=0.10.0,<0.11",
+    "playwright>=1.55.0,<2",
+]
+docs = [
+    "python-docx>=1.2.0,<2",
+    "reportlab>=4.4.0,<5",
+]
+
+[dependency-groups]
+dev = [
+    "coverage[toml]>=7.10.0,<8",
+    "mypy>=1.19.0,<2",
+    "pytest>=8.3.0,<9",
+    "pytest-asyncio>=1.2.0,<2",
+    "ruff>=0.15.0,<0.16",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# 默认只跑离线测试；联网/付费/浏览器/慢速测试需显式选择：
+#   pytest -m network            仅网络测试
+#   pytest -m "llm"              仅真实模型调用测试
+#   pytest --override-ini="addopts=" -m network   完全覆盖默认过滤
+addopts = "-m 'not network and not llm and not browser and not tor and not slow and not docker' --strict-markers"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "unit: 纯函数/纯逻辑单元测试，无 IO（默认运行）",
+    "integration: 模块间集成测试，仅本地资源（默认运行）",
+    "contract: 公共 REST/Web/MCP 响应契约测试（默认运行）",
+    "security: 鉴权、输入和边界安全回归测试（默认运行）",
+    "network: 需要访问外网（默认跳过）",
+    "llm: 需要真实付费 LLM API（默认跳过）",
+    "browser: 需要 Playwright 浏览器（默认跳过）",
+    "tor: 需要本机 Tor 进程（默认跳过）",
+    "slow: 运行时间超过 30s（默认跳过）",
+    "docker: 需要 Docker 环境（默认跳过）",
 ]
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
-exclude = ["web/**", "writers/**", "server.py"]
+target-version = "py311"
+exclude = ["web/**", "writers/**", "server.py", "scripts/generate_copyright_*.py"]
 
 [tool.ruff.lint]
 select = ["E", "F"]
 ignore = ["E402", "E501"]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.11"
 warn_unused_configs = true
 ignore_missing_imports = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 disallow_untyped_defs = false
-exclude = "(server\\.py|.*html_cleaner\\.py|.*playwright_fetcher\\.py|.*crawler_framework\\.py)"
+exclude = "(^server\\.py$|.*html_cleaner\\.py|.*playwright_fetcher\\.py|.*crawler_framework\\.py|^scripts[\\\\/]generate_copyright_.*\\.py$)"
 explicit_package_bases = true
 mypy_path = "."
 no_implicit_optional = false
@@ -42,6 +98,10 @@ ignore_errors = true
 
 [[tool.mypy.overrides]]
 module = "utils.playwright_fetcher"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "server"
 ignore_errors = true
 
 [[tool.mypy.overrides]]

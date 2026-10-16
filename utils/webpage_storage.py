@@ -5,6 +5,9 @@
 import os
 import json
 import hashlib
+from uuid import uuid4
+from se_kb_app.artifacts.storage import atomic_write_bytes, atomic_write_json
+from se_kb_app.jobs.context import checkpoint, publication
 import asyncio
 from pathlib import Path
 from datetime import datetime
@@ -15,6 +18,9 @@ import logging
 import httpx
 from PIL import Image
 from io import BytesIO
+from service_boundary.errors import PublicError
+from service_boundary.fetch import bounded_async_get, validate_image_bytes
+from service_boundary.url_policy import validate_url
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +53,7 @@ class WebpageStorage:
         # 添加时间戳
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-        return f"{clean_title}_{url_hash}_{timestamp}"
+        return f"{clean_title}_{url_hash}_{timestamp}_{uuid4().hex}"
 
     def _normalize_image_url(self, base_url: str, img_url: str) -> str:
         """标准化图片URL"""
@@ -82,31 +88,23 @@ class WebpageStorage:
         return True
 
     async def _download_image(
-        self, client: httpx.AsyncClient, img_url: str, save_path: Path
+        self, client: httpx.AsyncClient, img_url: str, save_path: Path, payload: bytes | None = None
     ) -> Optional[Dict]:
         """下载单张图片"""
         try:
-            # 检查文件大小
-            try:
-                head_response = await client.head(img_url, timeout=10.0)
-                content_length = head_response.headers.get("content-length")
-                if content_length and int(content_length) > self.max_image_size:
-                    logger.warning(f"图片过大，跳过: {img_url} ({content_length} bytes)")
-                    return None
-            except Exception:
-                pass  # 如果HEAD请求失败，继续尝试下载
-
-            # 下载图片
-            response = await client.get(img_url, timeout=15.0)
-            response.raise_for_status()
-
-            if len(response.content) > self.max_image_size:
-                logger.warning(f"图片过大，跳过: {img_url} ({len(response.content)} bytes)")
+            img_url = validate_url(img_url).url
+            if payload is None:
+                _response, image_payload = await bounded_async_get(client, img_url, allowed_media_types=("image",))
+            else:
+                image_payload = payload
+            if len(image_payload) > self.max_image_size:
+                logger.warning("图片超过页面存储限制，跳过")
                 return None
 
             # 验证图片格式
             try:
-                img = Image.open(BytesIO(response.content))
+                validate_image_bytes(image_payload)
+                img = Image.open(BytesIO(image_payload))
                 img_format = img.format.lower() if img.format else "unknown"
                 img_size = img.size
 
@@ -139,8 +137,8 @@ class WebpageStorage:
                 counter += 1
 
             # 保存图片
-            with open(file_path, "wb") as f:
-                f.write(response.content)
+            checkpoint()
+            atomic_write_bytes(file_path, image_payload)
 
             logger.info(f"图片已保存: {file_path}")
 
@@ -148,14 +146,14 @@ class WebpageStorage:
                 "original_url": img_url,
                 "local_path": str(file_path.relative_to(self.base_dir)),
                 "filename": file_path.name,
-                "size_bytes": len(response.content),
+                "size_bytes": len(image_payload),
                 "dimensions": img_size,
                 "format": img_format,
                 "download_time": datetime.now().isoformat(),
             }
 
-        except Exception as e:
-            logger.error(f"下载图片失败: {img_url} - {e}")
+        except (PublicError, httpx.HTTPError, OSError) as error:
+            logger.error("下载图片失败: code=%s", getattr(error, "code", "upstream_failure"))
             return None
 
     async def save_webpage(
@@ -166,6 +164,7 @@ class WebpageStorage:
         metadata: Dict = None,
         image_urls: List[str] = None,
         client: httpx.AsyncClient = None,
+        image_payloads: Dict[str, bytes] = None,
     ) -> Dict[str, Any]:
         """保存完整的网页内容到独立文件夹
 
@@ -181,6 +180,7 @@ class WebpageStorage:
             包含保存信息的字典
         """
         try:
+            url = validate_url(url).url
             # 创建网页专用文件夹
             folder_name = self._generate_folder_name(url, title)
             webpage_dir = self.base_dir / folder_name
@@ -192,8 +192,8 @@ class WebpageStorage:
 
             # 保存HTML内容
             html_file = webpage_dir / "content.html"
-            with open(html_file, "w", encoding="utf-8") as f:
-                f.write(html_content)
+            checkpoint()
+            atomic_write_bytes(html_file, html_content.encode("utf-8"))
 
             # 准备元数据
             webpage_metadata = {
@@ -230,7 +230,7 @@ class WebpageStorage:
 
                 async def download_with_semaphore(img_url):
                     async with semaphore:
-                        return await self._download_image(client, img_url, images_dir)
+                        return await self._download_image(client, img_url, images_dir, (image_payloads or {}).get(img_url))
 
                 if valid_image_urls:
                     logger.info(f"开始下载 {len(valid_image_urls)} 张图片...")
@@ -241,7 +241,7 @@ class WebpageStorage:
 
                     for i, result in enumerate(download_results):
                         if isinstance(result, Exception):
-                            failed_images.append({"url": valid_image_urls[i], "error": str(result)})
+                            failed_images.append({"url": valid_image_urls[i], "error": "image_failed"})
                         elif result:
                             downloaded_images.append(result)
                         else:
@@ -261,8 +261,8 @@ class WebpageStorage:
 
             # 保存元数据
             metadata_file = webpage_dir / "metadata.json"
-            with open(metadata_file, "w", encoding="utf-8") as f:
-                json.dump(webpage_metadata, f, ensure_ascii=False, indent=2)
+            with publication():
+                atomic_write_json(metadata_file, webpage_metadata)
 
             logger.info(f"网页已保存到: {webpage_dir}")
             logger.info(
@@ -280,9 +280,9 @@ class WebpageStorage:
                 "total_images": webpage_metadata["total_images"],
             }
 
-        except Exception as e:
-            logger.error(f"保存网页失败: {url} - {e}")
-            return {"success": False, "error": str(e), "url": url}
+        except Exception as error:
+            logger.error("保存网页失败: cause=%s", type(error).__name__)
+            return {"success": False, "error": "storage_failed", "url": "[redacted]"}
 
     def get_webpage_info(self, folder_name: str) -> Optional[Dict]:
         """获取已保存网页的信息"""

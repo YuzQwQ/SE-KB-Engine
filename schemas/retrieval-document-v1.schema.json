@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://se-kb.local/schemas/retrieval-document-v1.schema.json",
+  "title": "Retrieval evaluation document v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["dataset_version", "id", "text", "source", "kind", "date", "quality"],
+  "properties": {
+    "dataset_version": {"type": "string", "minLength": 1},
+    "id": {"type": "string", "minLength": 1},
+    "text": {"type": "string", "minLength": 1},
+    "source": {"type": "string", "minLength": 1},
+    "kind": {"type": "string", "minLength": 1},
+    "date": {"type": "string", "format": "date"},
+    "quality": {"type": "number", "minimum": 0, "maximum": 1},
+    "parent_id": {"type": ["string", "null"]},
+    "metadata": {"type": "object"}
+  }
+}

@@ -5,11 +5,11 @@ import sys
 from typing import Optional
 from contextlib import AsyncExitStack
 from openai import OpenAI
-from dotenv import load_dotenv
+from utils.env_loader import load_env_file
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-load_dotenv()
+load_env_file()
 
 
 class MCPClient:

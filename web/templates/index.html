@@ -3,280 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>知识库构建系统</title>
+    <meta name="theme-color" content="#0b1220">
+    <meta name="description" content="SE-KB 本地知识采集、精炼与语义检索工作台">
+    <title>SE-KB 知识工作台</title>
     <link rel="icon" href="/static/123.jpg" type="image/jpeg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- 头部 -->
-        <header class="header">
-            <div class="logo">
-                <span class="logo-icon">🧠</span>
-                <h1>知识库构建系统</h1>
+    <a class="skip-link" href="#mainContent">跳到主要内容</a>
+    <div class="page-glow" aria-hidden="true"></div>
+
+    <div class="app-shell">
+        <header class="topbar">
+            <a class="brand" href="/" aria-label="SE-KB 首页">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" role="img">
+                        <path d="M7 8.5 16 4l9 4.5v15L16 28l-9-4.5z"></path>
+                        <path d="m11 11 5-2.5 5 2.5v4l-5 2.5-5-2.5zm0 8 5 2.5 5-2.5"></path>
+                    </svg>
+                </span>
+                <span>
+                    <strong>SE-KB</strong>
+                    <small>Knowledge Workspace</small>
+                </span>
+            </a>
+
+            <div class="credential-control">
+                <label for="serviceKeyInput">服务密钥</label>
+                <div class="credential-input">
+                    <input id="serviceKeyInput" type="password" autocomplete="off"
+                           aria-describedby="keyStatus" placeholder="仅保存在当前会话">
+                    <button id="serviceKeyToggle" class="icon-button" type="button"
+                            aria-label="显示服务密钥" aria-pressed="false">显示</button>
+                </div>
+                <span id="keyStatus" class="credential-status">未设置 · 仅会话保存</span>
             </div>
-            <p class="subtitle">搜索 → 采取 → 抽取 → 精炼 → 知识库</p>
         </header>
 
-        <!-- Tab 切换 -->
-        <div class="tab-container">
-            <button class="tab-btn active" data-tab="crawl">
-                🌐 采取知识
-            </button>
-            <button class="tab-btn" data-tab="refine">
-                ✨ 去重精炼
-            </button>
-            <button class="tab-btn" data-tab="semantic">
-                🔍 语义检索
-            </button>
-        </div>
-
-        <!-- 爬取 Tab -->
-        <div class="tab-content active" id="crawl-tab">
-            <!-- 搜索区域 -->
-            <section class="search-section">
-                <div class="search-box">
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        placeholder="输入搜索关键词，如：数据流图 绘制步骤 教程"
-                        autocomplete="off"
-                    >
-                    <button id="searchBtn" class="btn-primary">
-                        <span class="btn-icon">🚀</span>
-                        <span class="btn-text">开始构建</span>
-                    </button>
-                </div>
-                <div class="manual-crawl">
-                    <div class="manual-header">
-                        <span class="manual-title">手动 URL 采取</span>
-                    </div>
-                    <div class="search-box manual-box">
-                        <input 
-                            type="text" 
-                            id="manualUrlInput" 
-                            placeholder="输入网页 URL，如：https://www.example.com"
-                            autocomplete="off"
-                        >
-                        <button id="manualCrawlBtn" class="btn-secondary">
-                            <span class="btn-icon">🧷</span>
-                            <span class="btn-text">手动爬取</span>
-                        </button>
+        <main id="mainContent">
+            <section class="hero" aria-labelledby="pageTitle">
+                <div class="hero-copy">
+                    <span class="eyebrow">LOCAL-FIRST KNOWLEDGE PIPELINE</span>
+                    <h1 id="pageTitle">把零散网页，变成<br><span>可检索的结构化知识</span></h1>
+                    <p>在一个工作台内完成资料采集、知识精炼与语义检索。任务状态、过程日志和结果证据始终保持可见。</p>
+                    <div class="hero-badges" aria-label="系统特性">
+                        <span>本地优先</span>
+                        <span>结构化抽取</span>
+                        <span>可追踪任务</span>
                     </div>
                 </div>
-                
-                <!-- 选项 -->
-                <div class="options">
-                    <div class="option-group">
-                        <label>采取数量:</label>
-                        <select id="limitSelect">
-                            <option value="3">3 个网页</option>
-                            <option value="5" selected>5 个网页</option>
-                            <option value="10">10 个网页</option>
-                            <option value="15">15 个网页</option>
-                        </select>
-                    </div>
-                    <div class="option-group">
-                        <label>知识类型:</label>
-                        <select id="typeSelect">
-                            <option value="">自动识别</option>
-                            <option value="diagrams.dfd.concepts">DFD 概念</option>
-                            <option value="diagrams.dfd.rules">DFD 规则</option>
-                            <option value="diagrams.dfd.examples">DFD 示例</option>
-                            <option value="theory">软件工程理论</option>
-                        </select>
-                    </div>
-                </div>
+                <ol class="pipeline" aria-label="知识处理流程">
+                    <li><span>01</span><strong>搜索与采集</strong><small>发现并抓取可信来源</small></li>
+                    <li><span>02</span><strong>抽取与精炼</strong><small>结构化、去重并聚合</small></li>
+                    <li><span>03</span><strong>索引与检索</strong><small>按语义找回有效知识</small></li>
+                </ol>
             </section>
 
-            <!-- 进度区域 -->
-            <section class="progress-section" id="progressSection">
-                <div class="progress-header">
-                    <span class="status-badge" id="statusBadge">等待中</span>
-                    <span class="progress-text" id="progressText">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-            </section>
+            <nav class="tab-container" role="tablist" aria-label="工作台功能">
+                <button id="crawlTab" class="tab-btn active" type="button" role="tab"
+                        aria-selected="true" aria-controls="crawl-tab" data-tab="crawl">
+                    <span class="tab-index">01</span><span>知识采集</span>
+                </button>
+                <button id="refineTab" class="tab-btn" type="button" role="tab"
+                        aria-selected="false" aria-controls="refine-tab" data-tab="refine" tabindex="-1">
+                    <span class="tab-index">02</span><span>去重精炼</span>
+                </button>
+                <button id="semanticTab" class="tab-btn" type="button" role="tab"
+                        aria-selected="false" aria-controls="semantic-tab" data-tab="semantic" tabindex="-1">
+                    <span class="tab-index">03</span><span>语义检索</span>
+                </button>
+                <button id="vaultTab" class="tab-btn" type="button" role="tab"
+                        aria-selected="false" aria-controls="vault-tab" data-tab="vault" tabindex="-1">
+                    <span class="tab-index">04</span><span>知识图谱</span>
+                </button>
+            </nav>
 
-            <!-- 日志区域 -->
-            <section class="log-section">
-                <div class="log-header">
-                    <h3>📋 执行日志</h3>
-                    <button id="clearBtn" class="btn-small">清空</button>
-                </div>
-                <div class="log-container" id="logContainer">
-                    <div class="log-placeholder">
-                        等待任务开始...
+            <div class="tab-content active" id="crawl-tab" role="tabpanel" aria-labelledby="crawlTab">
+                <section class="panel-intro">
+                    <div>
+                        <span class="eyebrow">COLLECT</span>
+                        <h2>建立一次可追踪的知识采集任务</h2>
                     </div>
-                </div>
-            </section>
-
-            <!-- 结果区域 -->
-            <section class="result-section" id="resultSection">
-                <h3>📦 抽取结果</h3>
-                <div class="result-list" id="resultList">
-                    <!-- 动态填充 -->
-                </div>
-            </section>
-        </div>
-
-        <!-- 精炼 Tab -->
-        <div class="tab-content" id="refine-tab">
-            <section class="refine-section">
-                <div class="refine-header">
-                    <h3>🔄 知识去重与精炼</h3>
-                    <p class="refine-desc">扫描 artifacts 目录，识别重复内容，智能融合生成高质量知识</p>
-                </div>
-
-                <!-- 日期选择 -->
-                <div class="refine-options">
-                    <div class="option-group">
-                        <label>选择日期:</label>
-                        <select id="refineDateSelect">
-                            <option value="">全部日期</option>
-                            <!-- 动态填充 -->
-                        </select>
-                    </div>
-                    <div class="option-group">
-                        <label>选择时间段:</label>
-                        <select id="refineTimeSelect">
-                            <option value="">全部时间</option>
-                            <!-- 动态填充 -->
-                        </select>
-                    </div>
-                    <div class="option-group">
-                        <label>
-                            <input type="checkbox" id="dryRunCheck">
-                            试运行（不保存）
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 操作按钮 -->
-                <div class="refine-actions">
-                    <button id="previewBtn" class="btn-secondary">
-                        <span>👁️ 预览分析</span>
-                    </button>
-                    <button id="refineBtn" class="btn-primary">
-                        <span>✨ 开始精炼</span>
-                    </button>
-                </div>
-
-                <!-- 预览结果 -->
-                <div class="preview-result" id="previewResult" style="display: none;">
-                    <h4>📊 预览结果</h4>
-                    <div class="preview-content" id="previewContent"></div>
-                </div>
-
-                <!-- 精炼进度 -->
-                <section class="progress-section" id="refineProgressSection" style="display: none;">
-                    <div class="progress-header">
-                        <span class="status-badge" id="refineStatusBadge">等待中</span>
-                        <span class="progress-text" id="refineProgressText">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="refineProgressFill"></div>
-                    </div>
+                    <p>从关键词搜索开始，或直接提交一个 URL。采集数量和知识类型会作为任务约束传递到流水线。</p>
                 </section>
 
-                <!-- 精炼日志 -->
-                <section class="log-section">
-                    <div class="log-header">
-                        <h3>📋 精炼日志</h3>
-                        <button id="clearRefineLogBtn" class="btn-small">清空</button>
+                <section class="action-card" aria-labelledby="searchHeading">
+                    <div class="card-heading">
+                        <span class="step-chip">A</span>
+                        <div><h3 id="searchHeading">关键词搜索</h3><p>搜索相关网页并自动完成抓取与抽取。</p></div>
                     </div>
-                    <div class="log-container" id="refineLogContainer">
-                        <div class="log-placeholder">
-                            选择日期后点击"预览分析"或"开始精炼"...
+                    <div class="search-box">
+                        <label class="field-label" for="searchInput">搜索主题</label>
+                        <div class="input-action-row">
+                            <input type="text" id="searchInput"
+                                   placeholder="例如：数据流图绘制步骤与最佳实践"
+                                   autocomplete="off" spellcheck="false">
+                            <button id="searchBtn" class="btn-primary" type="button">
+                                <span class="btn-text">开始构建</span><span aria-hidden="true">→</span>
+                            </button>
                         </div>
                     </div>
-                </section>
 
-                <!-- 精炼统计 -->
-                <section class="stats-section" id="refineStatsSection" style="display: none;">
-                    <h3>📈 精炼统计</h3>
-                    <div class="stats-grid" id="refineStatsGrid">
-                        <!-- 动态填充 -->
+                    <div class="divider"><span>或者</span></div>
+
+                    <div class="manual-crawl">
+                        <label class="field-label" for="manualUrlInput">指定网页地址</label>
+                        <div class="input-action-row">
+                            <input type="url" id="manualUrlInput"
+                                   placeholder="https://example.com/article"
+                                   autocomplete="off" spellcheck="false">
+                            <button id="manualCrawlBtn" class="btn-secondary" type="button">
+                                <span class="btn-text">采集此页面</span>
+                            </button>
+                        </div>
                     </div>
-                </section>
-            </section>
-        </div>
 
-        <!-- 语义检索 Tab -->
-        <div class="tab-content" id="semantic-tab">
-            <section class="semantic-section">
-                <div class="semantic-header">
-                    <h3>🔍 语义检索</h3>
-                    <p class="semantic-desc">搜索知识库中的结构化知识，支持按意图筛选</p>
-                </div>
-
-                <div class="semantic-search-box">
-                    <input 
-                        type="text" 
-                        id="semanticSearchInput" 
-                        placeholder="输入检索关键词，如：DFD 绘制步骤"
-                        autocomplete="off"
-                    >
-                    <div class="semantic-options">
+                    <div class="options field-grid">
                         <div class="option-group">
-                            <label>检索意图:</label>
-                            <select id="semanticIntentSelect">
+                            <label for="limitSelect">采集数量</label>
+                            <select id="limitSelect">
+                                <option value="3">3 个网页</option>
+                                <option value="5" selected>5 个网页</option>
+                                <option value="10">10 个网页</option>
+                                <option value="15">15 个网页</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label for="typeSelect">知识类型</label>
+                            <select id="typeSelect">
                                 <option value="">自动识别</option>
-                                <option value="concept">概念查询</option>
-                                <option value="rule">规则查询</option>
-                                <option value="example">示例查询</option>
-                                <option value="template">模板查询</option>
-                            </select>
-                        </div>
-                        <div class="option-group">
-                            <label>结果数量:</label>
-                            <select id="semanticTopKSelect">
-                                <option value="5" selected>5 条</option>
-                                <option value="10">10 条</option>
-                                <option value="15">15 条</option>
+                                <option value="diagrams.dfd.concepts">DFD 概念</option>
+                                <option value="diagrams.dfd.rules">DFD 规则</option>
+                                <option value="diagrams.dfd.examples">DFD 示例</option>
+                                <option value="theory">软件工程理论</option>
                             </select>
                         </div>
                     </div>
-                    <button id="semanticSearchBtn" class="btn-primary">
-                        <span class="btn-icon">🔍</span>
-                        <span class="btn-text">开始检索</span>
-                    </button>
-                </div>
+                </section>
 
-                <section class="progress-section" id="semanticProgressSection" style="display: none;">
+                <section class="progress-section" id="progressSection" aria-labelledby="crawlStatusHeading">
                     <div class="progress-header">
-                        <span class="status-badge" id="semanticStatusBadge">检索中</span>
+                        <div><span class="section-kicker">任务状态</span><h3 id="crawlStatusHeading">采集流水线</h3></div>
+                        <div class="status-cluster"><span class="status-badge" id="statusBadge">等待中</span><span class="progress-text" id="progressText">0%</span></div>
+                    </div>
+                    <div class="progress-bar" role="progressbar" aria-label="采集进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="progress-fill" id="progressFill"></div>
                     </div>
                 </section>
 
                 <section class="log-section">
-                    <div class="log-container" id="semanticLogContainer">
-                        <div class="log-placeholder">
-                            输入关键词后点击"开始检索"...
+                    <div class="log-header"><div><span class="section-kicker">ACTIVITY</span><h3>执行日志</h3></div><button id="clearBtn" class="btn-small" type="button">清空日志</button></div>
+                    <div class="log-container" id="logContainer" role="log" aria-live="polite" aria-relevant="additions">
+                        <div class="log-placeholder">任务启动后，阶段进度与诊断信息会显示在这里。</div>
+                    </div>
+                </section>
+
+                <section class="result-section" id="resultSection" aria-labelledby="resultHeading">
+                    <div class="result-section-header"><div><span class="section-kicker">OUTPUT</span><h3 id="resultHeading">抽取结果</h3></div><span id="resultCount" class="count-badge"></span></div>
+                    <div class="result-list" id="resultList" aria-live="polite"></div>
+                </section>
+            </div>
+
+            <div class="tab-content" id="refine-tab" role="tabpanel" aria-labelledby="refineTab" hidden>
+                <section class="panel-intro">
+                    <div><span class="eyebrow">REFINE</span><h2>让知识库更精炼，而不是更臃肿</h2></div>
+                    <p>按日期或时间段扫描 artifacts，预览重复项后再融合；试运行模式不会写入任何结果。</p>
+                </section>
+                <section class="action-card refine-section">
+                    <div class="field-grid refine-options">
+                        <div class="option-group"><label for="refineDateSelect">数据日期</label><select id="refineDateSelect"><option value="">全部日期</option></select></div>
+                        <div class="option-group"><label for="refineTimeSelect">时间批次</label><select id="refineTimeSelect"><option value="">全部时间</option></select></div>
+                        <label class="check-control" for="dryRunCheck"><input type="checkbox" id="dryRunCheck"><span><strong>试运行</strong><small>仅分析，不保存变更</small></span></label>
+                    </div>
+                    <div class="refine-actions">
+                        <button id="previewBtn" class="btn-secondary" type="button">预览分析</button>
+                        <button id="refineBtn" class="btn-primary" type="button"><span>开始精炼</span><span aria-hidden="true">→</span></button>
+                    </div>
+                </section>
+
+                <section class="preview-result" id="previewResult" style="display:none" aria-live="polite">
+                    <div class="card-heading"><span class="step-chip">P</span><div><h3>预览结果</h3><p>执行前的规模估算</p></div></div>
+                    <div class="preview-content" id="previewContent"></div>
+                </section>
+
+                <section class="progress-section" id="refineProgressSection" style="display:none" aria-labelledby="refineStatusHeading">
+                    <div class="progress-header"><div><span class="section-kicker">任务状态</span><h3 id="refineStatusHeading">精炼流水线</h3></div><div class="status-cluster"><span class="status-badge" id="refineStatusBadge">等待中</span><span class="progress-text" id="refineProgressText">0%</span></div></div>
+                    <div class="progress-bar" role="progressbar" aria-label="精炼进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="refineProgressFill"></div></div>
+                </section>
+
+                <section class="log-section">
+                    <div class="log-header"><div><span class="section-kicker">ACTIVITY</span><h3>精炼日志</h3></div><button id="clearRefineLogBtn" class="btn-small" type="button">清空日志</button></div>
+                    <div class="log-container" id="refineLogContainer" role="log" aria-live="polite" aria-relevant="additions">
+                        <div class="log-placeholder">选择范围后，先预览分析或直接开始精炼。</div>
+                    </div>
+                </section>
+
+                <section class="stats-section" id="refineStatsSection" style="display:none" aria-live="polite">
+                    <div><span class="section-kicker">SUMMARY</span><h3>精炼统计</h3></div>
+                    <div class="stats-grid" id="refineStatsGrid"></div>
+                </section>
+            </div>
+
+            <div class="tab-content" id="semantic-tab" role="tabpanel" aria-labelledby="semanticTab" hidden>
+                <section class="panel-intro">
+                    <div><span class="eyebrow">RETRIEVE</span><h2>从结构化知识中找到真正相关的答案</h2></div>
+                    <p>输入自然语言问题，可按概念、规则、示例或模板意图缩小范围，并控制返回数量。</p>
+                </section>
+
+                <section class="action-card semantic-section">
+                    <label class="field-label" for="semanticSearchInput">检索问题</label>
+                    <div class="semantic-search-box">
+                        <input type="text" id="semanticSearchInput"
+                               placeholder="例如：绘制 DFD 时如何划分外部实体？"
+                               autocomplete="off" spellcheck="false">
+                        <div class="semantic-options field-grid">
+                            <div class="option-group"><label for="semanticIntentSelect">检索意图</label><select id="semanticIntentSelect"><option value="">自动识别</option><option value="concept">概念查询</option><option value="rule">规则查询</option><option value="example">示例查询</option><option value="template">模板查询</option></select></div>
+                            <div class="option-group"><label for="semanticTopKSelect">结果数量</label><select id="semanticTopKSelect"><option value="5" selected>5 条</option><option value="10">10 条</option><option value="15">15 条</option></select></div>
+                        </div>
+                        <button id="semanticSearchBtn" class="btn-primary" type="button"><span class="btn-text">开始检索</span><span aria-hidden="true">→</span></button>
+                    </div>
+                </section>
+
+                <section class="progress-section compact-progress" id="semanticProgressSection" style="display:none" aria-live="polite">
+                    <div class="progress-header"><div><span class="section-kicker">任务状态</span><h3>语义匹配</h3></div><span class="status-badge running" id="semanticStatusBadge">检索中</span></div>
+                </section>
+
+                <section class="log-section compact-log">
+                    <div class="log-header"><div><span class="section-kicker">QUERY LOG</span><h3>检索状态</h3></div></div>
+                    <div class="log-container" id="semanticLogContainer" role="log" aria-live="polite" aria-relevant="additions"><div class="log-placeholder">输入问题后开始检索，匹配过程会显示在这里。</div></div>
+                </section>
+
+                <section class="result-section" id="semanticResultSection" style="display:none" aria-labelledby="semanticResultHeading">
+                    <div class="result-section-header"><div><span class="section-kicker">MATCHES</span><h3 id="semanticResultHeading">检索结果</h3></div><span id="semanticResultCount" class="count-badge"></span></div>
+                    <div class="result-list" id="semanticResultList" aria-live="polite"></div>
+                </section>
+            </div>
+
+            <div class="tab-content" id="vault-tab" role="tabpanel" aria-labelledby="vaultTab" hidden>
+                <section class="panel-intro">
+                    <div><span class="eyebrow">OBSIDIAN VAULT</span><h2>让机器索引与人的知识网络相遇</h2></div>
+                    <p>预览 SE-KB 到 Obsidian 的单向投影，检查冲突与过期笔记，并从显式关系和语义推荐中探索知识图谱。</p>
+                </section>
+
+                <section class="vault-summary" aria-labelledby="vaultSummaryHeading">
+                    <div class="result-section-header">
+                        <div><span class="section-kicker">VAULT STATUS</span><h3 id="vaultSummaryHeading">投影概览</h3></div>
+                        <button id="vaultRefreshBtn" class="btn-small" type="button">刷新状态</button>
+                    </div>
+                    <div class="vault-summary-grid">
+                        <article class="vault-stat"><span>连接状态</span><strong id="vaultAvailability">等待检查</strong></article>
+                        <article class="vault-stat"><span>Vault</span><strong id="vaultName">—</strong></article>
+                        <article class="vault-stat"><span>受管笔记</span><strong id="vaultNoteCount">0</strong></article>
+                        <article class="vault-stat"><span>上次导出</span><strong id="vaultLastExport">尚未导出</strong></article>
+                    </div>
+                    <p id="vaultDiagnostic" class="vault-diagnostic" aria-live="polite"></p>
+                </section>
+
+                <section class="action-card" aria-labelledby="vaultExportHeading">
+                    <div class="card-heading">
+                        <span class="step-chip">V</span>
+                        <div><h3 id="vaultExportHeading">安全投影</h3><p>预览不会写入；正式导出只更新未被人工修改的受管笔记。</p></div>
+                    </div>
+                    <div class="field-grid vault-options">
+                        <div class="option-group">
+                            <label for="vaultSourceInput">来源筛选</label>
+                            <input id="vaultSourceInput" type="text" placeholder="example.com, docs.example.com" autocomplete="off">
+                        </div>
+                        <div class="option-group">
+                            <label for="vaultEntityKindsInput">实体类型</label>
+                            <input id="vaultEntityKindsInput" type="text" value="concept, rule, pattern, example" autocomplete="off">
+                        </div>
+                        <div class="option-group">
+                            <label for="vaultQualityInput">最低质量分</label>
+                            <input id="vaultQualityInput" type="number" min="0" max="1" step="0.05" value="0">
                         </div>
                     </div>
-                </section>
-
-                <section class="result-section" id="semanticResultSection" style="display: none;">
-                    <h3>📦 检索结果</h3>
-                    <div class="result-list" id="semanticResultList">
-                        <!-- 动态填充 -->
+                    <div class="refine-actions vault-actions">
+                        <button id="vaultPreviewBtn" class="btn-secondary" type="button">生成预览</button>
+                        <button id="vaultExportBtn" class="btn-primary" type="button"><span class="btn-text">导出到 Vault</span><span aria-hidden="true">→</span></button>
                     </div>
                 </section>
-            </section>
-        </div>
 
-        <!-- 页脚 -->
+                <section id="vaultPlanSection" class="vault-plan" hidden aria-labelledby="vaultPlanHeading">
+                    <div class="result-section-header">
+                        <div><span class="section-kicker">EXPORT PLAN</span><h3 id="vaultPlanHeading">变更预览</h3></div>
+                        <span id="vaultPlanCount" class="count-badge"></span>
+                    </div>
+                    <div id="vaultPlanSummary" class="plan-summary" aria-live="polite"></div>
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead><tr><th scope="col">动作</th><th scope="col">类型</th><th scope="col">Vault 路径</th><th scope="col">原因</th></tr></thead>
+                            <tbody id="vaultPlanBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="vaultProgressSection" class="progress-section" hidden aria-labelledby="vaultProgressHeading">
+                    <div class="progress-header">
+                        <div><span class="section-kicker">EXPORT JOB</span><h3 id="vaultProgressHeading">Vault 导出</h3></div>
+                        <div class="status-cluster"><button id="vaultCancelBtn" class="btn-small" type="button" hidden>取消</button><span id="vaultStatusBadge" class="status-badge">等待中</span><span id="vaultProgressText" class="progress-text">0%</span></div>
+                    </div>
+                    <div class="progress-bar" role="progressbar" aria-label="Vault 导出进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="vaultProgressFill" class="progress-fill"></div></div>
+                    <div id="vaultLogContainer" class="vault-job-log" role="log" aria-live="polite"></div>
+                </section>
+
+                <section class="knowledge-map" aria-labelledby="knowledgeMapHeading">
+                    <div class="map-header">
+                        <div><span class="section-kicker">RELATIONSHIP MAP</span><h3 id="knowledgeMapHeading">知识关系</h3></div>
+                        <div class="map-filters">
+                            <label for="vaultRelationKind">关系类型</label>
+                            <select id="vaultRelationKind"><option value="">全部关系</option><option value="explicit">显式关系</option><option value="semantic">语义推荐</option></select>
+                            <button id="vaultGraphRefreshBtn" class="btn-small" type="button">加载图谱</button>
+                        </div>
+                    </div>
+                    <p id="vaultGraphStatus" class="map-status" aria-live="polite">加载图谱后，可点击节点在 Obsidian 中打开对应笔记。</p>
+                    <div class="graph-shell">
+                        <svg id="vaultGraph" viewBox="0 0 960 520" role="img" aria-labelledby="knowledgeMapHeading vaultGraphStatus"></svg>
+                    </div>
+                    <div class="table-scroll relationship-table-wrap">
+                        <table class="data-table">
+                            <caption>知识关系无障碍列表</caption>
+                            <thead><tr><th scope="col">来源</th><th scope="col">关系</th><th scope="col">目标</th><th scope="col">依据</th><th scope="col">操作</th></tr></thead>
+                            <tbody id="vaultRelationshipBody"><tr><td colspan="5">尚未加载关系数据</td></tr></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+
         <footer class="footer">
-            <p>SE-KB Knowledge Builder • Powered by LLM</p>
+            <span>SE-KB Knowledge Workspace</span><span>本地优先 · 可追踪 · 可复现</span>
         </footer>
     </div>
 
+    <div id="appNotice" class="app-notice" role="alert" hidden></div>
     <script src="/static/script.js"></script>
 </body>
 </html>

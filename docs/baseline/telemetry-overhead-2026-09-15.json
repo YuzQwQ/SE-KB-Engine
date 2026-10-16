@@ -1,0 +1,12 @@
+{
+  "iterations": 5000,
+  "per_event_ms": 0.06775460000499152,
+  "max_payload_bytes": 103,
+  "peak_memory_bytes": 364362,
+  "budgets": {
+    "max_per_event_ms": 0.5,
+    "max_payload_bytes": 4096,
+    "max_peak_bytes": 16777216
+  },
+  "passed": true
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0", "batch_id": "duplicate-b",
+  "document_id": "doc_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "source_url": "https://example.com/duplicate-b",
+  "content_hash": "cnt_dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "created_at": "2026-09-15T00:00:00+00:00",
+  "trace": {"application_version":"0.1.0","cleaner_version":"v1","router_version":"v1","prompt_version":"v1","model_version":"v1","parameter_version":"v1","schema_version":"v1"},
+  "outcome": {"tag":"no_knowledge","artifact_ids":[],"diagnostics":[]}, "derived_files":[], "anchors":[], "metadata":{}
+}

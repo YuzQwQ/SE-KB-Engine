@@ -1,57 +1,80 @@
-version: '3.8'
-
 services:
-  # 核心 API 服务
   kb-api:
-    build: 
+    build:
       context: ..
       dockerfile: deploy/Dockerfile
-    image: se-kb-api:v1
-    restart: always
+    image: se-kb-api:${SE_KB_IMAGE_TAG:-local}
+    restart: unless-stopped
+    read_only: true
+    init: true
     environment:
-      - FLASK_ENV=production
-      # 替换为真实的 Key，或使用 .env 文件
-      # - KB_READ_KEYS=sk-read-123
-      # - KB_ADMIN_KEYS=sk-admin-456
+      KB_READ_KEYS: ${KB_READ_KEYS:?set KB_READ_KEYS in the process environment}
+      KB_ADMIN_KEYS: ${KB_ADMIN_KEYS:?set KB_ADMIN_KEYS in the process environment}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://127.0.0.1:8080}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      MODEL: ${MODEL:-}
+      BASE_URL: ${BASE_URL:-}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-4}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-60}
+      GUNICORN_GRACEFUL_TIMEOUT: ${GUNICORN_GRACEFUL_TIMEOUT:-30}
     volumes:
-      # 只读挂载知识库，防止在线服务意外修改数据
-      # 生产环境建议使用 rsync 同步数据到宿主机该目录
-      - ../se_kb:/app/se_kb:ro
-      # 挂载日志目录
-      - ../logs:/app/logs
-      # 挂载配置 (API Key, LLM Key)
-      - ../.env:/app/.env
-    networks:
-      - kb-net
+      - kb_data:/app/data
+      - kb_cache:/app/cache
+      - kb_output:/app/output
+      - kb_logs:/app/logs
+      - kb_index:/app/se_kb
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    networks: [kb-net]
+    expose: ["8000"]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/ready', timeout=3).read()"]
       interval: 30s
-      timeout: 10s
+      timeout: 5s
+      start_period: 20s
       retries: 3
+    mem_limit: 2g
+    cpus: 2.0
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: "5"}
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
 
-  # Nginx 网关
   nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
+    image: nginxinc/nginx-unprivileged:1.27-alpine
+    profiles: [gateway]
+    restart: unless-stopped
+    read_only: true
+    depends_on:
+      kb-api: {condition: service_healthy}
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:${GATEWAY_PORT:-8080}:8080"]
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certs:/etc/nginx/certs:ro
-    depends_on:
-      - kb-api
-    networks:
-      - kb-net
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+      - /var/cache/nginx:size=16m,mode=0755
+      - /var/run:size=1m,mode=0755
+    networks: [kb-net]
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 64
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: "3"}
 
-  # [可选] Cloudflare Tunnel (无需公网IP即可暴露服务)
-  # 使用前请先去 Cloudflare Zero Trust 创建 Tunnel 并获取 Token
-  # tunnel:
-  #   image: cloudflare/cloudflared:latest
-  #   restart: unless-stopped
-  #   command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
-  #   networks:
-  #     - kb-net
+volumes:
+  kb_data:
+  kb_cache:
+  kb_output:
+  kb_logs:
+  kb_index:
 
 networks:
   kb-net:
     driver: bridge
+    internal: true

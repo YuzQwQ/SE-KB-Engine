@@ -8,29 +8,15 @@ from io import BytesIO
 from PIL import Image
 import json
 import os
-from dotenv import load_dotenv
+from utils.env_loader import load_env_file
 import httpx
 from typing import Any, List, Dict
 from mcp.server.fastmcp import FastMCP
 import logging
+from se_kb_app.observability import configure_logging
 
 # 在导入任何自定义模块之前配置日志系统
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('mcp_server.log'),
-        # Remove StreamHandler to avoid stdout pollution
-    ],
-    force=True  # 强制重新配置，覆盖任何已存在的配置
-)
-
-# 确保所有已存在的 logger 都使用新配置
-for name in logging.Logger.manager.loggerDict:
-    logger_obj = logging.getLogger(name)
-    logger_obj.handlers.clear()
-    logger_obj.propagate = True
-
+configure_logging()
 logger = logging.getLogger(__name__)
 
 # 现在可以安全地导入自定义模块
@@ -46,6 +32,10 @@ except ImportError:
     SOCKS_AVAILABLE = False
     # Warning: httpx-socks not installed, SOCKS proxy functionality will be unavailable
 from openai import OpenAI
+from se_kb_app.services.tor import TorController
+from se_kb_app.composition import Application
+from se_kb_app.domain import RetrievalRequest
+from se_kb_app.presenters import retrieval_payload
 from bs4 import BeautifulSoup
 from duckduckgo_search import DDGS
 import asyncio
@@ -61,30 +51,121 @@ import requests
 
 import random
 import threading
+from service_boundary.fetch import bounded_async_get, validate_image_bytes
+from service_boundary.transport import VerifiedAsyncHTTPTransport
+from se_kb_app.jobs.context import checkpoint, current_cancellation, publication
+from se_kb_app.artifacts.storage import atomic_write_bytes, atomic_write_json
+from se_kb_app.jobs.store import CancellationToken
+from service_boundary.url_policy import validate_url
+from service_boundary.auth import Role, protected
+from service_boundary.errors import public_error, PublicError
+from service_boundary.audit import install_secret_redaction
+from service_boundary.inputs import (
+    InputLimits,
+    boolean_field,
+    confined_path,
+    enum_field,
+    integer_field,
+    object_body,
+    path_component,
+    string_field,
+)
+
+
+def validate_mcp_query(query: str, limit: int, *, limit_name: str = "top_k") -> tuple[str, int]:
+    limits = InputLimits.from_environment()
+    data = {"query": query, limit_name: limit}
+    checked_query = string_field(data, "query", required=True, max_length=limits.query_chars)
+    checked_limit = integer_field(
+        data, limit_name, default=5, minimum=1, maximum=limits.task_limit_max
+    )
+    return checked_query or "", checked_limit
+
+
+def validate_mcp_json(value: str, name: str) -> dict:
+    limits = InputLimits.from_environment()
+    checked = string_field({name: value}, name, required=True, max_length=limits.json_chars)
+    try:
+        return dict(object_body(json.loads(checked or "")))
+    except (ValueError, TypeError) as error:
+        raise public_error("invalid_field", field=name) from error
+
+
+install_secret_redaction()
 
 # 导入MySQL数据库工具
 # from mysql_db_utils import init_db, save_to_db, close_pool
 
-load_dotenv()
-openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("BASE_URL"))
+load_env_file()
+openai_client = None
+
+
+def get_openai_client():
+    """Create the paid model client only when an operation actually needs it."""
+    global openai_client
+    if application is not None:
+        try:
+            return application.resource("openai")
+        except KeyError:
+            pass
+    if openai_client is None:
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise RuntimeError("model capability is unavailable")
+        from se_kb_app.settings import AppSettings
+        openai_client = OpenAI(api_key=api_key, base_url=os.getenv("BASE_URL"),
+                               timeout=AppSettings.from_sources().model_timeout_seconds, max_retries=0)
+    return openai_client
 model = os.getenv("MODEL")
 
 mcp = FastMCP("WebScrapingServer")
+application: Application | None = None
 
-# 初始化格式处理器
-format_processor = FormatProcessor()
-universal_processor = UniversalKnowledgeProcessor()
 
-# 初始化知识检索器和查询规划器
-try:
-    vector_config = VectorConfig()
-    knowledge_retriever = KnowledgeRetriever(vector_config)
-    query_planner = QueryPlanner(knowledge_retriever)
-    logger.info("KnowledgeRetriever and QueryPlanner initialized successfully")
-except Exception as e:
-    logger.error(f"Failed to initialize KnowledgeRetriever: {e}")
-    knowledge_retriever = None
-    query_planner = None
+def configure_application(instance: Application) -> None:
+    """Compatibility seam used by composed MCP runtimes and offline tests."""
+    global application
+    application = instance
+
+# Compatibility caches; constructors run only when the corresponding capability is invoked.
+format_processor = None
+universal_processor = None
+
+
+def get_format_processor():
+    global format_processor
+    if format_processor is None:
+        format_processor = FormatProcessor()
+    return format_processor
+
+
+def get_universal_processor():
+    global universal_processor
+    if universal_processor is None:
+        universal_processor = UniversalKnowledgeProcessor()
+    return universal_processor
+
+# Compatibility cache. Retrieval infrastructure is initialized only when a tool uses it.
+knowledge_retriever = None
+query_planner = None
+
+
+def get_retrieval_components():
+    global knowledge_retriever, query_planner
+    if application is not None:
+        try:
+            return application.resource("retriever"), application.resource("planner")
+        except KeyError:
+            return None, None
+    if knowledge_retriever is None:
+        try:
+            vector_config = VectorConfig()
+            knowledge_retriever = KnowledgeRetriever(vector_config)
+            query_planner = QueryPlanner(knowledge_retriever)
+            logger.info("KnowledgeRetriever and QueryPlanner initialized successfully")
+        except Exception as error:
+            logger.error("Knowledge retrieval unavailable: %s", type(error).__name__)
+    return knowledge_retriever, query_planner
 
 # 加载系统提示词配置
 def load_system_prompts():
@@ -433,32 +514,33 @@ class TorManager:
             pass
 
 
-# 全局Tor管理器实例
-tor_manager = TorManager() if USE_TOR else None
+# Compatibility facade: process creation is now owned by the explicit controller lifecycle.
+tor_manager = (
+    TorController(
+        enabled=True,
+        executable=TOR_EXECUTABLE_PATH,
+        socks_port=TOR_SOCKS_PORT,
+        control_port=TOR_CONTROL_PORT,
+        data_dir=Path(__file__).resolve().parent / "tor_data",
+    )
+    if USE_TOR
+    else None
+)
 
 
 def get_http_client_config():
-    """获取HTTP客户端配置"""
-    config = {
-        "timeout": 120.0,
-        "follow_redirects": True,
-    }
-    
-    if USE_TOR and tor_manager and tor_manager.is_running and SOCKS_AVAILABLE:
+    """Explicit transport for trusted model/diagnostic requests."""
+    config = {"timeout": 60.0, "follow_redirects": False, "trust_env": False}
+    if USE_TOR:
+        if not tor_manager or not tor_manager.is_running or not SOCKS_AVAILABLE:
+            raise public_error("unavailable")
         proxy_url = tor_manager.get_proxy_config()
-        if proxy_url:
-            try:
-                # 使用httpx-socks的AsyncProxyTransport来支持SOCKS5代理
-                transport = AsyncProxyTransport.from_url(proxy_url)
-                config["transport"] = transport
-                logger.info(f"使用Tor代理 (transport): {proxy_url}")
-            except Exception as e:
-                logger.warning(f"代理配置错误: {e}")
-                logger.info("将使用普通网络连接")
-    elif USE_TOR and tor_manager and tor_manager.is_running and not SOCKS_AVAILABLE:
-        logger.warning("检测到Tor代理已启用，但httpx-socks未安装，无法使用SOCKS代理")
-        logger.info("请运行: pip install httpx-socks[asyncio]")
-    
+        if not proxy_url:
+            raise public_error("unavailable")
+        try:
+            config["transport"] = AsyncProxyTransport.from_url(proxy_url)
+        except Exception as error:
+            raise public_error("unavailable") from error
     return config
 
 
@@ -507,6 +589,7 @@ def fetch_raw_data(keyword: str, engine: str = None, max_results: int = 10) -> s
     Returns:
         包含原始数据、元数据和调试信息的JSON字符串
     """
+    keyword, max_results = validate_mcp_query(keyword, max_results, limit_name="max_results")
     try:
         # 如果未指定搜索引擎，使用默认的Google
         if engine is None:
@@ -517,7 +600,7 @@ def fetch_raw_data(keyword: str, engine: str = None, max_results: int = 10) -> s
     except Exception as e:
         error_result = {
             "success": False,
-            "error": str(e),
+            "error": "search_failed",
             "engine": engine,
             "keyword": keyword
         }
@@ -538,8 +621,8 @@ def parse_search_results(raw_response_json: str, engine: str = None, custom_rule
     """
     try:
         # 解析输入参数
-        raw_response = json.loads(raw_response_json)
-        custom_rules_dict = json.loads(custom_rules) if custom_rules else None
+        raw_response = validate_mcp_json(raw_response_json, "raw_response_json")
+        custom_rules_dict = validate_mcp_json(custom_rules, "custom_rules") if custom_rules else None
         
         # 执行解析
         result = crawler.parse_results(raw_response, engine, custom_rules_dict)
@@ -548,21 +631,23 @@ def parse_search_results(raw_response_json: str, engine: str = None, custom_rule
     except json.JSONDecodeError as e:
         error_result = {
             "success": False,
-            "error": f"JSON解析失败: {str(e)}"
+            "error": "invalid_json"
         }
         return json.dumps(error_result, ensure_ascii=False, indent=2)
     except Exception as e:
         error_result = {
             "success": False,
-            "error": str(e)
+            "error": "parse_failed"
         }
         return json.dumps(error_result, ensure_ascii=False, indent=2)
 
 @mcp.tool()
+@protected(Role.ADMIN)
 async def search_and_parse_universal(keyword: str, engine: str = None, max_results: int = 10, 
                                    custom_rules: str = None, extract_content: bool = True,
                                    requirement_type: str = "", target_conversion_type: str = "",
-                                   auto_save: bool = True, use_ai: bool = False, prompt_type: str = None) -> str:
+                                   auto_save: bool = True, use_ai: bool = False, prompt_type: str = None,
+                                   authorization: str = None, correlation_id: str = None) -> str:
     """
     通用搜索和解析工具 - 一站式搜索、解析和内容提取
     
@@ -581,6 +666,9 @@ async def search_and_parse_universal(keyword: str, engine: str = None, max_resul
     Returns:
         包含搜索结果、解析数据和知识提取结果的完整响应JSON字符串
     """
+    keyword, max_results = validate_mcp_query(keyword, max_results, limit_name="max_results")
+    if not isinstance(extract_content, bool) or not isinstance(auto_save, bool) or not isinstance(use_ai, bool):
+        raise public_error("invalid_field")
     try:
         # 如果未指定搜索引擎，使用默认的Google
         if engine is None:
@@ -590,7 +678,7 @@ async def search_and_parse_universal(keyword: str, engine: str = None, max_resul
         custom_rules_dict = json.loads(custom_rules) if custom_rules else None
         
         # 执行搜索和解析
-        search_result = crawler.search_and_parse(engine, keyword, max_results, custom_rules_dict)
+        search_result = await _run_crawl_blocking(crawler.search_and_parse, engine, keyword, max_results, custom_rules_dict)
         
         # 如果不需要内容提取，直接返回搜索结果
         if not extract_content:
@@ -618,7 +706,7 @@ async def search_and_parse_universal(keyword: str, engine: str = None, max_resul
                     url = url_info["url"]
                     
                     # 抓取网页内容
-                    scrape_result = await scrape_webpage(url)
+                    scrape_result = await _scrape_webpage(url, automatic=True)
                     
                     if scrape_result.startswith("[ERROR]"):
                         failed_extractions.append({
@@ -666,7 +754,7 @@ async def search_and_parse_universal(keyword: str, engine: str = None, max_resul
                                 extraction_method = "ai"
                             else:
                                 # 回退到规则提取
-                                knowledge_base = universal_processor.extract_knowledge(
+                                knowledge_base = get_universal_processor().extract_knowledge(
                                     content=content,
                                     url=url,
                                     title=title,
@@ -676,7 +764,7 @@ async def search_and_parse_universal(keyword: str, engine: str = None, max_resul
                                 extraction_method = "rules_fallback"
                         except Exception:
                             # AI调用失败，回退到规则提取
-                            knowledge_base = universal_processor.extract_knowledge(
+                            knowledge_base = get_universal_processor().extract_knowledge(
                                 content=content,
                                 url=url,
                                 title=title,
@@ -686,7 +774,7 @@ async def search_and_parse_universal(keyword: str, engine: str = None, max_resul
                             extraction_method = "rules_error_fallback"
                     else:
                         # 仅规则提取
-                        knowledge_base = universal_processor.extract_knowledge(
+                        knowledge_base = get_universal_processor().extract_knowledge(
                             content=content,
                             url=url,
                             title=title,
@@ -707,7 +795,7 @@ async def search_and_parse_universal(keyword: str, engine: str = None, max_resul
                     # 如果启用自动保存，保存知识库到文件
                     if auto_save:
                         try:
-                            filepath = universal_processor.save_knowledge_base(knowledge_base)
+                            filepath = get_universal_processor().save_knowledge_base(knowledge_base)
                             extraction_result["saved_filepath"] = filepath
                         except Exception as save_error:
                             extraction_result["save_warning"] = f"保存失败: {str(save_error)}"
@@ -717,7 +805,7 @@ async def search_and_parse_universal(keyword: str, engine: str = None, max_resul
                 except Exception as e:
                     failed_extractions.append({
                         "url": url_info["url"],
-                        "error": f"内容提取失败: {str(e)}"
+                        "error": "content_extraction_failed"
                     })
         
         # 构建完整的响应
@@ -747,13 +835,13 @@ async def search_and_parse_universal(keyword: str, engine: str = None, max_resul
     except json.JSONDecodeError as e:
         error_result = {
             "success": False,
-            "error": f"自定义规则JSON解析失败: {str(e)}"
+            "error": "invalid_custom_rules"
         }
         return json.dumps(error_result, ensure_ascii=False, indent=2)
     except Exception as e:
         error_result = {
             "success": False,
-            "error": str(e),
+            "error": "search_failed",
             "engine": engine,
             "keyword": keyword
         }
@@ -790,12 +878,18 @@ def get_available_search_engines() -> str:
     except Exception as e:
         error_result = {
             "success": False,
-            "error": str(e)
+            "error": "engine_listing_failed"
         }
         return json.dumps(error_result, ensure_ascii=False, indent=2)
 
 @mcp.tool()
-def configure_search_engine(engine: str, config_json: str) -> str:
+@protected(Role.ADMIN)
+def configure_search_engine(
+    engine: str,
+    config_json: str,
+    authorization: str = None,
+    correlation_id: str = None,
+) -> str:
     """
     动态配置搜索引擎解析规则（运行时配置）
     
@@ -807,7 +901,9 @@ def configure_search_engine(engine: str, config_json: str) -> str:
         配置结果的JSON字符串
     """
     try:
-        config = json.loads(config_json)
+        limits = InputLimits.from_environment()
+        engine = string_field({"engine": engine}, "engine", required=True, max_length=64) or ""
+        config = validate_mcp_json(config_json, "config_json")
         
         # 验证配置格式
         required_fields = ["engine", "parsing_rules"]
@@ -837,18 +933,19 @@ def configure_search_engine(engine: str, config_json: str) -> str:
     except json.JSONDecodeError as e:
         error_result = {
             "success": False,
-            "error": f"配置JSON解析失败: {str(e)}"
+            "error": "invalid_config_json"
         }
         return json.dumps(error_result, ensure_ascii=False, indent=2)
     except Exception as e:
         error_result = {
             "success": False,
-            "error": str(e)
+            "error": "configuration_failed"
         }
         return json.dumps(error_result, ensure_ascii=False, indent=2)
 
 @mcp.tool()
-async def check_tor_ip() -> str:
+@protected(Role.ADMIN)
+async def check_tor_ip(authorization: str = None, correlation_id: str = None) -> str:
     """Check current IP address through Tor proxy"""
     if not USE_TOR or not tor_manager:
         return "Tor proxy feature is disabled."
@@ -878,12 +975,13 @@ async def check_tor_ip() -> str:
             else:
                 return f"[ERROR] Failed to check IP through Tor. Status code: {response.status_code}"
                 
-    except Exception as e:
-        return f"[ERROR] Failed to check Tor IP: {str(e)}"
+    except Exception:
+        return "[ERROR] tor_ip_check_failed"
 
 
 @mcp.tool()
-async def test_tor_connection() -> str:
+@protected(Role.ADMIN)
+async def test_tor_connection(authorization: str = None, correlation_id: str = None) -> str:
     """Test Tor proxy connection with multiple endpoints"""
     if not USE_TOR or not tor_manager:
         return "Tor proxy feature is disabled."
@@ -945,7 +1043,19 @@ def search_knowledge(query: str, intent: str = None, top_k: int = 5, smart_searc
     Returns:
         JSON string containing the search results with scores and metadata.
     """
-    if not knowledge_retriever:
+    query, top_k = validate_mcp_query(query, top_k)
+    if intent not in {None, "", "concept", "rule", "example", "template", "theory"}:
+        raise public_error("invalid_field", field="intent")
+    if smart_search is not None and not isinstance(smart_search, bool):
+        raise public_error("invalid_field", field="smart_search")
+    retriever, planner = get_retrieval_components()
+    retrieval_service = None
+    if application is not None:
+        try:
+            retrieval_service = application.resource("retrieval")
+        except KeyError:
+            pass
+    if not retriever and retrieval_service is None:
         return json.dumps({
             "error": "KnowledgeRetriever is not initialized. Please check server logs."
         }, ensure_ascii=False)
@@ -956,9 +1066,9 @@ def search_knowledge(query: str, intent: str = None, top_k: int = 5, smart_searc
         if use_smart_search is None:
             use_smart_search = (not intent) and (len(query) > 20)
 
-        if use_smart_search and query_planner:
+        if use_smart_search and planner:
             logger.info(f"Using QueryPlanner for query: {query[:50]}...")
-            plan_result = query_planner.search(query, top_k)
+            plan_result = planner.search(query, top_k)
             
             results = []
             for r in plan_result.merged_results:
@@ -981,6 +1091,13 @@ def search_knowledge(query: str, intent: str = None, top_k: int = 5, smart_searc
                 "results": results
             }, ensure_ascii=False, indent=2)
 
+        if retrieval_service is not None:
+            payload = retrieval_payload(
+                retrieval_service.retrieve(RetrievalRequest(query, top_k, intent))
+            )
+            payload["detected_intent"] = payload.pop("intent")
+            return json.dumps(payload, ensure_ascii=False, indent=2)
+
         # Map string intent to Enum
         query_intent = None
         if intent:
@@ -990,7 +1107,7 @@ def search_knowledge(query: str, intent: str = None, top_k: int = 5, smart_searc
                 pass  # Use auto-detection if invalid intent provided
         
         # Execute retrieval
-        response = knowledge_retriever.retrieve(
+        response = retriever.retrieve(
             query=query,
             top_k=top_k,
             intent=query_intent
@@ -1017,7 +1134,7 @@ def search_knowledge(query: str, intent: str = None, top_k: int = 5, smart_searc
     except Exception as e:
         logger.error(f"Search knowledge failed: {e}")
         return json.dumps({
-            "error": f"Search failed: {str(e)}"
+            "error": "search_failed"
         }, ensure_ascii=False)
 
 @mcp.tool()
@@ -1039,7 +1156,9 @@ def get_dfd_generation_context(requirement: str) -> str:
         - patterns: Similar design patterns found
         - examples: Relevant examples found
     """
-    if not query_planner:
+    requirement, _ = validate_mcp_query(requirement, 1)
+    _, planner = get_retrieval_components()
+    if not planner:
         return json.dumps({
             "error": "QueryPlanner is not initialized."
         }, ensure_ascii=False)
@@ -1047,7 +1166,7 @@ def get_dfd_generation_context(requirement: str) -> str:
     try:
         # 使用 QueryPlanner 进行全量搜索
         # 这里我们希望获得比较全面的结果，所以 top_k 稍微大一点
-        plan_result = query_planner.search(requirement, top_k=8)
+        plan_result = planner.search(requirement, top_k=8)
         
         # 将结果按类型分类整理
         categorized_results = {
@@ -1091,70 +1210,12 @@ def get_dfd_generation_context(requirement: str) -> str:
     except Exception as e:
         logger.error(f"Context generation failed: {e}")
         return json.dumps({
-            "error": f"Failed to generate context: {str(e)}"
+            "error": "context_generation_failed"
         }, ensure_ascii=False)
-        - related_concepts: Definitions of relevant DFD elements
-        - rules: Mandatory validation rules (naming, balance, etc.)
-        - examples: Similar system examples found in the knowledge base
-        - templates: Recommended templates for the task
-    """
-    if not knowledge_retriever:
-        return json.dumps({"error": "KnowledgeRetriever not initialized"}, ensure_ascii=False)
-        
-    try:
-        context = {
-            "requirement": requirement,
-            "timestamp": datetime.datetime.now().isoformat(),
-            "related_knowledge": {}
-        }
-        
-        # 1. Get relevant concepts (What elements might be used?)
-        concepts = knowledge_retriever.retrieve(
-            query=requirement, 
-            intent=QueryIntent.CONCEPT,
-            top_k=3
-        )
-        context["related_knowledge"]["concepts"] = [
-            {"term": r.metadata.get("title", "Unknown"), "def": r.text} 
-            for r in concepts.results
-        ]
-        
-        # 2. Get validation rules (What constraints must be met?)
-        rules = knowledge_retriever.retrieve(
-            query="DFD validation rules naming consistency balance", # Generic query for core rules
-            intent=QueryIntent.RULE,
-            top_k=5
-        )
-        context["related_knowledge"]["rules"] = [r.text for r in rules.results]
-        
-        # 3. Get similar examples (How did others do it?)
-        examples = knowledge_retriever.retrieve(
-            query=requirement,
-            intent=QueryIntent.EXAMPLE,
-            top_k=3
-        )
-        context["related_knowledge"]["examples"] = [
-            {"title": r.metadata.get("title", ""), "content": r.text[:500] + "..."} 
-            for r in examples.results
-        ]
-        
-        # 4. Get Templates (Structure)
-        templates = knowledge_retriever.retrieve(
-            query="context diagram level-1 dfd template",
-            intent=QueryIntent.TEMPLATE,
-            top_k=1
-        )
-        if templates.results:
-            context["related_knowledge"]["recommended_template"] = templates.results[0].text
-            
-        return json.dumps(context, ensure_ascii=False, indent=2)
-        
-    except Exception as e:
-        logger.error(f"Get DFD context failed: {e}")
-        return json.dumps({"error": str(e)}, ensure_ascii=False)
 
 @mcp.tool()
-def validate_tor_config() -> str:
+@protected(Role.ADMIN)
+def validate_tor_config(authorization: str = None, correlation_id: str = None) -> str:
     """Validate Tor configuration settings"""
     issues = []
     warnings = []
@@ -1200,7 +1261,8 @@ def validate_tor_config() -> str:
 
 
 @mcp.tool()
-def get_tor_bootstrap_status() -> str:
+@protected(Role.ADMIN)
+def get_tor_bootstrap_status(authorization: str = None, correlation_id: str = None) -> str:
     """Get detailed Tor bootstrap status and progress"""
     if not USE_TOR or not tor_manager:
         return "Tor proxy feature is disabled."
@@ -1294,13 +1356,34 @@ def get_tor_bootstrap_status() -> str:
         else:
             return "[WARNING] Could not retrieve bootstrap status"
             
-    except Exception as e:
-        return f"[ERROR] Failed to get bootstrap status: {str(e)}"
+    except Exception:
+        return "[ERROR] tor_bootstrap_status_failed"
 
 
 @mcp.tool()
-async def auto_rotate_tor_identity(interval_seconds: int = 300, max_rotations: int = 10) -> str:
+@protected(Role.ADMIN)
+async def auto_rotate_tor_identity(
+    interval_seconds: int = 300,
+    max_rotations: int = 10,
+    authorization: str = None,
+    correlation_id: str = None,
+) -> str:
     """Automatically rotate Tor identity at specified intervals"""
+    limits = InputLimits.from_environment()
+    interval_seconds = integer_field(
+        {"interval_seconds": interval_seconds},
+        "interval_seconds",
+        default=300,
+        minimum=60,
+        maximum=86_400,
+    )
+    max_rotations = integer_field(
+        {"max_rotations": max_rotations},
+        "max_rotations",
+        default=10,
+        minimum=1,
+        maximum=min(100, limits.task_limit_max),
+    )
     if not USE_TOR or not tor_manager:
         return "Tor proxy feature is disabled."
     
@@ -1361,12 +1444,13 @@ async def auto_rotate_tor_identity(interval_seconds: int = 300, max_rotations: i
         results.append(f"[INFO] Automatic rotation completed. Total rotations: {rotation_count}")
         return "\n".join(results)
         
-    except Exception as e:
-        return f"[ERROR] Auto rotation failed: {str(e)}"
+    except Exception:
+        return "[ERROR] tor_rotation_failed"
 
 
 @mcp.tool()
-def get_tor_circuit_info() -> str:
+@protected(Role.ADMIN)
+def get_tor_circuit_info(authorization: str = None, correlation_id: str = None) -> str:
     """Get information about current Tor circuit"""
     if not USE_TOR or not tor_manager:
         return "Tor proxy feature is disabled."
@@ -1414,15 +1498,79 @@ def get_tor_circuit_info() -> str:
         else:
             return "[ERROR] Failed to get circuit information"
             
-    except Exception as e:
-        return f"[ERROR] Failed to get circuit info: {str(e)}"
+    except Exception:
+        return "[ERROR] tor_circuit_info_failed"
+
+
+def _crawl_runtime():
+    if application is not None:
+        try:
+            return application.resource("crawl")
+        except KeyError:
+            pass
+    from se_kb_app.crawling.runtime import default_crawl_service
+    return default_crawl_service()
+
+
+async def _run_crawl_blocking(function, *args, **kwargs):
+    cancellation = CancellationToken()
+    def invoke():
+        context = current_cancellation.set(cancellation)
+        try:
+            checkpoint()
+            return function(*args, **kwargs)
+        finally:
+            current_cancellation.reset(context)
+    future = _crawl_runtime().submit(invoke)
+    try:
+        return await asyncio.wrap_future(future)
+    except asyncio.CancelledError:
+        cancellation.cancel()
+        future.cancel()
+        raise
+
+
+def _acquire_crawl_page(url, headers=None, cookies=None, save_content=False, automatic=False):
+    from utils.webpage_crawler import WebpageCrawler
+    with WebpageCrawler(service=_crawl_runtime()) as page_crawler:
+        return page_crawler.crawl_and_parse(url, save_data=save_content, headers=headers,
+                                           cookies=cookies, automatic=automatic)
+
+
+def _save_crawl_compatibility(data, markdown, topic, timestamp):
+    from uuid import uuid4
+    from se_kb_app.artifacts.storage import safe_component
+    collection_id = uuid4().hex
+    identifier = safe_component(topic, maximum=60) + "_" + timestamp + "_" + collection_id
+    json_path = Path(JSON_LLM_READY_DIR) / (identifier + ".json")
+    md_path = Path(MARKDOWN_LLM_READY_DIR) / (identifier + ".md")
+    with publication():
+        atomic_write_json(json_path, data)
+        atomic_write_bytes(md_path, markdown.encode("utf-8"))
+    return json_path, md_path, "crawl_" + collection_id
 
 
 @mcp.tool()
-async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str = None) -> str:
+@protected(Role.ADMIN)
+async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str = None, authorization: str = None, correlation_id: str = None) -> str:
+    """Acquire a page with shared policy, then analyze its text and optional images."""
+    return await _scrape_webpage(url, headers, cookies, prompt_type)
+
+
+async def _scrape_webpage(
+    url: str,
+    headers=None,
+    cookies=None,
+    prompt_type: str = None,
+    authorization: str = None,
+    correlation_id: str = None,
+    *, automatic: bool = False,
+) -> str:
     """
     Scrape webpage text + image analysis via vision model + summarize with main model.
     """
+    from service_boundary.url_policy import parse_http_url
+    parse_http_url(url, maximum_length=InputLimits.from_environment().url_chars)
     # 检查URL去重
     dedup_instance = get_deduplication_instance()
     is_duplicate, cache_info = dedup_instance.is_url_duplicate(url)
@@ -1435,6 +1583,7 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
         }, ensure_ascii=False, indent=2)
     
     headers = headers or DEFAULT_HEADERS
+    credential_origin = httpx.URL(url)
     # 知乎反爬虫功能已禁用 - 自动判断知乎等站点，自动获取Cookie
     # cookies = cookies or get_cookies_for_url(url) or (parse_cookies(DEFAULT_COOKIES) if DEFAULT_COOKIES else None)
     cookies = cookies or (parse_cookies(DEFAULT_COOKIES) if DEFAULT_COOKIES else None)
@@ -1456,27 +1605,40 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
     async def download_image_with_retry(client, img_url: str, max_retries: int = 3) -> bytes:
         for attempt in range(max_retries):
             try:
-                response = await client.get(img_url, timeout=10.0)
-                if response.status_code != 200:
-                    # Image request failed
+                from service_boundary.url_policy import parse_http_url
+                parse_http_url(img_url)
+                image_origin = httpx.URL(img_url)
+                image_headers = {}
+                if (image_origin.scheme, image_origin.host, image_origin.port) == (credential_origin.scheme, credential_origin.host, credential_origin.port):
+                    image_headers.update(headers)
+                    if cookies:
+                        from http.cookies import SimpleCookie
+                        jar = SimpleCookie()
+                        for key, value in cookies.items():
+                            jar[key] = value
+                        image_headers["Cookie"] = jar.output(header="", sep=";").strip()
+                from service_boundary.fetch import FetchLimits
+                from dataclasses import replace
+                image_limits = FetchLimits.from_environment()
+                _response, image_payload = await bounded_async_get(
+                    client, img_url, allowed_media_types=("image",), headers=image_headers,
+                    limits=replace(image_limits, compressed_bytes=min(image_limits.compressed_bytes, MAX_IMAGE_SIZE),
+                                   decompressed_bytes=min(image_limits.decompressed_bytes, MAX_IMAGE_SIZE))
+                )
+                validate_image_bytes(image_payload)
+                return image_payload
+            except PublicError:
+                return None
+            except httpx.HTTPStatusError as error:
+                if error.response.status_code not in {408, 425, 429} and error.response.status_code < 500:
                     return None
-                response.raise_for_status()
-                return response.content
-            except Exception as e:
                 if attempt == max_retries - 1:
-                    # Image download failed
                     return None
                 await asyncio.sleep(1)
-
-    async def is_valid_image_size(client, img_url: str) -> bool:
-        try:
-            async with client.stream('GET', img_url) as response:
-                content_length = response.headers.get('content-length')
-                if content_length and int(content_length) > MAX_IMAGE_SIZE:
-                    return False
-                return True
-        except:
-            return False
+            except Exception:
+                if attempt == max_retries - 1:
+                    return None
+                await asyncio.sleep(1)
 
     async def is_valid_image_tag(img_tag) -> bool:
         # 过滤极小图片、icon、广告等
@@ -1501,6 +1663,7 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
         for attempt in range(max_retries):
             try:
                 # 处理图片数据
+                validate_image_bytes(image_data)
                 image = Image.open(BytesIO(image_data)).convert("RGB")
                 buffer = BytesIO()
                 image.save(buffer, format="JPEG", quality=85)  # 降低质量以加快传输
@@ -1533,31 +1696,33 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
                             "(视觉模型未返回有效描述)"
                         ).strip()
                     else:
-                        return f"(视觉模型返回异常格式: {str(visual_json)})"
-                except Exception as json_error:
-                    return f"(视觉模型JSON解析失败: {str(json_error)})"
+                        return "(视觉模型返回异常格式)"
+                except Exception:
+                    return "(视觉模型响应解析失败)"
                 
-            except Exception as e:
+            except Exception:
                 if attempt == max_retries - 1:
-                    return f"图片识别失败（{str(e)}）"
+                    return "图片识别失败（vision_failed）"
                 await asyncio.sleep(2)  # 等待2秒后重试
 
     try:
         # 获取HTTP客户端配置（包含Tor代理设置）
         client_config = get_http_client_config()
-        client_config.update({"headers": headers, "cookies": cookies})
+        client_config.update({"trust_env": False})
         
-        async with httpx.AsyncClient(**client_config) as client:
+        async with httpx.AsyncClient(**client_config) as client, httpx.AsyncClient(
+            transport=VerifiedAsyncHTTPTransport(), trust_env=False,
+            headers={"Accept-Encoding": "gzip, deflate"}
+        ) as content_client:
             # Step 1: 抓网页
-            response = await client.get(url)
-            response.raise_for_status()
-            
-            # 统一使用UTF-8编码处理，与数据库保持一致的编码（数据库使用utf8mb4，是UTF-8的超集）
-            # 这样可以避免编码转换问题，简化处理流程
-            response.encoding = "utf-8"  # 强制指定编码为utf-8
+            page_result = await _run_crawl_blocking(_acquire_crawl_page, url, headers, cookies, True, automatic)
+            if not page_result.get("success"):
+                return json.dumps({"error": page_result.get("error", "fetch_failed")}, ensure_ascii=False)
+            page_html = page_result["raw_data"]["content"]
+            url = page_result["raw_data"]["url"]
             
             try:
-                soup = BeautifulSoup(response.text, "html.parser")
+                soup = BeautifulSoup(page_html, "html.parser")
                 
                 for tag in soup(["script", "style"]):
                     tag.decompose()
@@ -1567,21 +1732,15 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
                 headings = [h.get_text(strip=True) for h in soup.find_all(['h1', 'h2'])]
                 description = next((m.get("content") for m in soup.find_all("meta", attrs={"name": "description"})), "无描述")
                 
-                # 提取主要内容
-                main_content = []
-                for p in soup.find_all(['p', 'div', 'article']):
-                    text = p.get_text(strip=True)
-                    if text and len(text) > 20:  # 只保留有意义的文本
-                        main_content.append(text)
-
-                main_text = f"【标题】{title}\n【描述】{description}\n【结构】{headings}\n\n" + "\n".join(main_content)
-            except Exception as e:
-                logger.error(f"网页解析失败 {url}: {e}")
-                return f"{{\"error\": \"网页解析失败: {str(e)}\", \"url\": \"{url}\"}}"
+                main_text = page_result["parsed_data"].get("markdown_content") or page_result["parsed_data"].get("clean_text", "")
+            except Exception as error:
+                logger.error("网页解析失败: cause=%s", type(error).__name__)
+                return json.dumps({"error": "page_parse_failed"}, ensure_ascii=False)
 
             # Step 3: 提取图片URL并处理图片
             img_descriptions = []
             image_urls = []
+            image_payloads = {}
             try:
                 img_tags = soup.find_all("img", src=True) if 'soup' in locals() else []
                 seen_urls = set()
@@ -1597,6 +1756,11 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
                         continue
                     img_url = img_tag["src"]
                     img_url = normalize_image_url(url, img_url)
+                    try:
+                        from service_boundary.url_policy import parse_http_url
+                        parse_http_url(img_url)
+                    except Exception:
+                        continue
                     if not any(img_url.lower().endswith(ext) for ext in SUPPORTED_IMAGE_FORMATS):
                         logger.debug(f"图片格式不支持: {img_url}")
                         continue
@@ -1614,9 +1778,10 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
                 # 对前几张图片进行视觉分析（用于内容理解）
                 for i, img_url in enumerate(valid_imgs):
                     try:
-                        img_data = await download_image_with_retry(client, img_url)
+                        img_data = await download_image_with_retry(content_client, img_url)
                         if not img_data:
                             continue  # 跳过无效图片
+                        image_payloads[img_url] = img_data
                         vision_caption = await get_image_description(client, img_data)
                         if vision_caption and not vision_caption.startswith("图片识别失败"):
                             img_descriptions.append(f"第{i+1}张图：{vision_caption}")
@@ -1646,7 +1811,7 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
             # 从配置文件获取系统提示词
             system_prompt = get_system_prompt(prompt_type)
             
-            final_response = openai_client.chat.completions.create(
+            final_response = await _run_crawl_blocking(get_openai_client().chat.completions.create,
                 model=model,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -1690,16 +1855,16 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
                     content_analysis = final_response
                 else:
                     content_analysis = str(final_response)
-            except Exception as e:
-                content_analysis = f"[ERROR] 内容分析失败: {str(e)}"
-                logger.error(f"处理final_response时出错: {e}, final_response类型: {type(final_response)}")
+            except Exception as error:
+                content_analysis = "[ERROR] content_analysis_failed"
+                logger.error("处理模型响应失败: cause=%s", type(error).__name__)
             
             # 使用配置化的格式处理器构建知识库数据
             # 使用当前默认格式类型（可配置）
             format_type = "dfd"  # 可以从环境变量或参数获取
             
             # 根据配置提取知识库数据
-            extracted_data = format_processor.extract_knowledge(
+            extracted_data = get_format_processor().extract_knowledge(
                 content_analysis, url, title
             )
             
@@ -1714,7 +1879,7 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
             }
             
             # 生成JSON结构
-            json_obj = format_processor.generate_json_structure(
+            json_obj = get_format_processor().generate_json_structure(
                 extracted_data, url, title
             )
             
@@ -1736,7 +1901,7 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
                 }
             
             # 使用FormatProcessor生成Markdown内容
-            markdown_content = format_processor.generate_markdown(
+            markdown_content = get_format_processor().generate_markdown(
                 extracted_data,
                 {
                     'title': tech_topic,
@@ -1752,11 +1917,12 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
             try:
                 saved_info = await storage.save_webpage(
                     url=url,
-                    html_content=response.text,  # 使用原始HTML内容
+                    html_content=page_html,  # Already streamed and decoded by the shared acquisition service
                     title=title,
                     metadata=json_obj,  # 将JSON对象作为元数据
                     image_urls=image_urls,
-                    client=client  # 传递HTTP客户端用于下载图片
+                    client=content_client,  # Target credentials are isolated from the model client
+                    image_payloads=image_payloads
                 )
                 
                 # 记录保存信息
@@ -1771,22 +1937,13 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
                 saved_info = None
             
             # 同时保存到原有的目录结构（为了兼容性）
-            json_dir = Path(JSON_LLM_READY_DIR)
-            md_dir = Path(MARKDOWN_LLM_READY_DIR)
-            json_dir.mkdir(parents=True, exist_ok=True)
-            md_dir.mkdir(parents=True, exist_ok=True)
-            
-            legacy_json_path = json_dir / f"{tech_topic_clean}_{crawl_time}.json"
-            legacy_md_path = md_dir / f"{tech_topic_clean}_{crawl_time}.md"
-            
-            with open(legacy_json_path, 'w', encoding='utf-8') as f:
-                _json.dump(json_obj, f, ensure_ascii=False, indent=2)
-            with open(legacy_md_path, 'w', encoding='utf-8') as f:
-                f.write('\n'.join(md_lines))
+            legacy_json_path, legacy_md_path, collection_name = await _run_crawl_blocking(
+                _save_crawl_compatibility, json_obj, '\n'.join(md_lines), tech_topic_clean, crawl_time)
             
             # 自动保存到知识库结构化文件
             try:
-                kb_result = await save_to_knowledge_base(_json.dumps(json_obj), tech_topic_clean)
+                kb_result = await _run_crawl_blocking(
+                    _save_to_knowledge_base, _json.dumps(json_obj), collection_name)
                 # Knowledge base save result logged
             except Exception as e:
                 # Knowledge base save failed, error logged
@@ -1803,8 +1960,8 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
                     result_summary = final_response
                 else:
                     result_summary = str(final_response)
-            except Exception as e:
-                result_summary = f"[ERROR] 响应解析失败: {str(e)}"
+            except Exception:
+                result_summary = "[ERROR] response_parse_failed"
             
             # 添加知识库提取统计和存储信息
             try:
@@ -1831,12 +1988,13 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
                       f"\n📁 **兼容性文件位置**:\n" \
                       f"- JSON数据: {legacy_json_path}\n" \
                       f"- Markdown报告: {legacy_md_path}\n" \
-                      f"- 知识库文件: {KNOWLEDGE_BASE_DIR.name}/{tech_topic_clean}_*.json"
+                      f"- 知识库文件: {KNOWLEDGE_BASE_DIR.name}/{collection_name}_*.json"
             
             # 缓存URL和内容
             try:
                 dedup_instance.add_url_cache(url, title)
-                if dedup_instance.is_content_duplicate(result_summary):
+                content_duplicate, _content_info = dedup_instance.is_content_duplicate(result_summary)
+                if content_duplicate:
                     # 内容重复但URL不同，记录日志
                     logger.info(f"检测到内容重复但URL不同: {url}")
                 else:
@@ -1846,24 +2004,23 @@ async def scrape_webpage(url: str, headers=None, cookies=None, prompt_type: str 
             
             return result_summary + kb_stats
 
-    except Exception as e:
-        # 检查是否为代理相关错误，如果是则尝试使用直接爬取模式
-        error_str = str(e).lower()
-        proxy_errors = ['proxy', 'socks', 'timeout', 'connection', 'network', 'unreachable']
-        
-        if any(error_keyword in error_str for error_keyword in proxy_errors):
-            logger.warning(f"检测到代理相关错误: {str(e)}，尝试使用直接爬取模式")
-            try:
-                # 使用crawl_webpage_direct作为回退方案
-                fallback_result = await crawl_webpage_direct(url, save_content=True)
-                return f"⚠️ 代理连接失败，已自动切换到直接爬取模式\n\n{fallback_result}"
-            except Exception as fallback_error:
-                return f"[ERROR] 代理爬取失败: {str(e)}\n[ERROR] 直接爬取也失败: {str(fallback_error)}"
-        else:
-            return f"[ERROR] 图文提取失败 {str(e)}"
+    except Exception:
+        return "[ERROR] page_extraction_failed"
 
 @mcp.tool()
-async def crawl_webpage_direct(url: str, save_content: bool = True) -> str:
+@protected(Role.ADMIN)
+async def crawl_webpage_direct(url: str, save_content: bool = True, authorization: str = None, correlation_id: str = None) -> str:
+    """Acquire and structure one page without bypassing configured network policy."""
+    return await _crawl_webpage_direct(url, save_content)
+
+
+async def _crawl_webpage_direct(
+    url: str,
+    save_content: bool = True,
+    authorization: str = None,
+    correlation_id: str = None,
+    *, automatic: bool = False,
+) -> str:
     """
     直接爬取网页内容，不使用代理，专门用于解决代理连接超时问题。
     适用于CSDN等网站的内容抓取。
@@ -1875,15 +2032,13 @@ async def crawl_webpage_direct(url: str, save_content: bool = True) -> str:
     Returns:
         JSON格式的爬取结果，包含标题、内容、作者、发布时间等信息
     """
+    if not isinstance(save_content, bool):
+        raise public_error("invalid_field", field="save_content")
+    from service_boundary.url_policy import parse_http_url
+    parse_http_url(url, maximum_length=InputLimits.from_environment().url_chars)
     try:
         # 导入WebpageCrawler
-        from utils.webpage_crawler import WebpageCrawler
-        
-        # 创建爬虫实例
-        crawler = WebpageCrawler()
-        
-        # 爬取网页内容
-        result = crawler.crawl_and_parse(url, save_data=save_content)
+        result = await _run_crawl_blocking(_acquire_crawl_page, url, save_content=save_content, automatic=automatic)
         
         if result['success']:
             # 从解析数据中提取信息
@@ -1942,7 +2097,7 @@ async def crawl_webpage_direct(url: str, save_content: bool = True) -> str:
                     logger.warning(f"⚠️ 自动知识库处理失败: {str(kb_error)}")
                     formatted_result["knowledge_base"] = {
                         "processed": False,
-                        "error": str(kb_error)
+                        "error": "knowledge_processing_failed"
                     }
             
             return json.dumps(formatted_result, ensure_ascii=False, indent=2)
@@ -1965,7 +2120,7 @@ async def crawl_webpage_direct(url: str, save_content: bool = True) -> str:
         error_result = {
             "status": "error",
             "url": url,
-            "error": f"导入WebpageCrawler模块失败: {str(e)}",
+            "error": "crawler_unavailable",
             "suggestions": [
                 "确保webpage_crawler.py文件存在",
                 "检查模块依赖是否正确安装"
@@ -1976,7 +2131,7 @@ async def crawl_webpage_direct(url: str, save_content: bool = True) -> str:
         error_result = {
             "status": "error",
             "url": url,
-            "error": f"爬取过程中发生错误: {str(e)}",
+            "error": "crawl_failed",
             "suggestions": [
                 "检查URL格式是否正确",
                 "确认网络连接稳定",
@@ -1986,21 +2141,39 @@ async def crawl_webpage_direct(url: str, save_content: bool = True) -> str:
         return json.dumps(error_result, ensure_ascii=False, indent=2)
 
 @mcp.tool()
-def save_to_knowledge_base(json_data: str, base_filename: str = None, format_type: str = "dfd") -> str:
+@protected(Role.ADMIN)
+def save_to_knowledge_base(
+    json_data: str,
+    base_filename: str = None,
+    format_type: str = "dfd",
+    authorization: str = None,
+    correlation_id: str = None,
+) -> str:
+    """使用通用格式处理器保存知识库数据到独立文件中，支持多种格式类型。"""
+    return _save_to_knowledge_base(json_data, base_filename, format_type)
+
+
+def _save_to_knowledge_base(json_data: str, base_filename: str = None, format_type: str = "dfd") -> str:
     """
     使用通用格式处理器保存知识库数据到独立文件中，支持多种格式类型
     """
+    if base_filename is not None:
+        base_filename = path_component(base_filename, "base_filename")
+    format_type = string_field(
+        {"format_type": format_type}, "format_type", required=True, max_length=64
+    ) or "dfd"
     try:
         import json as _json
         
         # 解析输入的JSON数据
-        data = _json.loads(json_data) if isinstance(json_data, str) else json_data
+        data = validate_mcp_json(json_data, "json_data") if isinstance(json_data, str) else object_body(json_data)
         
         # 创建指定格式类型的格式处理器
         processor = FormatProcessor(format_type=format_type)
         
         # 使用格式处理器保存数据
-        result = processor.save_knowledge_base(data, base_filename)
+        with publication():
+            result = processor.save_knowledge_base(data, base_filename)
         
         if result["success"]:
             saved_files = result["saved_files"]
@@ -2022,8 +2195,8 @@ def save_to_knowledge_base(json_data: str, base_filename: str = None, format_typ
         else:
             return f"[ERROR] 保存知识库数据失败: {result['error']}"
         
-    except Exception as e:
-        return f"[ERROR] 保存知识库数据失败: {str(e)}"
+    except Exception:
+        return "[ERROR] knowledge_storage_failed"
 
 @mcp.tool()
 def extract_universal_knowledge(content: str, url: str = "", title: str = "", 
@@ -2040,9 +2213,13 @@ def extract_universal_knowledge(content: str, url: str = "", title: str = "",
     Returns:
         提取的通用知识库JSON字符串
     """
+    limits = InputLimits.from_environment()
+    content = string_field({"content": content}, "content", required=True, max_length=limits.content_chars) or ""
+    if url:
+        url = validate_url(url, maximum_length=limits.url_chars).url
     try:
         # 使用通用知识库处理器提取知识
-        knowledge_base = universal_processor.extract_knowledge(
+        knowledge_base = get_universal_processor().extract_knowledge(
             content=content,
             url=url,
             title=title,
@@ -2059,7 +2236,7 @@ def extract_universal_knowledge(content: str, url: str = "", title: str = "",
     except Exception as e:
         return json.dumps({
             "success": False,
-            "error": f"知识提取失败: {str(e)}"
+            "error": "knowledge_extraction_failed"
         }, ensure_ascii=False, indent=2)
 
 @mcp.tool()
@@ -2079,6 +2256,10 @@ def extract_knowledge_with_ai(content: str, url: str = "", title: str = "",
     Returns:
         AI提取的知识库JSON字符串
     """
+    limits = InputLimits.from_environment()
+    content = string_field({"content": content}, "content", required=True, max_length=limits.content_chars) or ""
+    if url:
+        url = validate_url(url, maximum_length=limits.url_chars).url
     try:
         # 导入HTML清理器的新功能
         from utils.html_cleaner import clean_html_with_structure, is_html_content
@@ -2153,7 +2334,7 @@ def extract_knowledge_with_ai(content: str, url: str = "", title: str = "",
 请确保每个数组字段至少有3条有效内容。如果内容不足，请基于专业知识补充合理的示例。"""
 
         # 调用AI模型
-        response = openai_client.chat.completions.create(
+        response = get_openai_client().chat.completions.create(
             model=os.getenv("MODEL", "gpt-4"),
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -2230,11 +2411,17 @@ def extract_knowledge_with_ai(content: str, url: str = "", title: str = "",
     except Exception as e:
         return json.dumps({
             "success": False,
-            "error": f"AI知识提取失败: {str(e)}"
+            "error": "ai_extraction_failed"
         }, ensure_ascii=False, indent=2)
 
 @mcp.tool()
-def save_universal_knowledge_base(knowledge_base_json: str, output_dir: str = KNOWLEDGE_BASE_DIR) -> str:
+@protected(Role.ADMIN)
+def save_universal_knowledge_base(
+    knowledge_base_json: str,
+    output_dir: str = KNOWLEDGE_BASE_DIR,
+    authorization: str = None,
+    correlation_id: str = None,
+) -> str:
     """保存通用知识库到文件
     
     Args:
@@ -2244,12 +2431,13 @@ def save_universal_knowledge_base(knowledge_base_json: str, output_dir: str = KN
     Returns:
         保存结果的JSON字符串
     """
+    output_dir = str(confined_path(KNOWLEDGE_BASE_DIR, output_dir, "output_dir"))
     try:
         # 解析知识库JSON
-        knowledge_base = json.loads(knowledge_base_json)
+        knowledge_base = validate_mcp_json(knowledge_base_json, "knowledge_base_json")
         
         # 保存知识库
-        filepath = universal_processor.save_knowledge_base(knowledge_base, output_dir)
+        filepath = get_universal_processor().save_knowledge_base(knowledge_base, output_dir)
         
         return json.dumps({
             "success": True,
@@ -2260,12 +2448,12 @@ def save_universal_knowledge_base(knowledge_base_json: str, output_dir: str = KN
     except json.JSONDecodeError as e:
         return json.dumps({
             "success": False,
-            "error": f"JSON解析错误: {str(e)}"
+            "error": "invalid_json"
         }, ensure_ascii=False, indent=2)
     except Exception as e:
         return json.dumps({
             "success": False,
-            "error": f"保存失败: {str(e)}"
+            "error": "save_failed"
         }, ensure_ascii=False, indent=2)
 
 @mcp.tool()
@@ -2283,10 +2471,10 @@ def convert_to_universal_format(old_data_json: str, requirement_type: str = "",
     """
     try:
         # 解析旧格式数据
-        old_data = json.loads(old_data_json)
+        old_data = validate_mcp_json(old_data_json, "old_data_json")
         
         # 转换为通用格式
-        new_knowledge_base = universal_processor.convert_from_old_format(
+        new_knowledge_base = get_universal_processor().convert_from_old_format(
             old_data=old_data,
             requirement_type=requirement_type,
             target_conversion_type=target_conversion_type
@@ -2301,12 +2489,12 @@ def convert_to_universal_format(old_data_json: str, requirement_type: str = "",
     except json.JSONDecodeError as e:
         return json.dumps({
             "success": False,
-            "error": f"JSON解析错误: {str(e)}"
+            "error": "invalid_json"
         }, ensure_ascii=False, indent=2)
     except Exception as e:
         return json.dumps({
             "success": False,
-            "error": f"格式转换失败: {str(e)}"
+            "error": "conversion_failed"
         }, ensure_ascii=False, indent=2)
 
 
@@ -2343,11 +2531,18 @@ async def send_realtime_feedback(message: str, log_type: str = "info"):
             websocket_connections.discard(websocket)
 
 @mcp.tool()
-async def search_and_scrape_realtime(keyword: str, top_k: int = 12) -> str:
+@protected(Role.ADMIN)
+async def search_and_scrape_realtime(
+    keyword: str,
+    top_k: int = 12,
+    authorization: str = None,
+    correlation_id: str = None,
+) -> str:
     """
     根据关键词搜索网页，并抓取前几个网页的图文信息。
     提供实时的过程反馈，每一步操作都会立即反馈给用户。
     """
+    keyword, top_k = validate_mcp_query(keyword, top_k)
     start_time = time.time()
     
     try:
@@ -2360,7 +2555,7 @@ async def search_and_scrape_realtime(keyword: str, top_k: int = 12) -> str:
         logger.info(f"开始搜索关键词: {keyword}")
         
         # 使用新的搜索框架获取详细信息（只使用Google搜索引擎）
-        search_result = crawler.search_and_parse(default_search_engine, keyword, top_k)
+        search_result = await _run_crawl_blocking(crawler.search_and_parse, default_search_engine, keyword, top_k)
         
         if not search_result["parsed_response"]["success"]:
             error_msg = f"搜索失败: {search_result['parsed_response'].get('error', '未知错误')}"
@@ -2421,7 +2616,7 @@ async def search_and_scrape_realtime(keyword: str, top_k: int = 12) -> str:
                 scrape_start_time = time.time()
                 
                 # 调用爬取工具
-                scrape_result = await crawl_webpage_direct(url, save_content=True)
+                scrape_result = await _crawl_webpage_direct(url, save_content=True, automatic=True)
                 scrape_result_data = json.loads(scrape_result)
                 
                 scrape_duration = time.time() - scrape_start_time
@@ -2486,11 +2681,18 @@ async def search_and_scrape_realtime(keyword: str, top_k: int = 12) -> str:
         return json.dumps({"success": False, "error": error_msg}, ensure_ascii=False)
 
 @mcp.tool()
-async def search_and_scrape(keyword: str, top_k: int = 12) -> str:
+@protected(Role.ADMIN)
+async def search_and_scrape(
+    keyword: str,
+    top_k: int = 12,
+    authorization: str = None,
+    correlation_id: str = None,
+) -> str:
     """
     根据关键词搜索网页，并抓取前几个网页的图文信息。
     提供详细的过程反馈，包括搜索结果、爬取进度、失败信息等。
     """
+    keyword, top_k = validate_mcp_query(keyword, top_k)
     start_time = time.time()
     progress_info = []
     
@@ -2504,7 +2706,7 @@ async def search_and_scrape(keyword: str, top_k: int = 12) -> str:
         logger.info(f"开始搜索关键词: {keyword}")
         
         # 使用新的搜索框架获取详细信息（只使用Google搜索引擎）
-        search_result = crawler.search_and_parse(default_search_engine, keyword, top_k)
+        search_result = await _run_crawl_blocking(crawler.search_and_parse, default_search_engine, keyword, top_k)
         
         if not search_result["parsed_response"]["success"]:
             error_msg = search_result["parsed_response"].get("error", "未知搜索错误")
@@ -2577,7 +2779,7 @@ async def search_and_scrape(keyword: str, top_k: int = 12) -> str:
                 
                 # 开始爬取
                 scrape_start = time.time()
-                summary = await scrape_webpage(url)
+                summary = await _scrape_webpage(url, automatic=True)
                 scrape_time = time.time() - scrape_start
                 
                 # 检查爬取结果
@@ -2594,8 +2796,8 @@ async def search_and_scrape(keyword: str, top_k: int = 12) -> str:
                 logger.info(f"第 {i+1} 个链接处理完成")
                 progress_info.append("")
                 
-            except Exception as e:
-                error_msg = str(e)
+            except Exception:
+                error_msg = "page_processing_failed"
                 progress_info.append(f"   ❌ 处理异常: {error_msg}")
                 logger.warning(f"处理网页 {url} 时出错: {error_msg}")
                 summaries.append(f"🔗 网页 {i+1}: {url}\n❌ 处理失败: {error_msg}\n")
@@ -2632,14 +2834,20 @@ async def search_and_scrape(keyword: str, top_k: int = 12) -> str:
         final_result = "\n".join(progress_info) + "\n\n" + "="*50 + "\n📄 **爬取内容详情**\n" + "="*50 + "\n\n" + "\n\n".join(summaries)
         return final_result
         
-    except Exception as e:
-        error_msg = str(e)
+    except Exception:
+        error_msg = "search_and_scrape_failed"
         progress_info.append(f"❌ **系统错误**: {error_msg}")
         logger.error(f"搜索或抓取过程中出错: {error_msg}")
         return "\n".join(progress_info)
 
 @mcp.tool()
-def manage_web_deduplication(action: str = "stats", days: int = 7) -> str:
+@protected(Role.ADMIN)
+def manage_web_deduplication(
+    action: str = "stats",
+    days: int = 7,
+    authorization: str = None,
+    correlation_id: str = None,
+) -> str:
     """
     管理网页去重系统
     
@@ -2647,6 +2855,8 @@ def manage_web_deduplication(action: str = "stats", days: int = 7) -> str:
         action: 操作类型 ("stats" - 查看统计, "clean" - 清理缓存, "reset" - 重置所有)
         days: 清理多少天前的缓存 (仅在action="clean"时有效)
     """
+    action = enum_field({"action": action}, "action", ["stats", "clean", "reset"])
+    days = integer_field({"days": days}, "days", default=7, minimum=1, maximum=3650)
     try:
         dedup_instance = get_deduplication_instance()
         

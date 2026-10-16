@@ -1,0 +1,11 @@
+{
+  "body_retention_ratio": 0.9229,
+  "cases": 10,
+  "cleaner_version": "deterministic-html-v1",
+  "metadata_identity_completeness": 1.0,
+  "navigation_noise_hits": 0,
+  "peak_python_memory_bytes": 128115,
+  "runtime_ms": 8.29,
+  "sections": 16,
+  "corpus_license": "CC0-1.0 synthetic/desensitized test material"
+}

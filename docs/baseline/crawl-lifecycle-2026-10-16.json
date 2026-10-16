@@ -1,0 +1,107 @@
+[
+  {
+    "iteration": 0,
+    "report": {
+      "requests": 5,
+      "successes": 5,
+      "errors": {},
+      "throughput_per_second": 1.24,
+      "p95_latency_ms": 2881.6,
+      "mean_latency_ms": 2767.38,
+      "peak_python_memory_bytes": 9547780,
+      "queue_high_watermark": 4,
+      "final_queue_depth": 0,
+      "final_active": 0,
+      "client_closed": true
+    },
+    "resources": {
+      "rss_bytes": 58347520,
+      "peak_rss_bytes": 65703936,
+      "handles": 267
+    }
+  },
+  {
+    "iteration": 1,
+    "report": {
+      "requests": 5,
+      "successes": 5,
+      "errors": {},
+      "throughput_per_second": 3.83,
+      "p95_latency_ms": 120.26,
+      "mean_latency_ms": 83.45,
+      "peak_python_memory_bytes": 237244,
+      "queue_high_watermark": 4,
+      "final_queue_depth": 0,
+      "final_active": 0,
+      "client_closed": true
+    },
+    "resources": {
+      "rss_bytes": 58601472,
+      "peak_rss_bytes": 65703936,
+      "handles": 275
+    }
+  },
+  {
+    "iteration": 2,
+    "report": {
+      "requests": 5,
+      "successes": 5,
+      "errors": {},
+      "throughput_per_second": 3.64,
+      "p95_latency_ms": 109.4,
+      "mean_latency_ms": 84.64,
+      "peak_python_memory_bytes": 223065,
+      "queue_high_watermark": 4,
+      "final_queue_depth": 0,
+      "final_active": 0,
+      "client_closed": true
+    },
+    "resources": {
+      "rss_bytes": 59211776,
+      "peak_rss_bytes": 65703936,
+      "handles": 275
+    }
+  },
+  {
+    "iteration": 3,
+    "report": {
+      "requests": 5,
+      "successes": 5,
+      "errors": {},
+      "throughput_per_second": 3.72,
+      "p95_latency_ms": 130.87,
+      "mean_latency_ms": 91.67,
+      "peak_python_memory_bytes": 227285,
+      "queue_high_watermark": 4,
+      "final_queue_depth": 0,
+      "final_active": 0,
+      "client_closed": true
+    },
+    "resources": {
+      "rss_bytes": 59281408,
+      "peak_rss_bytes": 65703936,
+      "handles": 275
+    }
+  },
+  {
+    "iteration": 4,
+    "report": {
+      "requests": 5,
+      "successes": 5,
+      "errors": {},
+      "throughput_per_second": 3.69,
+      "p95_latency_ms": 130.35,
+      "mean_latency_ms": 87.46,
+      "peak_python_memory_bytes": 217839,
+      "queue_high_watermark": 4,
+      "final_queue_depth": 0,
+      "final_active": 0,
+      "client_closed": true
+    },
+    "resources": {
+      "rss_bytes": 59342848,
+      "peak_rss_bytes": 65703936,
+      "handles": 275
+    }
+  }
+]

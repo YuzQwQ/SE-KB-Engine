@@ -2,6 +2,9 @@ import os
 import json
 import hashlib
 import re
+from uuid import uuid4
+from se_kb_app.artifacts.storage import atomic_write_bytes, atomic_write_json, safe_component
+from se_kb_app.jobs.context import checkpoint, publication
 from pathlib import Path
 from datetime import datetime
 
@@ -97,22 +100,26 @@ class ArtifactsWriter:
         # 目录结构：artifacts/{YYYY}/{MM}/{DD}/{HH_MM}/{domain}/{slug}/
         # 精确到分钟，方便批量爬取后按时间段审核
         time_dir = now.strftime("%H_%M")  # 如 11_30, 14_05
-        base = self._base_dir() / now.strftime("%Y") / now.strftime("%m") / now.strftime("%d") / time_dir / (domain or "unknown")
+        base = self._base_dir() / now.strftime("%Y") / now.strftime("%m") / now.strftime("%d") / time_dir / safe_component(domain or "unknown")
         slug = self._slug(title, parsed.get("source_url") or parsed.get("url") or "")
-        out = base / slug
-        out.mkdir(parents=True, exist_ok=True)
-        (out / "metadata.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
-        (out / "parsed.json").write_text(json.dumps(parsed, ensure_ascii=False, indent=2), encoding="utf-8")
-        (out / "document.md").write_text(document_text or "", encoding="utf-8")
-        (out / "trace.json").write_text(json.dumps(trace or {}, ensure_ascii=False, indent=2), encoding="utf-8")
-        (out / "metrics.json").write_text(json.dumps(metrics or {}, ensure_ascii=False, indent=2), encoding="utf-8")
+        checkpoint()
+        identifier = uuid4().hex
+        out = base / (slug + "_" + identifier)
+        staging = self._base_dir().parent / "artifact_staging" / identifier
+        staging.mkdir(parents=True, exist_ok=False)
+        atomic_write_json(staging / "metadata.json", metadata)
+        atomic_write_json(staging / "parsed.json", parsed)
+        atomic_write_bytes(staging / "document.md", (document_text or "").encode("utf-8"))
+        atomic_write_json(staging / "trace.json", trace or {})
+        atomic_write_json(staging / "metrics.json", metrics or {})
         if errors is not None:
-            (out / "errors.json").write_text(json.dumps(errors, ensure_ascii=False, indent=2), encoding="utf-8")
-        
+            atomic_write_bytes(staging / "errors.json", json.dumps(errors, ensure_ascii=False).encode("utf-8"))
         artifact_filename = None
         if artifact is not None:
-            # 使用新的文件名生成逻辑（包含域名前缀 + URL hash 确保唯一）
             url = parsed.get("source_url") or parsed.get("url") or ""
-            artifact_filename = self._generate_artifact_filename(t, artifact, domain, url)
-            (out / artifact_filename).write_text(json.dumps(artifact, ensure_ascii=False, indent=2), encoding="utf-8")
+            artifact_filename = safe_component(self._generate_artifact_filename(t, artifact, domain, url), maximum=160)
+            atomic_write_json(staging / artifact_filename, artifact)
+        with publication():
+            base.mkdir(parents=True, exist_ok=True)
+            os.replace(staging, out)
         return {"dir": str(out), "type": t, "artifact_file": artifact_filename}

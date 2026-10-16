@@ -1,0 +1,29 @@
+schema: spec-driven
+
+context: |
+  Project: SE-KB-Engine, a Python knowledge acquisition and RAG system.
+  Runtime surfaces: MCP server, Flask Web console, Flask REST API, scripts, and Docker deployment.
+  Pipeline: search -> crawl -> clean -> route/extract -> validate -> artifact/refine -> vector index -> retrieve.
+  Primary platform: Windows development; Linux containers are a supported deployment target.
+  Current constraints: preserve user data, generated copyright materials, vector stores, logs, and unrelated working-tree changes.
+  Tests must be offline and deterministic by default. Network, browser, Tor, and paid LLM tests require explicit markers and opt-in.
+  Security-sensitive inputs include arbitrary crawl URLs, API keys, cookies, proxy credentials, model responses, and artifact paths.
+  Use pyproject.toml as the dependency/configuration source of truth (Python >=3.11,<3.14). The local .python-version selects 3.11; deploy/Dockerfile pins Python 3.13.2, both within the supported range.
+
+rules:
+  proposal:
+    - State explicit non-goals and the prerequisite changes.
+    - Keep each change independently reviewable and reversible.
+    - Call out data migration, external network, paid API, and destructive-operation risks.
+  design:
+    - Preserve existing public MCP, REST, and Web behavior unless the proposal explicitly changes a contract.
+    - Prefer compatibility layers and incremental extraction over big-bang rewrites.
+    - Include rollback and verification strategy for risky decisions.
+  specs:
+    - Use testable SHALL requirements and concrete GIVEN/WHEN/THEN scenarios.
+    - Include failure, cancellation, degraded-mode, and security scenarios where relevant.
+  tasks:
+    - Break work into batches that normally take no more than two hours each.
+    - Put tests and measurement next to the behavior they protect.
+    - Include exact verification tasks and documentation updates.
+    - Never require real network access or paid model calls in the default verification path.

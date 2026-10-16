@@ -1,0 +1,13 @@
+{
+  "source": "se_kb/artifacts",
+  "target": "D:/develop/MCP-develop/mcp-client-artifact-migration-preview",
+  "dry_run": true,
+  "items": 78,
+  "planned": 78,
+  "unsupported": 0,
+  "preflight_errors": 0,
+  "target_created": false,
+  "source_modified": false,
+  "execution_approval_required": true,
+  "rollback": "Execution writes only to the separate target; the source remains authoritative."
+}

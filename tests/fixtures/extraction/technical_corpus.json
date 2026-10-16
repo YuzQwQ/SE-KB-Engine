@@ -1,0 +1,1271 @@
+{
+  "license": "CC0-1.0",
+  "provenance": "Synthetic authored gold fixtures. Explicit semantic expectations; not an independently human-labelled real-web benchmark.",
+  "cases": [
+    {
+      "id": "case-00",
+      "html": "<!doctype html><html><head><title>Technical fixture 00</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h1>Technical fixture 00</h1><p>Reliable body paragraph case-00.</p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 00",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Reliable body paragraph case-00."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 00"
+    },
+    {
+      "id": "case-01",
+      "html": "<!doctype html><html><head><title>Technical fixture 01</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h2>Technical fixture 01</h2><pre><code>def example_1():\n    return &quot;case-01&quot;</code></pre><p>Explanation case-01.</p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 01",
+          "level": 2
+        },
+        {
+          "kind": "code",
+          "text": "def example_1():\n    return \"case-01\""
+        },
+        {
+          "kind": "paragraph",
+          "text": "Explanation case-01."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [
+        "def example_1():\n    return \"case-01\""
+      ],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 01"
+    },
+    {
+      "id": "case-02",
+      "html": "<!doctype html><html><head><title>Technical fixture 02</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h6>Technical fixture 02</h6><table><tr><th>Key</th><th>Value</th></tr><tr><td>case-02</td><td>42</td></tr></table><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 02",
+          "level": 6
+        },
+        {
+          "kind": "table",
+          "text": "Key\tValue\ncase-02\t42"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [
+        [
+          "Key",
+          "Value"
+        ],
+        [
+          "case-02",
+          "42"
+        ]
+      ],
+      "expected_heading_levels": [
+        6
+      ],
+      "title": "Technical fixture 02"
+    },
+    {
+      "id": "case-03",
+      "html": "<!doctype html><html><head><title>Technical fixture 03</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h3>Technical fixture 03</h3><blockquote><p>First quote case-03.</p><p>Second quote case-03.</p></blockquote><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 03",
+          "level": 3
+        },
+        {
+          "kind": "quote",
+          "text": "First quote case-03.\n\nSecond quote case-03."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 03"
+    },
+    {
+      "id": "case-04",
+      "html": "<!doctype html><html><head><title>Technical fixture 04</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h4>Technical fixture 04</h4><ul><li>Outer case-04<ul><li>Inner case-04</li></ul></li><li>Second case-04</li></ul><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 04",
+          "level": 4
+        },
+        {
+          "kind": "list",
+          "text": "Outer case-04\nSecond case-04"
+        },
+        {
+          "kind": "list",
+          "text": "Inner case-04"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        4
+      ],
+      "title": "Technical fixture 04"
+    },
+    {
+      "id": "case-05",
+      "html": "<!doctype html><html><head><title>Technical fixture 05</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h5>Technical fixture 05</h5><p>Read <a href=\"/reference/5\">reference case-05</a> now.</p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 05",
+          "level": 5
+        },
+        {
+          "kind": "paragraph",
+          "text": "Read reference case-05 now."
+        }
+      ],
+      "expected_links": [
+        "https://fixture.invalid/reference/5"
+      ],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        5
+      ],
+      "title": "Technical fixture 05"
+    },
+    {
+      "id": "case-06",
+      "html": "<!doctype html><html><head><title>Technical fixture 06</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h1 class=\"heading\">Technical fixture 06</h1><div class=\"markdown-body\"><p>Loading and captcha are technical topics case-06.</p></div><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 06",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Loading and captcha are technical topics case-06."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 06"
+    },
+    {
+      "id": "case-07",
+      "html": "<!doctype html><html><head><title>Technical fixture 07</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h2>Technical fixture 07</h2><p>First malformed case-07.<p>Second malformed case-07.</p></p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 07",
+          "level": 2
+        },
+        {
+          "kind": "paragraph",
+          "text": "First malformed case-07."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Second malformed case-07."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 07"
+    },
+    {
+      "id": "case-08",
+      "html": "<!doctype html><html><head><title>Technical fixture 08</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h3>Technical fixture 08</h3><p>中文技术正文与 Unicode 标识 case-08。</p><p>Use <code>a &lt; b</code> safely.</p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 08",
+          "level": 3
+        },
+        {
+          "kind": "paragraph",
+          "text": "中文技术正文与 Unicode 标识 case-08。"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use a < b safely."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 08"
+    },
+    {
+      "id": "case-09",
+      "html": "<!doctype html><html><head><title>Technical fixture 09</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h1>Technical fixture 09</h1><section><p>Body before nested content case-09.</p><div><p>Body after nested content case-09.</p></div></section><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 09",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body before nested content case-09."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body after nested content case-09."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 09"
+    },
+    {
+      "id": "case-10",
+      "html": "<!doctype html><html><head><title>Technical fixture 10</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h1>Technical fixture 10</h1><p>Reliable body paragraph case-10.</p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 10",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Reliable body paragraph case-10."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 10"
+    },
+    {
+      "id": "case-11",
+      "html": "<!doctype html><html><head><title>Technical fixture 11</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h2>Technical fixture 11</h2><pre><code>def example_11():\n    return &quot;case-11&quot;</code></pre><p>Explanation case-11.</p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 11",
+          "level": 2
+        },
+        {
+          "kind": "code",
+          "text": "def example_11():\n    return \"case-11\""
+        },
+        {
+          "kind": "paragraph",
+          "text": "Explanation case-11."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [
+        "def example_11():\n    return \"case-11\""
+      ],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 11"
+    },
+    {
+      "id": "case-12",
+      "html": "<!doctype html><html><head><title>Technical fixture 12</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h6>Technical fixture 12</h6><table><tr><th>Key</th><th>Value</th></tr><tr><td>case-12</td><td>42</td></tr></table><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 12",
+          "level": 6
+        },
+        {
+          "kind": "table",
+          "text": "Key\tValue\ncase-12\t42"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [
+        [
+          "Key",
+          "Value"
+        ],
+        [
+          "case-12",
+          "42"
+        ]
+      ],
+      "expected_heading_levels": [
+        6
+      ],
+      "title": "Technical fixture 12"
+    },
+    {
+      "id": "case-13",
+      "html": "<!doctype html><html><head><title>Technical fixture 13</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h3>Technical fixture 13</h3><blockquote><p>First quote case-13.</p><p>Second quote case-13.</p></blockquote><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 13",
+          "level": 3
+        },
+        {
+          "kind": "quote",
+          "text": "First quote case-13.\n\nSecond quote case-13."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 13"
+    },
+    {
+      "id": "case-14",
+      "html": "<!doctype html><html><head><title>Technical fixture 14</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h4>Technical fixture 14</h4><ul><li>Outer case-14<ul><li>Inner case-14</li></ul></li><li>Second case-14</li></ul><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 14",
+          "level": 4
+        },
+        {
+          "kind": "list",
+          "text": "Outer case-14\nSecond case-14"
+        },
+        {
+          "kind": "list",
+          "text": "Inner case-14"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        4
+      ],
+      "title": "Technical fixture 14"
+    },
+    {
+      "id": "case-15",
+      "html": "<!doctype html><html><head><title>Technical fixture 15</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h5>Technical fixture 15</h5><p>Read <a href=\"/reference/15\">reference case-15</a> now.</p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 15",
+          "level": 5
+        },
+        {
+          "kind": "paragraph",
+          "text": "Read reference case-15 now."
+        }
+      ],
+      "expected_links": [
+        "https://fixture.invalid/reference/15"
+      ],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        5
+      ],
+      "title": "Technical fixture 15"
+    },
+    {
+      "id": "case-16",
+      "html": "<!doctype html><html><head><title>Technical fixture 16</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h1 class=\"heading\">Technical fixture 16</h1><div class=\"markdown-body\"><p>Loading and captcha are technical topics case-16.</p></div><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 16",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Loading and captcha are technical topics case-16."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 16"
+    },
+    {
+      "id": "case-17",
+      "html": "<!doctype html><html><head><title>Technical fixture 17</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h2>Technical fixture 17</h2><p>First malformed case-17.<p>Second malformed case-17.</p></p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 17",
+          "level": 2
+        },
+        {
+          "kind": "paragraph",
+          "text": "First malformed case-17."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Second malformed case-17."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 17"
+    },
+    {
+      "id": "case-18",
+      "html": "<!doctype html><html><head><title>Technical fixture 18</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h3>Technical fixture 18</h3><p>中文技术正文与 Unicode 标识 case-18。</p><p>Use <code>a &lt; b</code> safely.</p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 18",
+          "level": 3
+        },
+        {
+          "kind": "paragraph",
+          "text": "中文技术正文与 Unicode 标识 case-18。"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use a < b safely."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 18"
+    },
+    {
+      "id": "case-19",
+      "html": "<!doctype html><html><head><title>Technical fixture 19</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h1>Technical fixture 19</h1><section><p>Body before nested content case-19.</p><div><p>Body after nested content case-19.</p></div></section><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 19",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body before nested content case-19."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body after nested content case-19."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 19"
+    },
+    {
+      "id": "case-20",
+      "html": "<!doctype html><html><head><title>Technical fixture 20</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h1>Technical fixture 20</h1><p>Reliable body paragraph case-20.</p><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 20",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Reliable body paragraph case-20."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 20"
+    },
+    {
+      "id": "case-21",
+      "html": "<!doctype html><html><head><title>Technical fixture 21</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h2>Technical fixture 21</h2><pre><code>def example_21():\n    return &quot;case-21&quot;</code></pre><p>Explanation case-21.</p><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 21",
+          "level": 2
+        },
+        {
+          "kind": "code",
+          "text": "def example_21():\n    return \"case-21\""
+        },
+        {
+          "kind": "paragraph",
+          "text": "Explanation case-21."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [
+        "def example_21():\n    return \"case-21\""
+      ],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 21"
+    },
+    {
+      "id": "case-22",
+      "html": "<!doctype html><html><head><title>Technical fixture 22</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h6>Technical fixture 22</h6><table><tr><th>Key</th><th>Value</th></tr><tr><td>case-22</td><td>42</td></tr></table><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 22",
+          "level": 6
+        },
+        {
+          "kind": "table",
+          "text": "Key\tValue\ncase-22\t42"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [
+        [
+          "Key",
+          "Value"
+        ],
+        [
+          "case-22",
+          "42"
+        ]
+      ],
+      "expected_heading_levels": [
+        6
+      ],
+      "title": "Technical fixture 22"
+    },
+    {
+      "id": "case-23",
+      "html": "<!doctype html><html><head><title>Technical fixture 23</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h3>Technical fixture 23</h3><blockquote><p>First quote case-23.</p><p>Second quote case-23.</p></blockquote><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 23",
+          "level": 3
+        },
+        {
+          "kind": "quote",
+          "text": "First quote case-23.\n\nSecond quote case-23."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 23"
+    },
+    {
+      "id": "case-24",
+      "html": "<!doctype html><html><head><title>Technical fixture 24</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h4>Technical fixture 24</h4><ul><li>Outer case-24<ul><li>Inner case-24</li></ul></li><li>Second case-24</li></ul><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 24",
+          "level": 4
+        },
+        {
+          "kind": "list",
+          "text": "Outer case-24\nSecond case-24"
+        },
+        {
+          "kind": "list",
+          "text": "Inner case-24"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        4
+      ],
+      "title": "Technical fixture 24"
+    },
+    {
+      "id": "case-25",
+      "html": "<!doctype html><html><head><title>Technical fixture 25</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h5>Technical fixture 25</h5><p>Read <a href=\"/reference/25\">reference case-25</a> now.</p><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 25",
+          "level": 5
+        },
+        {
+          "kind": "paragraph",
+          "text": "Read reference case-25 now."
+        }
+      ],
+      "expected_links": [
+        "https://fixture.invalid/reference/25"
+      ],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        5
+      ],
+      "title": "Technical fixture 25"
+    },
+    {
+      "id": "case-26",
+      "html": "<!doctype html><html><head><title>Technical fixture 26</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h1 class=\"heading\">Technical fixture 26</h1><div class=\"markdown-body\"><p>Loading and captcha are technical topics case-26.</p></div><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 26",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Loading and captcha are technical topics case-26."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 26"
+    },
+    {
+      "id": "case-27",
+      "html": "<!doctype html><html><head><title>Technical fixture 27</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h2>Technical fixture 27</h2><p>First malformed case-27.<p>Second malformed case-27.</p></p><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 27",
+          "level": 2
+        },
+        {
+          "kind": "paragraph",
+          "text": "First malformed case-27."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Second malformed case-27."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 27"
+    },
+    {
+      "id": "case-28",
+      "html": "<!doctype html><html><head><title>Technical fixture 28</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h3>Technical fixture 28</h3><p>中文技术正文与 Unicode 标识 case-28。</p><p>Use <code>a &lt; b</code> safely.</p><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 28",
+          "level": 3
+        },
+        {
+          "kind": "paragraph",
+          "text": "中文技术正文与 Unicode 标识 case-28。"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use a < b safely."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 28"
+    },
+    {
+      "id": "case-29",
+      "html": "<!doctype html><html><head><title>Technical fixture 29</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><div id=\"content\"><h1>Technical fixture 29</h1><section><p>Body before nested content case-29.</p><div><p>Body after nested content case-29.</p></div></section><div class=\"advert\">advertisement noise</div></div><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 29",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body before nested content case-29."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body after nested content case-29."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 29"
+    },
+    {
+      "id": "case-30",
+      "html": "<!doctype html><html><head><title>Technical fixture 30</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h1>Technical fixture 30</h1><p>Reliable body paragraph case-30.</p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 30",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Reliable body paragraph case-30."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 30"
+    },
+    {
+      "id": "case-31",
+      "html": "<!doctype html><html><head><title>Technical fixture 31</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h2>Technical fixture 31</h2><pre><code>def example_31():\n    return &quot;case-31&quot;</code></pre><p>Explanation case-31.</p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 31",
+          "level": 2
+        },
+        {
+          "kind": "code",
+          "text": "def example_31():\n    return \"case-31\""
+        },
+        {
+          "kind": "paragraph",
+          "text": "Explanation case-31."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [
+        "def example_31():\n    return \"case-31\""
+      ],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 31"
+    },
+    {
+      "id": "case-32",
+      "html": "<!doctype html><html><head><title>Technical fixture 32</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h6>Technical fixture 32</h6><table><tr><th>Key</th><th>Value</th></tr><tr><td>case-32</td><td>42</td></tr></table><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 32",
+          "level": 6
+        },
+        {
+          "kind": "table",
+          "text": "Key\tValue\ncase-32\t42"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [
+        [
+          "Key",
+          "Value"
+        ],
+        [
+          "case-32",
+          "42"
+        ]
+      ],
+      "expected_heading_levels": [
+        6
+      ],
+      "title": "Technical fixture 32"
+    },
+    {
+      "id": "case-33",
+      "html": "<!doctype html><html><head><title>Technical fixture 33</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h3>Technical fixture 33</h3><blockquote><p>First quote case-33.</p><p>Second quote case-33.</p></blockquote><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 33",
+          "level": 3
+        },
+        {
+          "kind": "quote",
+          "text": "First quote case-33.\n\nSecond quote case-33."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 33"
+    },
+    {
+      "id": "case-34",
+      "html": "<!doctype html><html><head><title>Technical fixture 34</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h4>Technical fixture 34</h4><ul><li>Outer case-34<ul><li>Inner case-34</li></ul></li><li>Second case-34</li></ul><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 34",
+          "level": 4
+        },
+        {
+          "kind": "list",
+          "text": "Outer case-34\nSecond case-34"
+        },
+        {
+          "kind": "list",
+          "text": "Inner case-34"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        4
+      ],
+      "title": "Technical fixture 34"
+    },
+    {
+      "id": "case-35",
+      "html": "<!doctype html><html><head><title>Technical fixture 35</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h5>Technical fixture 35</h5><p>Read <a href=\"/reference/35\">reference case-35</a> now.</p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 35",
+          "level": 5
+        },
+        {
+          "kind": "paragraph",
+          "text": "Read reference case-35 now."
+        }
+      ],
+      "expected_links": [
+        "https://fixture.invalid/reference/35"
+      ],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        5
+      ],
+      "title": "Technical fixture 35"
+    },
+    {
+      "id": "case-36",
+      "html": "<!doctype html><html><head><title>Technical fixture 36</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h1 class=\"heading\">Technical fixture 36</h1><div class=\"markdown-body\"><p>Loading and captcha are technical topics case-36.</p></div><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 36",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Loading and captcha are technical topics case-36."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 36"
+    },
+    {
+      "id": "case-37",
+      "html": "<!doctype html><html><head><title>Technical fixture 37</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h2>Technical fixture 37</h2><p>First malformed case-37.<p>Second malformed case-37.</p></p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 37",
+          "level": 2
+        },
+        {
+          "kind": "paragraph",
+          "text": "First malformed case-37."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Second malformed case-37."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 37"
+    },
+    {
+      "id": "case-38",
+      "html": "<!doctype html><html><head><title>Technical fixture 38</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h3>Technical fixture 38</h3><p>中文技术正文与 Unicode 标识 case-38。</p><p>Use <code>a &lt; b</code> safely.</p><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 38",
+          "level": 3
+        },
+        {
+          "kind": "paragraph",
+          "text": "中文技术正文与 Unicode 标识 case-38。"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use a < b safely."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 38"
+    },
+    {
+      "id": "case-39",
+      "html": "<!doctype html><html><head><title>Technical fixture 39</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><article><h1>Technical fixture 39</h1><section><p>Body before nested content case-39.</p><div><p>Body after nested content case-39.</p></div></section><div class=\"advert\">advertisement noise</div></article><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 39",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body before nested content case-39."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body after nested content case-39."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 39"
+    },
+    {
+      "id": "case-40",
+      "html": "<!doctype html><html><head><title>Technical fixture 40</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h1>Technical fixture 40</h1><p>Reliable body paragraph case-40.</p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 40",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Reliable body paragraph case-40."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 40"
+    },
+    {
+      "id": "case-41",
+      "html": "<!doctype html><html><head><title>Technical fixture 41</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h2>Technical fixture 41</h2><pre><code>def example_41():\n    return &quot;case-41&quot;</code></pre><p>Explanation case-41.</p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 41",
+          "level": 2
+        },
+        {
+          "kind": "code",
+          "text": "def example_41():\n    return \"case-41\""
+        },
+        {
+          "kind": "paragraph",
+          "text": "Explanation case-41."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [
+        "def example_41():\n    return \"case-41\""
+      ],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 41"
+    },
+    {
+      "id": "case-42",
+      "html": "<!doctype html><html><head><title>Technical fixture 42</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h6>Technical fixture 42</h6><table><tr><th>Key</th><th>Value</th></tr><tr><td>case-42</td><td>42</td></tr></table><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 42",
+          "level": 6
+        },
+        {
+          "kind": "table",
+          "text": "Key\tValue\ncase-42\t42"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [
+        [
+          "Key",
+          "Value"
+        ],
+        [
+          "case-42",
+          "42"
+        ]
+      ],
+      "expected_heading_levels": [
+        6
+      ],
+      "title": "Technical fixture 42"
+    },
+    {
+      "id": "case-43",
+      "html": "<!doctype html><html><head><title>Technical fixture 43</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h3>Technical fixture 43</h3><blockquote><p>First quote case-43.</p><p>Second quote case-43.</p></blockquote><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 43",
+          "level": 3
+        },
+        {
+          "kind": "quote",
+          "text": "First quote case-43.\n\nSecond quote case-43."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 43"
+    },
+    {
+      "id": "case-44",
+      "html": "<!doctype html><html><head><title>Technical fixture 44</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h4>Technical fixture 44</h4><ul><li>Outer case-44<ul><li>Inner case-44</li></ul></li><li>Second case-44</li></ul><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 44",
+          "level": 4
+        },
+        {
+          "kind": "list",
+          "text": "Outer case-44\nSecond case-44"
+        },
+        {
+          "kind": "list",
+          "text": "Inner case-44"
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        4
+      ],
+      "title": "Technical fixture 44"
+    },
+    {
+      "id": "case-45",
+      "html": "<!doctype html><html><head><title>Technical fixture 45</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h5>Technical fixture 45</h5><p>Read <a href=\"/reference/45\">reference case-45</a> now.</p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 45",
+          "level": 5
+        },
+        {
+          "kind": "paragraph",
+          "text": "Read reference case-45 now."
+        }
+      ],
+      "expected_links": [
+        "https://fixture.invalid/reference/45"
+      ],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        5
+      ],
+      "title": "Technical fixture 45"
+    },
+    {
+      "id": "case-46",
+      "html": "<!doctype html><html><head><title>Technical fixture 46</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h1 class=\"heading\">Technical fixture 46</h1><div class=\"markdown-body\"><p>Loading and captcha are technical topics case-46.</p></div><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 46",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Loading and captcha are technical topics case-46."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 46"
+    },
+    {
+      "id": "case-47",
+      "html": "<!doctype html><html><head><title>Technical fixture 47</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h2>Technical fixture 47</h2><p>First malformed case-47.<p>Second malformed case-47.</p></p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 47",
+          "level": 2
+        },
+        {
+          "kind": "paragraph",
+          "text": "First malformed case-47."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Second malformed case-47."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        2
+      ],
+      "title": "Technical fixture 47"
+    },
+    {
+      "id": "case-48",
+      "html": "<!doctype html><html><head><title>Technical fixture 48</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h3>Technical fixture 48</h3><p>中文技术正文与 Unicode 标识 case-48。</p><p>Use <code>a &lt; b</code> safely.</p><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 48",
+          "level": 3
+        },
+        {
+          "kind": "paragraph",
+          "text": "中文技术正文与 Unicode 标识 case-48。"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Use a < b safely."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        3
+      ],
+      "title": "Technical fixture 48"
+    },
+    {
+      "id": "case-49",
+      "html": "<!doctype html><html><head><title>Technical fixture 49</title></head><body><nav>navigation menu</nav><aside>subscribe now</aside><main><h1>Technical fixture 49</h1><section><p>Body before nested content case-49.</p><div><p>Body after nested content case-49.</p></div></section><div class=\"advert\">advertisement noise</div></main><footer>cookie banner</footer></body></html>",
+      "expected_blocks": [
+        {
+          "kind": "heading",
+          "text": "Technical fixture 49",
+          "level": 1
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body before nested content case-49."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Body after nested content case-49."
+        }
+      ],
+      "expected_links": [],
+      "expected_code": [],
+      "expected_table_rows": [],
+      "expected_heading_levels": [
+        1
+      ],
+      "title": "Technical fixture 49"
+    }
+  ]
+}

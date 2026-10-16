@@ -1,0 +1,7 @@
+{
+  "temporary_root": true,
+  "source_byte_identical": true,
+  "upgrade_ok": true,
+  "rollback_ok": true,
+  "active_after_rollback": "release-old"
+}

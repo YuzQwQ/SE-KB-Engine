@@ -14,6 +14,7 @@ from .type_router import TypeRouter
 from .specialized_extractors import get_extractor
 from .type_registry import get_type_registry
 from validators.semantic_stage3 import Stage3Validator
+from se_kb_app.jobs.context import checkpoint
 
 
 @dataclass
@@ -59,27 +60,25 @@ class ExtractionPipeline:
 
     def _prepare_content(self, parsed_data: Dict[str, Any]) -> str:
         """准备用于抽取的内容"""
-        # 优先使用结构化内容
-        sections = parsed_data.get("sections") or parsed_data.get("structured_json") or []
+        from se_kb_app.extraction.blocks import render_blocks
 
+        if parsed_data.get("blocks"):
+            return render_blocks(parsed_data["blocks"])
+        sections = parsed_data.get("sections") or parsed_data.get("structured_json") or []
         if sections:
             parts = []
-            for sec in sections:
-                heading = sec.get("heading", "")
-                text = sec.get("text", "")
-                lists = sec.get("lists", [])
-
-                if heading:
-                    parts.append(f"## {heading}\n")
-                if text:
-                    parts.append(text)
-                if lists:
-                    parts.append("\n".join(f"- {item}" for item in lists))
-                parts.append("")
-
-            return "\n".join(parts)
-
-        # 回退到 clean_text
+            for section in sections:
+                if section.get("blocks"):
+                    parts.append(render_blocks(section["blocks"]))
+                    continue
+                if section.get("heading"):
+                    parts.append("#" * int(section.get("level") or 2) + " " + section["heading"])
+                parts.append(section.get("text", ""))
+                parts.extend("- " + item for item in section.get("lists", []))
+                parts.extend("```\n" + code + "\n```" for code in section.get("code_blocks", []))
+                for table in section.get("tables", []):
+                    parts.append("\n".join(" | ".join(row) for row in table))
+            return "\n\n".join(part for part in parts if part)
         return parsed_data.get("clean_text") or parsed_data.get("markdown") or ""
 
     def run(self, parsed_data: Dict[str, Any]) -> PipelineResult:
@@ -92,6 +91,7 @@ class ExtractionPipeline:
         Returns:
             PipelineResult
         """
+        checkpoint()
         title = parsed_data.get("title", "未命名")
         url = parsed_data.get("source_url") or parsed_data.get("url", "")
 
@@ -110,7 +110,9 @@ class ExtractionPipeline:
                 "force_types": self.force_types,
             }
         else:
+            checkpoint()
             routing_result, routing_trace = self.router.route(parsed_data)
+            checkpoint()
             routed_types = routing_result.types
             total_tokens += routing_result.tokens_used
 
@@ -146,12 +148,14 @@ class ExtractionPipeline:
         stage3_results = {}
 
         for type_id in routed_types:
+            checkpoint()
             extractor = get_extractor(type_id)
             if not extractor:
                 errors[type_id] = f"无可用的抽取器: {type_id}"
                 continue
 
             result, ext_trace = extractor.extract(content, ctx)
+            checkpoint()
             total_tokens += result.tokens_used
 
             extraction_results[type_id] = {
@@ -168,6 +172,7 @@ class ExtractionPipeline:
 
         trace["stage2"] = stage2_trace
         for type_id in list(artifacts.keys()):
+            checkpoint()
             artifact = artifacts[type_id]
             validation = self.stage3.validate(artifact, content, type_id, title, url)
             stage3_results[type_id] = validation

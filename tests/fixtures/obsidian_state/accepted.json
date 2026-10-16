@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "vault_name": "Research",
+  "managed_directory": "SE-KB",
+  "exported_at": "2026-09-18T10:30:00+08:00",
+  "corpus_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "notes": [
+    {
+      "identifier": "doc_example",
+      "logical_path": "Sources/示例--abcd123456.md",
+      "source_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "published_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "title": "示例",
+      "aliases": []
+    }
+  ]
+}

@@ -346,7 +346,13 @@ def analyze_images(
     model = build_vision_model(options)
 
     results: List[Dict[str, Any]] = []
-    for img in images or []:
+    from se_kb_app.jobs.context import checkpoint
+    from service_boundary.resolution import bounded_validation
+    from service_boundary.url_policy import validate_url
+    from service_boundary.errors import PublicError
+    from time import monotonic
+    for img in (images or [])[:10]:
+        checkpoint()
         alt = img.get("alt") or ""
         title = img.get("title") or ""
         image_input = img.get("abs_url") or img.get("src") or img.get("base64") or ""
@@ -354,7 +360,14 @@ def analyze_images(
         if not image_input:
             vision = DEFAULT_RESULT.copy()
         else:
+            if image_input.startswith(("http://", "https://")):
+                try:
+                    image_input = bounded_validation(validate_url, image_input, monotonic() + 5).url
+                except PublicError:
+                    continue
+            checkpoint()
             vision = model.infer(image_input)
+            checkpoint()
 
         results.append(
             {
