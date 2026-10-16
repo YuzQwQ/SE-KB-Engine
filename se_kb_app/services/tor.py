@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import os
 import subprocess
+import sys
 from collections.abc import Callable
 from pathlib import Path
 from time import monotonic, sleep
@@ -70,7 +70,9 @@ class TorController:
             str(self.data_dir),
         ]
         try:
-            flags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
+            flags = 0
+            if sys.platform == "win32":
+                flags = subprocess.CREATE_NO_WINDOW
             self.process = self.process_factory(
                 command,
                 stdout=subprocess.DEVNULL,

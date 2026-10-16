@@ -33,8 +33,12 @@ def validate_port(value: str | int) -> int:
 
 def check_port(port: int) -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
-        if os.name == "nt":
+        if sys.platform == "win32":
             probe.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        else:
+            # Match the HTTP server's address reuse: TIME_WAIT is not a live
+            # listener. SO_REUSEPORT is deliberately not enabled.
+            probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         try:
             probe.bind(("127.0.0.1", port))
         except OSError as error:
@@ -103,11 +107,14 @@ class ServiceProcess:
                     command[0] = str(python.with_name("python.exe"))
                 if debug:
                     command.append("--debug")
+                flags = 0
+                if sys.platform == "win32":
+                    flags = subprocess.CREATE_NO_WINDOW
                 process = subprocess.Popen(
                     command, cwd=self.root, env=environment, stdin=subprocess.DEVNULL,
                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                     text=True, encoding="utf-8", errors="replace",
-                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+                    creationflags=flags,
                     start_new_session=os.name != "nt",
                 )
                 self._process = process
@@ -168,7 +175,7 @@ class ServiceProcess:
             self._status, self._detail = "stopping", "正在停止进程"
         try:
             if process.poll() is None:
-                if os.name == "nt":
+                if sys.platform == "win32":
                     result = subprocess.run(
                         ["taskkill", "/PID", str(process.pid), "/T", "/F"],
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

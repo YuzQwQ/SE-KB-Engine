@@ -19,3 +19,9 @@
 - [x] 4.1 Measure the production cleaner on at least 50 annotated local cases; fix quality/resource assertions and add adapter integration tests.
 - [x] 4.2 Run offline quality gate, 100-page regression, bounded 30-minute soak and strict OpenSpec validation; record explicit browser/measurement limitations.
 - [x] 4.3 Update crawl operations, current task and handoff with implementation/rollback evidence; preserve unrelated work and do not commit/archive.
+
+## 5. Cross-platform CI follow-up
+
+- [x] 5.1 Correct platform guards for Windows-only APIs and permit POSIX port probing after TIME_WAIT without admitting active listeners.
+- [x] 5.2 Make encoding diagnostics UTF-8 independently of console locale; align offline environment across quality and coverage, with regressions.
+- [ ] 5.3 Run local quality/coverage and Linux type checks, verify the six remote CI jobs, and update handoff with actual results.

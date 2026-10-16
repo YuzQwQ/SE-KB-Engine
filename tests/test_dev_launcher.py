@@ -18,6 +18,14 @@ def free_port() -> int:
         return int(sock.getsockname()[1])
 
 
+def assert_not_listening(port: int) -> None:
+    # TCP TIME_WAIT may outlive a terminated server, especially on Windows.
+    # Verify listener closure rather than requiring immediate exclusive rebinding.
+    with socket.socket() as probe:
+        probe.settimeout(1)
+        assert probe.connect_ex(("127.0.0.1", port)) != 0
+
+
 def wait_status(service, status: str) -> None:
     deadline = time.monotonic() + 10
     while time.monotonic() < deadline:
@@ -33,10 +41,12 @@ def test_reject_invalid_ports(port):
         supervisor.validate_port(port)
 
 
-def test_occupied_port_preserves_external_listener(tmp_path: Path):
+@pytest.mark.parametrize("reuse_address", [False, True])
+def test_occupied_port_preserves_external_listener(tmp_path: Path, reuse_address):
     events: queue.Queue = queue.Queue(maxsize=10)
     service = supervisor.ServiceProcess("web", events, root=tmp_path)
     with socket.socket() as listener:
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, int(reuse_address))
         listener.bind(("127.0.0.1", 0))
         listener.listen()
         service.start(listener.getsockname()[1])
@@ -44,6 +54,30 @@ def test_occupied_port_preserves_external_listener(tmp_path: Path):
         assert service.snapshot().pid is None
         service.stop()
         assert listener.fileno() != -1
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="POSIX address reuse semantics")
+def test_posix_probe_accepts_closed_connection_but_rejects_live_reused_listener():
+    with socket.socket() as listener, socket.socket() as client:
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listener.bind(("127.0.0.1", 0))
+        listener.listen()
+        port = listener.getsockname()[1]
+        client.settimeout(1)
+        client.connect(("127.0.0.1", port))
+        accepted, _ = listener.accept()
+        accepted.shutdown(socket.SHUT_WR)
+        accepted.close()
+        assert client.recv(1) == b""
+        with pytest.raises(ValueError):
+            supervisor.check_port(port)
+    supervisor.check_port(port)
+    with socket.socket() as replacement:
+        replacement.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        replacement.bind(("127.0.0.1", port))
+        replacement.listen()
+        with pytest.raises(ValueError):
+            supervisor.check_port(port)
 
 
 def test_bounded_log_redacts_secrets_and_bearer():
@@ -95,8 +129,8 @@ def test_lifecycle_liveness_duplicate_and_restart(monkeypatch, tmp_path: Path, n
         assert "--debug" in calls[0]
         service.stop()
         assert service.snapshot().status == "stopped"
-        supervisor.check_port(port)
-        service.start(free_port())
+        assert_not_listening(port)
+        service.start(port if sys.platform != "win32" else free_port())
         wait_status(service, "running")
         assert service.snapshot().pid != first_pid
     finally:
@@ -157,4 +191,4 @@ def test_actual_worker_starts_and_stops(monkeypatch, tmp_path: Path, name):
     finally:
         service.stop()
     assert service.snapshot().pid is None
-    supervisor.check_port(port)
+    assert_not_listening(port)

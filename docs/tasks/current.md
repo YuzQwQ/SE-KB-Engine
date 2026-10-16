@@ -1,5 +1,16 @@
 # 当前任务：统一爬虫执行链与安全、内容、任务修复
 
+## 最新跟进：GitHub required-ci 修复（2026-10-16）
+
+优先于下方实施完成状态。已提交并推送开发检查点 `682e23d` 与 README `508026f`，用户随后报告 workflow run `38893926368` 六组矩阵失败。
+
+- 已读取六份 GitHub job 日志：Ubuntu 三版本均有 mypy 的 Windows 专用属性错误，3.11/3.12 另有停止后端口探测失败；Windows 三版本常规门禁均成功，但 coverage 阶段编码 CLI 的中文输出触发 UnicodeEncodeError。
+- 已修复平台类型保护、POSIX TIME_WAIT 地址探测、CLI UTF-8 输出，并将 offline/UTF-8 环境提升到 CI job 层，保留所有检查步骤。Windows 独占端口保护保留；新测试保证活动 listener（包括设置 SO_REUSEADDR）仍被拒绝。
+- 专项 28 passed/1 POSIX 条件 skipped；全项目 `mypy --platform linux` 通过；本机总门禁 314 passed/2 skipped/3 deselected，强制 cp1252 的 coverage 也是 314 passed/2 skipped/3 deselected。正在完成远端六组矩阵验证，结果以本节后续更新为准。
+- 没有安装 WSL、浏览器、模型或新增依赖。禁止用跳过测试/类型排除掩盖跨平台问题；此前把所有端口失败归为环境波动的推断已由 Linux 日志纠正。
+
+---
+
 更新时间：2026-10-16，Asia/Shanghai。用户已从只读审查转为明确要求实施《爬虫系统技术审查与优化路线》，本节优先于下方启动器历史状态。
 
 ## 当前实施事实

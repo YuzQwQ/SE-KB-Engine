@@ -62,7 +62,9 @@ def test_scan_includes_tests_but_excludes_runtime_directories(tmp_path: Path):
 
 
 @pytest.mark.integration
-def test_cli_fails_read_only_for_invalid_utf8(tmp_path: Path):
+@pytest.mark.parametrize("console_encoding", ["utf-8", "cp1252", "ascii"])
+def test_cli_fails_read_only_for_invalid_utf8(tmp_path: Path, monkeypatch, console_encoding):
+    monkeypatch.setenv("PYTHONIOENCODING", console_encoding)
     target = tmp_path / "bad.txt"
     target.write_bytes(b"\x80")
     script = Path(__file__).resolve().parents[1] / "scripts" / "check_encodings.py"
@@ -76,4 +78,5 @@ def test_cli_fails_read_only_for_invalid_utf8(tmp_path: Path):
     )
     assert result.returncode == 1
     assert "bad.txt" in result.stdout
+    assert "UnicodeEncodeError" not in result.stderr
     assert target.read_bytes() == before

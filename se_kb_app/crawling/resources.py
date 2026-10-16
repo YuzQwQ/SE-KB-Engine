@@ -1,13 +1,13 @@
 """Read-only metrics for this process; browser process trees are reported separately."""
 from __future__ import annotations
 
-import os
+import sys
 from pathlib import Path
 from typing import Any
 
 
 def process_resources() -> dict[str, Any]:
-    if os.name == "nt":
+    if sys.platform == "win32":
         import ctypes
         from ctypes import wintypes
 

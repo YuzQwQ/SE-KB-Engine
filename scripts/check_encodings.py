@@ -109,6 +109,12 @@ def check_compile(path: Path) -> str | None:
 
 
 def main() -> int:
+    # CI coverage invokes this CLI outside quality.py's UTF-8 environment.
+    # Keep diagnostics readable and avoid locale-dependent UnicodeEncodeError.
+    for stream in (sys.stdout, sys.stderr):
+        configure = getattr(stream, "reconfigure", None)
+        if callable(configure):
+            configure(encoding="utf-8", errors="backslashreplace")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--no-compile", action="store_true", help="跳过 Python 编译检查")
     parser.add_argument("--root", help="扫描指定根目录（测试和诊断使用）")

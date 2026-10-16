@@ -1,5 +1,15 @@
 # Coding Agent 交接
 
+## 最新：required-ci 六矩阵失败修复（2026-10-16）
+
+用户报告推送后 run `38893926368` 全红。已通过 GitHub 连接读取六份日志，确认三类原因：Linux mypy 不认识未受 sys.platform 条件保护的 Windows-only 属性；Linux 端口探测把 TIME_WAIT 当活动监听；Windows coverage 未继承 quality 子进程 UTF-8 环境，编码 CLI 输出崩溃。此前“端口失败只是环境波动”的推断不再适用于该 Linux 缺陷。
+
+修复位于 `.github/workflows/ci.yml`、`scripts/check_encodings.py`、`se_kb_app/{crawling/resources,services/tor,devtools/supervisor}.py` 和两个测试文件。保留 Windows 独占端口策略，POSIX 只启用 SO_REUSEADDR、不启用 SO_REUSEPORT；活动 listener 仍被回归测试保护，停止检查区分 listener 与 TCP 残留，并在 POSIX 验证同端口重启。CLI 明确输出 UTF-8；全部 CI 步骤共享 offline/UTF-8 job 环境。
+
+当前本机专项 28 passed/1 skipped、Linux 平台全项目 mypy 通过、总门禁 314 passed/2 skipped/3 deselected；强制 cp1252 的 coverage 同为 314 passed/2 skipped/3 deselected。远端六矩阵验证收尾中。OpenSpec 追加任务 5.1–5.3，前两项完成、最后一项待远端实测。所有历史输出、软著、本机截图仍保留且不提交。
+
+---
+
 ## 最新任务：统一采集链实施（2026-10-16）
 
 本节取代下方“本轮未改业务代码”“没有已授权业务功能”的旧启动器交接结论。用户已明确授权实施爬虫审查路线。
