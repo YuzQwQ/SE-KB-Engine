@@ -6,7 +6,7 @@
 
 - 已读取六份 GitHub job 日志：Ubuntu 三版本均有 mypy 的 Windows 专用属性错误，3.11/3.12 另有停止后端口探测失败；Windows 三版本常规门禁均成功，但 coverage 阶段编码 CLI 的中文输出触发 UnicodeEncodeError。
 - 已修复平台类型保护、POSIX TIME_WAIT 地址探测、CLI UTF-8 输出，并将 offline/UTF-8 环境提升到 CI job 层，保留所有检查步骤。Windows 独占端口保护保留；新测试保证活动 listener（包括设置 SO_REUSEADDR）仍被拒绝。
-- 专项 28 passed/1 POSIX 条件 skipped；全项目 `mypy --platform linux` 通过；本机总门禁 314 passed/2 skipped/3 deselected，强制 cp1252 的 coverage 也是 314 passed/2 skipped/3 deselected。正在完成远端六组矩阵验证，结果以本节后续更新为准。
+- 专项 28 passed/1 POSIX 条件 skipped；全项目 `mypy --platform linux` 通过；本机总门禁 314 passed/2 skipped/3 deselected，强制 cp1252 的 coverage 也是 314 passed/2 skipped/3 deselected。修复提交为 `e8597a2`，尚未推送；自动审批要求用户明确批准新增 CI 修复 payload，之前的检查点/README 推送授权不被视为覆盖本次。远端仍为旧失败运行，没有新六矩阵验收结论。
 - 没有安装 WSL、浏览器、模型或新增依赖。禁止用跳过测试/类型排除掩盖跨平台问题；此前把所有端口失败归为环境波动的推断已由 Linux 日志纠正。
 
 ---

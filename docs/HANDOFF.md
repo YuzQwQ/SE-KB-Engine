@@ -6,7 +6,7 @@
 
 修复位于 `.github/workflows/ci.yml`、`scripts/check_encodings.py`、`se_kb_app/{crawling/resources,services/tor,devtools/supervisor}.py` 和两个测试文件。保留 Windows 独占端口策略，POSIX 只启用 SO_REUSEADDR、不启用 SO_REUSEPORT；活动 listener 仍被回归测试保护，停止检查区分 listener 与 TCP 残留，并在 POSIX 验证同端口重启。CLI 明确输出 UTF-8；全部 CI 步骤共享 offline/UTF-8 job 环境。
 
-当前本机专项 28 passed/1 skipped、Linux 平台全项目 mypy 通过、总门禁 314 passed/2 skipped/3 deselected；强制 cp1252 的 coverage 同为 314 passed/2 skipped/3 deselected。远端六矩阵验证收尾中。OpenSpec 追加任务 5.1–5.3，前两项完成、最后一项待远端实测。所有历史输出、软著、本机截图仍保留且不提交。
+当前本机专项 28 passed/1 skipped、Linux 平台全项目 mypy 通过、总门禁 314 passed/2 skipped/3 deselected；强制 cp1252 的 coverage 同为 314 passed/2 skipped/3 deselected。修复已提交 `e8597a2`，推送遭自动审批拒绝：需要用户明确授权本次新增 CI 修复内容，旧提交授权不覆盖；未绕过、未推送，也未产生新 CI run。OpenSpec 追加任务 5.1–5.3，前两项完成、最后一项待获批推送后远端实测。所有历史输出、软著、本机截图仍保留且不提交。
 
 ---
 
